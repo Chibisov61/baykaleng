@@ -757,3 +757,5 @@ UKcom4::~UKcom4()
 {
 	delete ui;
 }
+
+// Проверка
