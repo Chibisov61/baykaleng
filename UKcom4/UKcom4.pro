@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = UKcom4
 DESTDIR = ./x64/Debug
-QT += core gui widgets charts
+QT += core widgets charts
 CONFIG += debug
 LIBS += -L"."
 DEPENDPATH += .
