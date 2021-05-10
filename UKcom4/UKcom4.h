@@ -1,12 +1,10 @@
 #pragma once
 
 // ReSharper disable once CppUnusedIncludeDirective
-#include <QtWidgets/QMainWindow>
 #include <vector>
 #include <string>
 
 #include "ui_UKcom4.h"
-#include "bigChart.h"
 
 
 struct Param	// структура для передачи параметров в функцию расчета по Караушеву и вывода в файлы

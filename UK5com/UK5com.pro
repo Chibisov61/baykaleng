@@ -3,9 +3,9 @@
 # ------------------------------------------------------
 
 TEMPLATE = app
-TARGET = UKcom4
+TARGET = UK5com
 DESTDIR = ./x64/Debug
-QT += core widgets charts
+QT += core widget gui charts
 CONFIG += debug
 LIBS += -L"."
 DEPENDPATH += .
@@ -13,4 +13,4 @@ MOC_DIR += .
 OBJECTS_DIR += debug
 UI_DIR += .
 RCC_DIR += .
-include(UKcom4.pri)
+include(UK5com.pri)

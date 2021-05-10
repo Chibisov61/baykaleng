@@ -7,8 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./UKcom4.h
-SOURCES += ./UKcom4.cpp \
+HEADERS += ./UK5Q_form.h
+SOURCES += ./UK5Q_form.cpp \
     ./main.cpp
-FORMS += ./UKcom4.ui
-RESOURCES += UKcom4.qrc
+FORMS += ./UK5Q_form.ui
+RESOURCES += UK5Q_form.qrc

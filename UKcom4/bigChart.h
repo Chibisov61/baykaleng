@@ -12,7 +12,7 @@ public:
 
 	Ui::bigChart* ui;
 
-	bigChart(QWidget *parent = Q_NULLPTR)	: QWidget(parent)
+	explicit bigChart(QWidget *parent = Q_NULLPTR)	: QWidget(parent)
 	{
 		ui = new Ui::bigChart();
 		ui->setupUi(this);
