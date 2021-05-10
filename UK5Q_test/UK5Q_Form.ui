@@ -6,8 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
+<<<<<<< HEAD
     <width>1293</width>
     <height>942</height>
+=======
+    <width>920</width>
+    <height>744</height>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +23,13 @@
     <property name="geometry">
      <rect>
       <x>0</x>
+<<<<<<< HEAD
       <y>890</y>
       <width>1291</width>
+=======
+      <y>700</y>
+      <width>921</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
       <height>23</height>
      </rect>
     </property>
@@ -27,12 +37,20 @@
      <number>24</number>
     </property>
    </widget>
+<<<<<<< HEAD
    <widget class="QWidget" name="layoutWidget">
+=======
+   <widget class="QWidget" name="">
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
+<<<<<<< HEAD
       <width>1301</width>
+=======
+      <width>921</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
       <height>25</height>
      </rect>
     </property>
@@ -79,6 +97,7 @@
      </item>
     </layout>
    </widget>
+<<<<<<< HEAD
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
@@ -185,16 +204,26 @@
      </item>
     </layout>
    </widget>
+=======
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>30</y>
+<<<<<<< HEAD
       <width>1291</width>
       <height>781</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+=======
+      <width>921</width>
+      <height>601</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_MAIN">
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_LEFT">
        <item>
@@ -207,7 +236,11 @@
            <rect>
             <x>0</x>
             <y>0</y>
+<<<<<<< HEAD
             <width>641</width>
+=======
+            <width>451</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
             <height>581</height>
            </rect>
           </property>
@@ -219,7 +252,11 @@
             <rect>
              <x>0</x>
              <y>0</y>
+<<<<<<< HEAD
              <width>639</width>
+=======
+             <width>449</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
              <height>579</height>
             </rect>
            </property>
@@ -237,7 +274,11 @@
            <rect>
             <x>0</x>
             <y>0</y>
+<<<<<<< HEAD
             <width>641</width>
+=======
+            <width>451</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
             <height>581</height>
            </rect>
           </property>
@@ -249,7 +290,11 @@
             <rect>
              <x>0</x>
              <y>0</y>
+<<<<<<< HEAD
              <width>639</width>
+=======
+             <width>449</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
              <height>579</height>
             </rect>
            </property>
@@ -271,7 +316,11 @@
            <rect>
             <x>0</x>
             <y>0</y>
+<<<<<<< HEAD
             <width>641</width>
+=======
+            <width>451</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
             <height>581</height>
            </rect>
           </property>
@@ -283,7 +332,11 @@
             <rect>
              <x>0</x>
              <y>0</y>
+<<<<<<< HEAD
              <width>639</width>
+=======
+             <width>449</width>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
              <height>579</height>
             </rect>
            </property>
@@ -301,8 +354,13 @@
            <rect>
             <x>0</x>
             <y>0</y>
+<<<<<<< HEAD
             <width>641</width>
             <height>211</height>
+=======
+            <width>451</width>
+            <height>151</height>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
            </rect>
           </property>
          </widget>
@@ -312,6 +370,94 @@
      </item>
     </layout>
    </widget>
+<<<<<<< HEAD
+=======
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>640</y>
+      <width>461</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_LIST">
+     <item>
+      <widget class="QGroupBox" name="groupBox_XLS">
+       <property name="title">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_SRF">
+       <property name="title">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_RES">
+       <property name="title">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>459</x>
+      <y>644</y>
+      <width>461</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_BUTTONS">
+     <item>
+      <spacer name="horizontalSpacer_LEFT2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="UK5Q_Eval">
+       <property name="text">
+        <string>Вычислить</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="UK5Q_Exit">
+       <property name="text">
+        <string>Выйти</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_RIGHT2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

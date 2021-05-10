@@ -142,6 +142,7 @@ public:
 	void UK5B_setValue(const bool x, const std::vector<double>& def) {
 
 		boost::property_tree::ptree	pt;
+<<<<<<< HEAD
 
 		read_ini("config.ini", pt);
 
@@ -222,6 +223,8 @@ public:
 	void UK5B_setValue(const bool x, const std::vector<int>& def) {
 
 		boost::property_tree::ptree	pt;
+=======
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
 		
 		read_ini("config.ini", pt);
 
@@ -255,6 +258,7 @@ public:
 									boost::char_separator<char> sep2(":");
 									boost::tokenizer< boost::char_separator<char> > list2(itr, sep2);
 									auto it = list2.begin();
+<<<<<<< HEAD
 									const int first = std::stoi(*it);
 									const int c = std::stoi(*(++it));
 									const int step = (std::distance( list2.begin(), list2.end() ) == 2) ? 1 : std::stoi(*(++it));
@@ -262,6 +266,15 @@ public:
 								}
 								else 
 									value.push_back(stoi(itr));
+=======
+									const double first = std::stod(*it);
+									const int c = std::stoi(*(++it));
+									const double step = (std::distance( list2.begin(), list2.end() ) == 2) ? 1. : std::stod(*(++it));
+									for (int i = 1; i <= c; i += 1) value.push_back(first + ((i-1)*step));
+								}
+								else 
+									value.push_back(stod(itr));
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
 							}
 						    catch (const std::exception& e)
 							{
@@ -284,11 +297,19 @@ public:
 		else value = def;
 	}
 
+<<<<<<< HEAD
 	std::vector<int> UK5B_getValue() const		
+=======
+	std::vector<double> UK5B_getValue() const		
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
 	{
 		return (value);
 	}
 
 private:
+<<<<<<< HEAD
 	std::vector<int> value = {};
+=======
+	std::vector<double> value = {};
+>>>>>>> fa77c25b74643853fa49c8d8614903b4253493c7
 };
