@@ -49,9 +49,9 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 	UK5B_varD dx;		dx.UK5B_setName("dx");		dx.UK5B_setValue(false, 0.);		place=dx.UK5B_getPlace();
 	UK5B_varD dy;		dy.UK5B_setName("dy");		dy.UK5B_setValue(false, 0.);		place=dy.UK5B_getPlace();
 	UK5B_varD dz;		dz.UK5B_setName("dz");		dz.UK5B_setValue(false, 0.);		place=dz.UK5B_getPlace();
-	
-	
-	
+		
+// коммент без смысла
+
 	ui = new Ui::MainWindow();
 	ui->setupUi(this);
 }
