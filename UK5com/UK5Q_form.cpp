@@ -3,7 +3,6 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "UK5Q_form.h"
 #include "UK5Q_box.h"		
-#include "UK5B_var.h"
 #include <QFile>
 #include <QMap>
 
@@ -12,46 +11,167 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 {
 
 	QMap<int, QWidget*> map;
+	bool x = QFile::exists("config.ini");
+
+	ui = new Ui::MainWindow();
+	ui->setupUi(this);
 
 	map.insert(0, ui->UK5Q_scrollAreaWidgetContents_IN);
 	map.insert(1, ui->UK5Q_scrollAreaWidgetContents_IN_OUT);
 	map.insert(2, ui->UK5Q_scrollAreaWidgetContents_OUT);
+//in
+	UK5B_varD  vr   =  UK5Q_Dinit("vr" ,x,0.,map,QStringLiteral(u"Скорость реки"));
+	UK5B_varD  bb   =  UK5Q_Dinit("bb" ,x,0.,map,QStringLiteral(u"Расстояние до берега")); 
+	UK5B_varD  h    =  UK5Q_Dinit("h"  ,x,0.,map,QStringLiteral(u"Глубина"));
+	UK5B_varI  nog  =  UK5Q_Iinit("nog",x,0 ,map,QStringLiteral(u"Количество оголовков"));
+	UK5B_varD  dog  =  UK5Q_Dinit("dog",x,0.,map,QStringLiteral(u"Диаметр оголовка"));
+	UK5B_varD  qst  =  UK5Q_Dinit("qst",x,0.,map,QStringLiteral(u"Расход сточных вод на оголовок"));
+	UK5B_varD  cct  =  UK5Q_Dinit("cct",x,0.,map,QStringLiteral(u"Величина загрязняющего вещества"));
+	UK5B_varI  n    =  UK5Q_Iinit("n"  ,x,0 ,map,QStringLiteral(u"Сторона расчетного квадрата"));
+	UK5B_varD  psh  =  UK5Q_Dinit("psh",x,0.,map,QStringLiteral(u"Коэффициент шероховатости"));
+	UK5B_varVD l	= UK5Q_VDinit("l"	 ,x,{},map,QStringLiteral(u"Промежуточные сечения"));
+	UK5B_varVD b	= UK5Q_VDinit("b"  ,x,{},map,QStringLiteral(u"Расстояния между оголовками"));
+	UK5B_varVD hog	= UK5Q_VDinit("hog",x,{},map,QStringLiteral(u"Высоты оголовков"));
+//in-out
+	UK5B_varD  nn   =  UK5Q_Dinit("nn" ,x,0.,map,QStringLiteral(u"Начальное разбавление"));
+	UK5B_varD  xn   =  UK5Q_Dinit("xn" ,x,0.,map,QStringLiteral(u"Расстояние от створа выпуска"));
+//out	
+	UK5B_varD  ll   =  UK5Q_Dinit("ll",false,500.,map,QStringLiteral(u"Расчетный участок реки"));
 
 	
-	bool x = QFile::exists("config.ini");
-	int place;
-//in	
-	UK5B_varD vr;		vr.UK5B_setName("vr");		vr.UK5B_setValue(x, 0.);				place=vr.UK5B_getPlace();	
-	UK5B_varD bb;		bb.UK5B_setName("bb");		bb.UK5B_setValue(x, 0.);				place=bb.UK5B_getPlace();
-	UK5B_varD h;		h.UK5B_setName("h");			h.UK5B_setValue(x, 0.);				place=h.UK5B_getPlace();
-	UK5B_varI nog;		nog.UK5B_setName("nog");		nog.UK5B_setValue(x, 0);				place=nog.UK5B_getPlace();
-	UK5B_varD dog;		dog.UK5B_setName("dog");		dog.UK5B_setValue(x, 0.);			place=dog.UK5B_getPlace();
-	UK5B_varD qst;		qst.UK5B_setName("qst");		qst.UK5B_setValue(x, 0.);			place=qst.UK5B_getPlace();
-	UK5B_varD cct;		cct.UK5B_setName("cct");		cct.UK5B_setValue(x, 0.);			place=cct.UK5B_getPlace();
-	UK5B_varI n;		n.UK5B_setName("n");			n.UK5B_setValue(x, 0);				place=n.UK5B_getPlace();
-	UK5B_varD psh;		psh.UK5B_setName("psh");		psh.UK5B_setValue(x, 0.);			place=psh.UK5B_getPlace();
-	UK5B_varVD l;		l.UK5B_setName("l");			l.UK5B_setValue(x, {});				place=l.UK5B_getPlace();
-	UK5B_varVD b;		b.UK5B_setName("b");			b.UK5B_setValue(x, {});				place=b.UK5B_getPlace();
-	UK5B_varVD hog;		hog.UK5B_setName("hog");		hog.UK5B_setValue(x, {});			place=hog.UK5B_getPlace();
-//in_out
-	UK5B_varD nn;		nn.UK5B_setName("nn");		nn.UK5B_setValue(x, 10.);			place=nn.UK5B_getPlace();
-	UK5B_varD xn;		xn.UK5B_setName("xn");		xn.UK5B_setValue(x, 0.);				place=xn.UK5B_getPlace();
-//out	
-	UK5B_varD ll;		ll.UK5B_setName("ll");		ll.UK5B_setValue(false, 0.);		place=ll.UK5B_getPlace();
-	UK5B_varD rll;		rll.UK5B_setName("rll");		rll.UK5B_setValue(false, 0.);		place=rll.UK5B_getPlace();
-	UK5B_varD rb;		rb.UK5B_setName("rb");		rb.UK5B_setValue(false, 0.);		place=rb.UK5B_getPlace();
-	UK5B_varD rw;		rw.UK5B_setName("rw");		rw.UK5B_setValue(false, 0.);		place=rw.UK5B_getPlace();
-	UK5B_varD rh;		rh.UK5B_setName("rh");		rh.UK5B_setValue(false, 0.);		place=rh.UK5B_getPlace();
-	UK5B_varD rl;		rl.UK5B_setName("rl");		rl.UK5B_setValue(false, 0.);		place=rl.UK5B_getPlace();
-	UK5B_varD rnog;		rnog.UK5B_setName("rnog");	rnog.UK5B_setValue(false, 0.);		place=rnog.UK5B_getPlace();
-	UK5B_varD c;		c.UK5B_setName("c");			c.UK5B_setValue(false, 0.);		place=c.UK5B_getPlace();
-	UK5B_varD d;		d.UK5B_setName("d");			d.UK5B_setValue(false, 0.);		place=d.UK5B_getPlace();
-	UK5B_varD dx;		dx.UK5B_setName("dx");		dx.UK5B_setValue(false, 0.);		place=dx.UK5B_getPlace();
-	UK5B_varD dy;		dy.UK5B_setName("dy");		dy.UK5B_setValue(false, 0.);		place=dy.UK5B_getPlace();
-	UK5B_varD dz;		dz.UK5B_setName("dz");		dz.UK5B_setValue(false, 0.);		place=dz.UK5B_getPlace();
-		
-// коммент без смысла
-
-	ui = new Ui::MainWindow();
-	ui->setupUi(this);
 }
+
+UK5B_varD UK5Q_form::UK5Q_Dinit(const QString& s, const bool x, const double def, const QMap<int, QWidget*>& map, const QString& label )
+{
+	UK5B_varD u;
+	u.UK5B_setName(s.toStdString());
+	u.UK5B_setValue(x, def);
+	const int place = u.UK5B_getPlace();
+
+	auto box = new UK5Q_box(map[place]);
+	
+	box->UK5Q_setLabel(label);
+    box->UK5Q_setValue(u.UK5B_getValue());
+
+	switch(place)
+	{
+		case 0:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(2);                   
+			break;
+		case 1:
+		    box->UK5Q_setMode(true);                   
+		    box->UK5Q_state(0);                   
+			break;
+		case 2:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(0);                   
+			break;
+	    default: ;
+	}
+    box->show();
+	
+	return u;
+}
+
+UK5B_varI UK5Q_form::UK5Q_Iinit(const QString& s, const bool x, const int def, const QMap<int, QWidget*>& map,  const QString& label  )
+{
+	UK5B_varI u;
+	u.UK5B_setName(s.toStdString());
+	u.UK5B_setValue(x, def);
+	const int place = u.UK5B_getPlace();
+
+	auto box = new UK5Q_box(map[place]);
+	
+	box->UK5Q_setLabel(label);
+    box->UK5Q_setValueI(u.UK5B_getValue());
+	
+	switch(place)
+	{
+		case 0:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(2);                   
+			break;
+		case 1:
+		    box->UK5Q_setMode(true);                   
+		    box->UK5Q_state(0);                   
+			break;
+		case 2:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(0);                   
+			break;
+	    default: ;
+	}
+    box->show();
+	
+	return u;
+}
+
+UK5B_varVD UK5Q_form::UK5Q_VDinit(const QString& s, const bool x, const std::vector<double> def, const QMap<int, QWidget*>& map,  const QString& label  )
+{
+	UK5B_varVD u;
+	u.UK5B_setName(s.toStdString());
+	u.UK5B_setValue(x, def);
+	const int place = u.UK5B_getPlace();
+
+	auto box = new UK5Q_box(map[place]);
+	
+	box->UK5Q_setLabel(label);
+    box->UK5Q_setVector(u.UK5B_getValue());
+	
+	switch(place)
+	{
+		case 0:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(2);                   
+			break;
+		case 1:
+		    box->UK5Q_setMode(true);                   
+		    box->UK5Q_state(0);                   
+			break;
+		case 2:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(0);                   
+			break;
+	    default: ;
+	}
+    box->show();
+	
+	return u;
+
+}
+
+UK5B_varVI UK5Q_form::UK5Q_VIinit(const QString& s, const bool x, const std::vector<int> def, const QMap<int, QWidget*>& map,  const QString& label  )
+{
+	UK5B_varVI u;
+	u.UK5B_setName(s.toStdString());
+	u.UK5B_setValue(x, def);
+	const int place = u.UK5B_getPlace();
+
+	auto box = new UK5Q_box(map[place]);
+	
+	box->UK5Q_setLabel(label);
+    box->UK5Q_setVectorI(u.UK5B_getValue());
+	
+	switch(place)
+	{
+		case 0:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(2);                   
+			break;
+		case 1:
+		    box->UK5Q_setMode(true);                   
+		    box->UK5Q_state(0);                   
+			break;
+		case 2:
+		    box->UK5Q_setMode(false);                   
+		    box->UK5Q_state(0);                   
+			break;
+	    default: ;
+	}
+    box->show();
+	
+	return u;
+
+}
+

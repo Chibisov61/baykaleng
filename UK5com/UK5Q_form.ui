@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1293</width>
+    <width>935</width>
     <height>942</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <rect>
       <x>0</x>
       <y>890</y>
-      <width>1291</width>
+      <width>931</width>
       <height>23</height>
      </rect>
     </property>
@@ -32,11 +32,11 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1301</width>
+      <width>931</width>
       <height>25</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_TITLE">
      <item>
       <spacer name="horizontalSpacer_LEFT">
        <property name="orientation">
@@ -82,10 +82,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>840</y>
-      <width>641</width>
-      <height>25</height>
+      <x>470</x>
+      <y>820</y>
+      <width>461</width>
+      <height>61</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_BUTTONS">
@@ -136,7 +136,7 @@
      <rect>
       <x>0</x>
       <y>820</y>
-      <width>641</width>
+      <width>461</width>
       <height>61</height>
      </rect>
     </property>
@@ -190,11 +190,11 @@
      <rect>
       <x>0</x>
       <y>30</y>
-      <width>1291</width>
+      <width>931</width>
       <height>781</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_MAIN">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_LEFT">
        <item>

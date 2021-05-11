@@ -17,6 +17,12 @@ UK5Q_box::UK5Q_box(QWidget* parent) : QWidget(parent)
 		UK5Q_setMode(false);
 		UK5Q_state(false);
 
+		const int n = parent->children().count() - 1;
+		QRect g = this->geometry();
+		const auto h = g.height();
+		const QPoint p = { g.x(), g.y() + h * n };
+		if (n) this->move(p);
+
 		connect(ui->UK5Q_check, SIGNAL(stateChanged(int)), this, SLOT(UK5Q_state(int)));
 }
 
@@ -48,8 +54,6 @@ auto UK5Q_box::UK5Q_state(const int state) const -> void
 		break;
 	default: ;
 	}
-
-	
 }
 
 double UK5Q_box::UK5Q_getValue() const
@@ -95,6 +99,49 @@ std::vector<double> UK5Q_box::UK5Q_getVector() const
 	return(ret);
 }
 
+int UK5Q_box::UK5Q_getValueI() const
+{
+		bool ok;
+		const int x = ui->UK5Q_input->text().toInt(&ok);
+		return((ok) ? x : -1);
+}
+
+std::vector<int> UK5Q_box::UK5Q_getVectorI() const
+{
+	vector<int> ret = {};
+		bool ok;
+		const QString str = ui->UK5Q_input->text();
+		const QStringList list = str.split(";");
+		for (QStringList::const_iterator itr = list.constBegin(); itr != list.constEnd(); ++itr)
+		{
+			if ((*itr).isEmpty())
+			{
+				ret.push_back(0);
+				ok = true;
+			}
+			else
+			{
+				if (!(*itr).contains(":",Qt::CaseInsensitive)) 
+					ret.push_back((*itr).toInt(&ok));
+				else
+				{
+					const QStringList list2 = (*itr).split(":");
+					const int f = list2[0].toInt(&ok);
+					const int c = list2[1].toInt(&ok);
+					const int s = (list2.size() == 2) ? 1 : list2[2].toInt(&ok);
+					for (int i = 1; i <= c; i += 1) ret.push_back(f+((i-1)*s));
+				}
+			}
+			
+			if (!ok)
+			{
+				ret = {-1};
+				break;
+			}
+		}
+	return(ret);
+}
+
 void UK5Q_box::UK5Q_setValue(const double x) const
 {
 	ui->UK5Q_input->setText(QString::number(x));
@@ -104,6 +151,20 @@ void UK5Q_box::UK5Q_setVector(const vector<double>& v) const
 {
 	QString s = "";
 	for (double it : v)
+		s.append(QString::number(it)).append(";");
+			
+	ui->UK5Q_input->setText(s);
+}
+
+void UK5Q_box::UK5Q_setValueI(const int x) const
+{
+	ui->UK5Q_input->setText(QString::number(x));
+}
+
+void UK5Q_box::UK5Q_setVectorI(const std::vector<int>& v) const
+{
+	QString s = "";
+	for (int it : v)
 		s.append(QString::number(it)).append(";");
 			
 	ui->UK5Q_input->setText(s);

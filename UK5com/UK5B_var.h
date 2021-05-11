@@ -5,7 +5,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
 #include <string>
-#include <iostream>
+#include <fstream>
 #include <utility>
 #include <vector>
 
@@ -26,7 +26,8 @@ public:
 protected:
 	int			place = 2;
 	std::string	name;
-
+	std::ofstream ferr;
+	
 };
 
 class UK5B_varD : public UK5B_var
@@ -37,21 +38,20 @@ public:
 
 	void UK5B_setValue(const bool x, const double def) {
 
+		ferr.open("error.log", std::ios::out);
 		boost::property_tree::ptree	pt;
-		
-		read_ini("config.ini", pt);
 
 		std::map <std::string, int> mapping;
-
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
 		mapping["out"] = 2;
 
 		if (x) {
-			// âçÿòü äàííûå èç config.ini
+			// Ð²Ð·ÑÑ‚ÑŒ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð· config.ini
 
 			try
 			{
+				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
 					auto f = pos->second.find(name);
@@ -64,12 +64,18 @@ public:
 				}
 			}
 			
-			catch(const boost::property_tree::ptree_error &e)
+			catch (const boost::property_tree::ptree_error &e)
 			{
-				std::cout << e.what() << std::endl;
+				ferr << e.what() << std::endl;
 			}
 		}
-		else value = def;
+		else
+		{
+			value = def;
+			place = 2;
+		}
+		
+		ferr.close();
 	}
 
 	double UK5B_getValue() const		
@@ -89,21 +95,20 @@ public:
 
 	void UK5B_setValue(const bool x, const int def) {
 
+		ferr.open("error.log", std::ios::out);
 		boost::property_tree::ptree	pt;
 
-		read_ini("config.ini", pt);
-
 		std::map <std::string, int> mapping;
-
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
 		mapping["out"] = 2;
 
 		if (x) {
-			// âçÿòü äàííûå èç config.ini
+			// Ð²Ð·ÑÑ‚ÑŒ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð· config.ini
 
 			try
 			{
+				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
 					auto f = pos->second.find(name);
@@ -118,10 +123,16 @@ public:
 
 			catch (const boost::property_tree::ptree_error& e)
 			{
-				std::cout << e.what() << std::endl;
+				ferr << e.what() << std::endl;
 			}
 		}
-		else value = def;
+		else
+		{
+			value = def;
+			place = 2;
+		}
+		
+		ferr.close();
 	}
 
 	int UK5B_getValue() const
@@ -141,21 +152,20 @@ public:
 
 	void UK5B_setValue(const bool x, const std::vector<double>& def) {
 
+		ferr.open("error.log", std::ios::out);
 		boost::property_tree::ptree	pt;
 
-		read_ini("config.ini", pt);
-
 		std::map <std::string, int> mapping;
-
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
 		mapping["out"] = 2;
 
 		if (x) {
-			// âçÿòü äàííûå èç config.ini
+			// Ð²Ð·ÑÑ‚ÑŒ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð· config.ini
 
 			try
 			{
+				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
 					auto f = pos->second.find(name);
@@ -186,7 +196,7 @@ public:
 							catch (const std::exception& e)
 							{
 								value.push_back(-1.);
-								std::cout << e.what() << std::endl;
+								ferr << e.what() << std::endl;
 							}
 						}
 
@@ -198,10 +208,16 @@ public:
 
 			catch (const boost::property_tree::ptree_error& e)
 			{
-				std::cout << e.what() << std::endl;
+				ferr << e.what() << std::endl;
 			}
 		}
-		else value = def;
+		else
+		{
+			value = def;
+			place = 2;
+		}
+		
+		ferr.close();
 	}
 
 	std::vector<double> UK5B_getValue() const
@@ -221,21 +237,20 @@ public:
 
 	void UK5B_setValue(const bool x, const std::vector<int>& def) {
 
+		ferr.open("error.log", std::ios::out);
 		boost::property_tree::ptree	pt;
 		
-		read_ini("config.ini", pt);
-
 		std::map <std::string, int> mapping;
-
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
 		mapping["out"] = 2;
 
 		if (x) {
-			// âçÿòü äàííûå èç config.ini
+			// Ð²Ð·ÑÑ‚ÑŒ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸Ð· config.ini
 
 			try
 			{
+				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
 					auto f = pos->second.find(name);
@@ -266,7 +281,7 @@ public:
 						    catch (const std::exception& e)
 							{
 								value.push_back(-1.);
-						    	std::cout << e.what() << std::endl;
+						    	ferr << e.what() << std::endl;
 							}
 						}
 						
@@ -278,10 +293,16 @@ public:
 			
 			catch(const boost::property_tree::ptree_error &e)
 			{
-				std::cout << e.what() << std::endl;
+				ferr << e.what() << std::endl;
 			}
 		}
-		else value = def;
+		else
+		{
+			value = def;
+			place = 2;
+		}
+		
+		ferr.close();
 	}
 
 	std::vector<int> UK5B_getValue() const		
