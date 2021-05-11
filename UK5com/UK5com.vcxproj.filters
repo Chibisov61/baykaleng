@@ -43,6 +43,9 @@
     <ClCompile Include="UK5Q_box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UK5B_river.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="UK5Q_box.ui">
@@ -52,6 +55,9 @@
   <ItemGroup>
     <ClInclude Include="UK5B_var.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UK5B_river.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ui_UK5Q_form.h"
-#include "UK5B_var.h"
+#include "UK5B_river.h"
 #include <vector>
 
 
@@ -18,4 +18,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
+private slots:
+    static void UK5Q_exit();
 };
