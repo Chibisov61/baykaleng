@@ -1,13 +1,14 @@
 #pragma once
 
+#include <string>
+#include <fstream>
+#include <map>
+#include <utility>
+#include <vector>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
-#include <string>
-#include <fstream>
-#include <utility>
-#include <vector>
 
 class UK5B_var
 {
@@ -240,7 +241,7 @@ public:
 		ferr.open("error.log", std::ios::out);
 		boost::property_tree::ptree	pt;
 		
-		std::map <std::string, int> mapping;
+		std::map<std::string, int> mapping;
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
 		mapping["out"] = 2;

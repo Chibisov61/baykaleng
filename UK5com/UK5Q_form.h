@@ -20,4 +20,5 @@ private:
     Ui::MainWindow *ui;
 private slots:
     static void UK5Q_exit();
+    static void UK5Q_eval();
 };
