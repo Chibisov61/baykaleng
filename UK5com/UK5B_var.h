@@ -173,6 +173,7 @@ public:
 					if (f != pos->second.not_found())
 					{
 						auto s = (*f).second.get_value<std::string>();
+						if (s.empty()) s = "0";
 						boost::char_separator<char> sep(";");
 
 						boost::tokenizer< boost::char_separator<char> > list(s, sep);
@@ -258,6 +259,7 @@ public:
 					if (f != pos->second.not_found())
 					{
 						auto s = (*f).second.get_value<std::string>();
+						if (s.empty()) s = "0";
 						boost::char_separator<char> sep(";");
 						
 						boost::tokenizer< boost::char_separator<char> > list(s, sep);
