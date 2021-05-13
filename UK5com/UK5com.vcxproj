@@ -55,7 +55,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>F:\DEV\Qt\5.15.2\msvc2019_64\include;F:\DEV\boost_1_76_0;$(IncludePath)</IncludePath>
+    <IncludePath>D:\DEV\Qt\5.15.2\msvc2019_64\include;D:\DEV\Boost\boost_1_76_0;$(IncludePath)</IncludePath>
     <LibraryPath>D:\DEV\Qt\5.15.2\msvc2019_64\lib;D:\DEV\Boost\boost_1_76_0\lib64-msvc-14.2;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">

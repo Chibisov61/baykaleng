@@ -1,16 +1,18 @@
 ﻿#include "UK5B_river.h"
 #include <fstream>
 
-double UK5B_river::UK5B_eval_dog(double pi, UK5B_varD qst)										//pi qst
+double UK5B_river::UK5B_eval_dog(UK5B_varD qst)													//qst
 {
+	const double pi = 3.1415;
 	const double _qst = qst.UK5B_getValue();
 	
 	return pow(4. * _qst / pi / 25., 0.4);
 }
 
-double UK5B_river::UK5B_eval_nn(double pi, UK5B_varD vr, UK5B_varD dog, UK5B_varD qst)			//pi vr dog qst
+double UK5B_river::UK5B_eval_nn(UK5B_varD vr, UK5B_varD dog, UK5B_varD qst)						//vr dog qst
 {
-	const double dvm = 0.1;
+	double pi = 3.1415;
+	double dvm = 0.1;
 	double _vr  = vr.UK5B_getValue();
 	double _dog = dog.UK5B_getValue();
 	double _qst = qst.UK5B_getValue();
@@ -24,9 +26,10 @@ double UK5B_river::UK5B_eval_nn(double pi, UK5B_varD vr, UK5B_varD dog, UK5B_var
 	return (0.248 * dt * dt / (1 - m)) * (sqrt(m * m + 8.1 * (1 - m) / dt / dt) - m);
 }
 
-double UK5B_river::UK5B_eval_xn(double pi, UK5B_varD vr, UK5B_varD dog, UK5B_varD qst)			//pi vr dog qst
+double UK5B_river::UK5B_eval_xn(UK5B_varD vr, UK5B_varD dog, UK5B_varD qst)						//vr dog qst
 {
-	const double dvm = 0.1;
+	double pi = 3.1415;
+	double dvm = 0.1;
 	double _vr  = vr.UK5B_getValue();
 	double _dog = dog.UK5B_getValue();
 	double _qst = qst.UK5B_getValue();
@@ -39,8 +42,9 @@ double UK5B_river::UK5B_eval_xn(double pi, UK5B_varD vr, UK5B_varD dog, UK5B_var
 	return dzz / 0.48 / (1 - 3.12 * m);
 }
 
-double UK5B_river::UK5B_eval_pc(double g, UK5B_varD h, UK5B_varD psh)							//g h psh
+double UK5B_river::UK5B_eval_pc(UK5B_varD h, UK5B_varD psh)										//h psh
 {
+	double  g = 9.8110;
 	double _h = h.UK5B_getValue();
 	double _psh = psh.UK5B_getValue();
 
@@ -50,8 +54,9 @@ double UK5B_river::UK5B_eval_pc(double g, UK5B_varD h, UK5B_varD psh)							//g 
 	return a1 / 2 + sqrt(a1 * a1 / 4 + a2);	//-V112
 }
 
-double UK5B_river::UK5B_eval_pd(double g, UK5B_varD vr, UK5B_varD h, UK5B_varD pc)				//g vr h pc
+double UK5B_river::UK5B_eval_pd(UK5B_varD vr, UK5B_varD h, UK5B_varD pc)						//vr h pc
 {
+	double  g = 9.8110;
 	double _vr  = vr.UK5B_getValue();
 	double _h	= h.UK5B_getValue();
 	double _pc  = pc.UK5B_getValue();

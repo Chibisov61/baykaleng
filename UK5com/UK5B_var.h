@@ -10,11 +10,22 @@
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
 
+
 class UK5B_var
 {
 
 public:
 	UK5B_var() = default;
+	~UK5B_var() = default;
+	UK5B_var(const UK5B_var& u) : place(u.place), name(u.name) {}
+	UK5B_var(UK5B_var&& u)  noexcept = default;
+	UK5B_var& operator = (const UK5B_var& u)
+	{
+		place = u.place;
+		name  = u.name;
+		return *this;
+	}
+	UK5B_var& operator = (UK5B_var&& u) noexcept = default;
 
 	void UK5B_setName(std::string s) {
 		name = std::move(s);
@@ -29,6 +40,7 @@ protected:
 	std::string	name;
 	std::ofstream ferr;
 	
+	
 };
 
 class UK5B_varD : public UK5B_var
@@ -36,6 +48,11 @@ class UK5B_varD : public UK5B_var
 
 public:
 	UK5B_varD() = default;
+	~UK5B_varD() = default;
+	UK5B_varD(const UK5B_varD&) = default;
+	UK5B_varD(UK5B_varD&&)  noexcept = default;
+	UK5B_varD& operator = (const UK5B_varD& u) = default;
+	UK5B_varD& operator = (UK5B_varD&&) noexcept = default;
 
 	void UK5B_setValue(const bool x, const double def) {
 
@@ -150,7 +167,12 @@ class UK5B_varVD : public UK5B_var
 
 public:
 	UK5B_varVD() = default;
-
+	~UK5B_varVD() = default;
+	UK5B_varVD(const UK5B_varVD&) = default;
+	UK5B_varVD(UK5B_varVD&&)  noexcept = default;
+	UK5B_varVD& operator = (const UK5B_varVD&) = default;
+	UK5B_varVD& operator = (UK5B_varVD&&) noexcept = default;
+	
 	void UK5B_setValue(const bool x, const std::vector<double>& def) {
 
 		ferr.open("error.log", std::ios::out);
@@ -236,6 +258,11 @@ class UK5B_varVI : public UK5B_var
 
 public:
 	UK5B_varVI() = default;
+	~UK5B_varVI() = default;
+	UK5B_varVI(const UK5B_varVI&) = default;
+	UK5B_varVI(UK5B_varVI&&)  noexcept = default;
+	UK5B_varVI& operator = (const UK5B_varVI&) = default;
+	UK5B_varVI& operator = (UK5B_varVI&&) noexcept = default;
 
 	void UK5B_setValue(const bool x, const std::vector<int>& def) {
 

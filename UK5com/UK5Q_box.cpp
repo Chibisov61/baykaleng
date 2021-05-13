@@ -1,8 +1,8 @@
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include <QtWidgets/QMessageBox>
 #include "UK5Q_box.h"
+#include "UK5Q_form.h"
 
 using namespace std;
 
@@ -24,6 +24,7 @@ UK5Q_box::UK5Q_box(QWidget* parent) : QWidget(parent)
 		if (n) this->move(p);
 
 		connect(ui->UK5Q_check, SIGNAL(stateChanged(int)), this, SLOT(UK5Q_state(int)));
+		connect(ui->UK5Q_input, SIGNAL(editingFinished()), this, SLOT(emit UK5Q_text();));
 }
 
 void UK5Q_box::UK5Q_setLabel(const QString& label) const
@@ -34,6 +35,11 @@ void UK5Q_box::UK5Q_setLabel(const QString& label) const
 void UK5Q_box::UK5Q_setMode(const bool mode) const
 {
 	ui->UK5Q_check->setEnabled(mode);
+}
+
+int UK5Q_box::UK5Q_getMode() const
+{
+	return ui->UK5Q_check->checkState();
 }
 
 auto UK5Q_box::UK5Q_state(const int state) const -> void

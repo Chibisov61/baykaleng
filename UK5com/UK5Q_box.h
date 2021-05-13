@@ -12,6 +12,7 @@ public:
 	
 	void				UK5Q_setLabel(const QString&) const;
 	void				UK5Q_setMode(bool) const;
+	int					UK5Q_getMode() const;
 	
 	double				UK5Q_getValue() const;
 	std::vector<double>	UK5Q_getVector() const;
@@ -24,8 +25,12 @@ public:
 	void				UK5Q_setValueI(const int) const;
 	void				UK5Q_setVectorI(const std::vector<int>&) const;
 
+signals:
+	void UK5Q_text();
+
 public slots:	
 	void UK5Q_state(int) const;
+
 private:
 	Ui::UK5Q_box *ui;
 };
