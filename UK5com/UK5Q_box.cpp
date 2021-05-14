@@ -64,7 +64,7 @@ auto UK5Q_box::UK5Q_state(const int state) const -> void
 
 void UK5Q_box::UK5Q_slot()
 {
-	emit UK5Q_edit();	
+	emit UK5Q_edit(this->objectName());	
 }
 
 double UK5Q_box::UK5Q_getValue() const

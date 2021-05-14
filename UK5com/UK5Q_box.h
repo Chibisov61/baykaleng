@@ -20,9 +20,9 @@ public:
 	std::vector<int>	UK5Q_getVectorI() const;
 
 	
-	void				UK5Q_setValue(const double) const;
+	void				UK5Q_setValue(double) const;
 	void				UK5Q_setVector(const std::vector<double>&) const;
-	void				UK5Q_setValueI(const int) const;
+	void				UK5Q_setValueI(int) const;
 	void				UK5Q_setVectorI(const std::vector<int>&) const;
 
 public slots:	
@@ -32,5 +32,5 @@ public slots:
 private:
 	Ui::UK5Q_box *ui;
 signals:
-	void UK5Q_edit();
+	void UK5Q_edit(QString);
 };

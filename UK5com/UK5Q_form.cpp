@@ -12,7 +12,6 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 {
 	
 	QMap<int, QWidget*> map;
-	QMap<QString, UK5Q_box*> map2;
 	bool x = QFile::exists("config.ini");
 
 	ui = new Ui::MainWindow();
@@ -23,51 +22,48 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 	map.insert(2, ui->UK5Q_scrollAreaWidgetContents_OUT);
 
 	auto river = new UK5B_river();
+	const std::vector<double> dnul = {0.};
+	const std::vector<int> inul = {0};
+	std::pair<double, int> pnul = std::make_pair(0., 0);
+	std::pair<std::vector<double>, std::vector<int>> vnul = std::make_pair(dnul, inul);
 //in
-	river->vr	=  UK5Q_Dinit("vr"	,x		,0.,map,QStringLiteral(u"Скорость реки"),map2);
-	river->bb	=  UK5Q_Dinit("bb"	,x		,0.,map,QStringLiteral(u"Расстояние до берега"),map2); 
-	river->nog	=  UK5Q_Iinit("nog"	,x		,0 ,map,QStringLiteral(u"Количество оголовков"),map2);
-	river->b	= UK5Q_VDinit("b"		,x		,{},map,QStringLiteral(u"Расстояния между оголовками"),map2);
-	river->h	=  UK5Q_Dinit("h"		,x		,0.,map,QStringLiteral(u"Глубина"),map2);
-	river->hog	= UK5Q_VDinit("hog"	,x		,{},map,QStringLiteral(u"Высоты оголовков"),map2);
-	river->nl	=  UK5Q_Iinit("nl"	,x		,0 ,map,QStringLiteral(u"Количество промежуточных сечений"),map2);
-	river->l	= UK5Q_VDinit("l"		,x		,{},map,QStringLiteral(u"Промежуточные сечения"),map2);
-	river->qst	=  UK5Q_Dinit("qst"	,x		,0.,map,QStringLiteral(u"Расход сточных вод на оголовок"),map2);
-	river->cct	=  UK5Q_Dinit("cct"	,x		,0.,map,QStringLiteral(u"Величина загрязняющего вещества"),map2);
-	river->n	=  UK5Q_Iinit("n"		,x		,0 ,map,QStringLiteral(u"Сторона расчетного квадрата"),map2);
-	river->psh	=  UK5Q_Dinit("psh"	,x		,0.,map,QStringLiteral(u"Коэффициент шероховатости"),map2);
+	river->vr	=  UK5Q_init("vr"	,x		,0.	,map,QStringLiteral(u"Скорость реки"),map_box);
+	river->bb	=  UK5Q_init("bb"	,x		,0.	,map,QStringLiteral(u"Расстояние до берега"),map_box); 
+	river->nog	=  UK5Q_init("nog",x		,0	,map,QStringLiteral(u"Количество оголовков"),map_box);
+	river->b	=  UK5Q_init("b"  ,x      ,dnul	,map,QStringLiteral(u"Расстояния между оголовками"), map_box);
+	river->h	=  UK5Q_init("h"	,x		,0.	,map,QStringLiteral(u"Глубина"),map_box);
+	river->hog	=  UK5Q_init("hog",x		,dnul	,map,QStringLiteral(u"Высоты оголовков"),map_box);
+	river->nl	=  UK5Q_init("nl"	,x		,0	,map,QStringLiteral(u"Количество промежуточных сечений"),map_box);
+	river->l	=  UK5Q_init("l"	,x		,dnul	,map,QStringLiteral(u"Промежуточные сечения"),map_box);
+	river->qst	=  UK5Q_init("qst",x		,0.	,map,QStringLiteral(u"Расход сточных вод на оголовок"),map_box);
+	river->cct	=  UK5Q_init("cct",x		,0.	,map,QStringLiteral(u"Величина загрязняющего вещества"),map_box);
+	river->n	=  UK5Q_init("n"	,x		,0	,map,QStringLiteral(u"Сторона расчетного квадрата"),map_box);
+	river->psh	=  UK5Q_init("psh",x		,0.	,map,QStringLiteral(u"Коэффициент шероховатости"),map_box);
 //in-out
-	river->dog	=  UK5Q_Dinit("dog"	,x		,UK5B_river::UK5B_eval_dog(river->qst)								,map,QStringLiteral(u"Диаметр оголовка"),map2);
-	river->nn 	=  UK5Q_Dinit("nn"	,x		,UK5B_river::UK5B_eval_nn(river->vr,river->qst,river->dog)			,map,QStringLiteral(u"Начальное разбавление"),map2);
-	river->xn 	=  UK5Q_Dinit("xn"	,x		,UK5B_river::UK5B_eval_xn(river->vr,river->qst,river->dog)			,map,QStringLiteral(u"Расстояние от створа выпуска"),map2);
+	river->dog	=  UK5Q_init("dog",x		,UK5B_river::UK5B_eval_dog(river->qst)									,map,QStringLiteral(u"Диаметр оголовка"),map_box);
+	river->nn 	=  UK5Q_init("nn"	,x		,UK5B_river::UK5B_eval_nn(river->vr,river->qst,river->dog)				,map,QStringLiteral(u"Начальное разбавление"),map_box);
+	river->xn 	=  UK5Q_init("xn"	,x		,UK5B_river::UK5B_eval_xn(river->vr,river->qst,river->dog)				,map,QStringLiteral(u"Расстояние от створа выпуска"),map_box);
 //out	
-	river->ll	=  UK5Q_Dinit("ll"  ,false	,500.																,map,QStringLiteral(u"Расчетный участок реки"),map2);
-	river->pc	=  UK5Q_Dinit("pc"  ,false	,UK5B_river::UK5B_eval_pc(river->h,river->psh)						,map,QStringLiteral(u"Коэффициент Шези"),map2);
-	river->pd	=  UK5Q_Dinit("pd"  ,false	,UK5B_river::UK5B_eval_pd(river->vr,river->h,river->pc)				,map,QStringLiteral(u"Коэффициент диффузии"),map2);
-	river->dz	=  UK5Q_Dinit("dz"  ,false	,UK5B_river::UK5B_eval_dydz(river->vr,river->qst,river->n,river->nn)	,map,QStringLiteral(u"dz"),map2);
-	river->dy	=  UK5Q_Dinit("dy"  ,false	,UK5B_river::UK5B_eval_dydz(river->vr,river->qst,river->n,river->nn)	,map,QStringLiteral(u"dy"),map2);
-	river->dx	=  UK5Q_Dinit("dx"  ,false	,UK5B_river::UK5B_eval_dx(river->vr,river->pd,river->dy)				,map,QStringLiteral(u"dx"),map2);
-	river->rbb	=  UK5Q_Dinit("rbb" ,false	,0.,map,QStringLiteral(u"Расстояние до берега (расч.)"),map2);
-	river->rb	= UK5Q_VDinit("rb"  ,false	,{},map,QStringLiteral(u"Расстояния между оголовками (расч.)"),map2);
-	river->rw	=  UK5Q_Dinit("rw"  ,false	,0.,map,QStringLiteral(u"Общая ширина (расч.)"),map2);
-	river->rh	=  UK5Q_Dinit("rh"  ,false	,0.,map,QStringLiteral(u"Глубина (расч.)"),map2);
-	river->rhog	= UK5Q_VDinit("rhog",false	,{},map,QStringLiteral(u"Высоты оголовков (расч.)"),map2);
-	river->rll	=  UK5Q_Dinit("rll" ,false	,0.,map,QStringLiteral(u"Участок реки (расч.)"),map2);
-	river->rl	= UK5Q_VDinit("rl"  ,false	,{},map,QStringLiteral(u"Помежуточные сечения (расч.)"),map2);
-
-	UK5Q_box* box_vr	= map2["vr"];
-	connect(box_vr, SIGNAL(box_vr->UK5Q_edit()), this, SLOT(UK5Q_newtext()));
-
+	river->ll	=  UK5Q_init("ll"  ,false	,500.																,map,QStringLiteral(u"Расчетный участок реки"),map_box);
+	river->pc	=  UK5Q_init("pc"  ,false	,UK5B_river::UK5B_eval_pc(river->h,river->psh)						,map,QStringLiteral(u"Коэффициент Шези"),map_box);
+	river->pd	=  UK5Q_init("pd"  ,false	,UK5B_river::UK5B_eval_pd(river->vr,river->h,river->pc)				,map,QStringLiteral(u"Коэффициент диффузии"),map_box);
+	river->dz	=  UK5Q_init("dz"  ,false	,UK5B_river::UK5B_eval_dydz(river->vr,river->qst,river->n,river->nn)	,map,QStringLiteral(u"dz"),map_box);
+	river->dy	=  UK5Q_init("dy"  ,false	,UK5B_river::UK5B_eval_dydz(river->vr,river->qst,river->n,river->nn)	,map,QStringLiteral(u"dy"),map_box);
+	river->dx	=  UK5Q_init("dx"  ,false	,UK5B_river::UK5B_eval_dx(river->vr,river->pd,river->dy)				,map,QStringLiteral(u"dx"),map_box);
+	river->rbb  =  UK5Q_init("rbb" ,false	,UK5B_river::UK5B_eval_rbb(river->bb,river->dy)						,map,QStringLiteral(u"Расстояние до берега (расч.)"), map_box);
+	river->rb	=  UK5Q_init("rb"  ,false	,vnul,map,QStringLiteral(u"Расстояния между оголовками (расч.)"),map_box);
+	river->rw	=  UK5Q_init("rw"  ,false	,UK5B_river::UK5B_eval_rw(river->rbb,river->rb,river->nl)			,map,QStringLiteral(u"Общая ширина (расч.)"),map_box);
+	river->rhog	=  UK5Q_init("rhog",false	,vnul,map,QStringLiteral(u"Высоты оголовков (расч.)"),map_box);
+	river->rh	=  UK5Q_init("rh"  ,false	,UK5B_river::UK5B_eval_rh(river->h,river->dy)						,map,QStringLiteral(u"Глубина (расч.)"),map_box);
+	river->rl	=  UK5Q_init("rl"  ,false	,vnul,map,QStringLiteral(u"Помежуточные сечения (расч.)"),map_box);
+	river->rll	=  UK5Q_init("rll" ,false	,UK5B_river::UK5B_eval_rll(river->ll,river->dx)						,map,QStringLiteral(u"Участок реки (расч.)"),map_box);
+		
 	connect(ui->UK5Q_Exit, SIGNAL(clicked()), this, SLOT(UK5Q_exit()));
 	connect(ui->UK5Q_Eval, SIGNAL(clicked()), this, SLOT(UK5Q_eval()));
 
-	
-	emit box_vr->UK5Q_edit();
-
-	
 }
 
-UK5B_varD UK5Q_form::UK5Q_Dinit(const QString& s, const bool x, const double def, const QMap<int, QWidget*>& map, const QString& label,QMap<QString, UK5Q_box*>& map2)
+UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def, const QMap<int, QWidget*>& map, const QString& label,QMap<QString, UK5Q_box*>& mapbox) const
 {
 	UK5B_varD u;
 	u.UK5B_setName(s.toStdString());
@@ -75,7 +71,9 @@ UK5B_varD UK5Q_form::UK5Q_Dinit(const QString& s, const bool x, const double def
 	const int place = u.UK5B_getPlace();
 
 	auto box = new UK5Q_box(map[place]);
-	map2.insert(s, box);
+	box->setObjectName("UK5Q_BOX_"+s);
+	mapbox.insert(s, box);
+	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	
 	box->UK5Q_setLabel(label);
 	box->UK5Q_setValue(u.UK5B_getValue());
@@ -101,7 +99,7 @@ UK5B_varD UK5Q_form::UK5Q_Dinit(const QString& s, const bool x, const double def
 	return u;
 }
 
-UK5B_varI UK5Q_form::UK5Q_Iinit(const QString& s, const bool x, const int def, const QMap<int, QWidget*>& map,  const QString& label,QMap<QString, UK5Q_box*>& map2)
+UK5B_varI UK5Q_form::UK5Q_init(const QString& s, const bool x, const int def, const QMap<int, QWidget*>& map,  const QString& label,QMap<QString, UK5Q_box*>& mapbox) const
 {
 	UK5B_varI u;
 	u.UK5B_setName(s.toStdString());
@@ -109,7 +107,9 @@ UK5B_varI UK5Q_form::UK5Q_Iinit(const QString& s, const bool x, const int def, c
 	const int place = u.UK5B_getPlace();
 
 	auto box = new UK5Q_box(map[place]);
-	map2.insert(s, box);
+	box->setObjectName("UK5Q_BOX_"+s);
+	mapbox.insert(s, box);
+	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	
 	box->UK5Q_setLabel(label);
 	box->UK5Q_setValueI(u.UK5B_getValue());
@@ -135,7 +135,7 @@ UK5B_varI UK5Q_form::UK5Q_Iinit(const QString& s, const bool x, const int def, c
 	return u;
 }
 
-UK5B_varVD UK5Q_form::UK5Q_VDinit(const QString& s, const bool x, const std::vector<double> def, const QMap<int, QWidget*>& map,  const QString& label,QMap<QString, UK5Q_box*>& map2)
+UK5B_varVD UK5Q_form::UK5Q_init(const QString& s, const bool x, std::vector<double>&& def, const QMap<int, QWidget*>& map,  const QString& label,QMap<QString, UK5Q_box*>& mapbox) const
 {
 	UK5B_varVD u;
 	u.UK5B_setName(s.toStdString());
@@ -143,7 +143,9 @@ UK5B_varVD UK5Q_form::UK5Q_VDinit(const QString& s, const bool x, const std::vec
 	const int place = u.UK5B_getPlace();
 
 	auto box = new UK5Q_box(map[place]);
-	map2.insert(s, box);
+	box->setObjectName("UK5Q_BOX_"+s);
+	mapbox.insert(s, box);
+	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	
 	box->UK5Q_setLabel(label);
 	box->UK5Q_setVector(u.UK5B_getValue());
@@ -170,7 +172,7 @@ UK5B_varVD UK5Q_form::UK5Q_VDinit(const QString& s, const bool x, const std::vec
 
 }
 
-UK5B_varVI UK5Q_form::UK5Q_VIinit(const QString& s, const bool x, const std::vector<int> def, const QMap<int, QWidget*>& map,  const QString& label,QMap<QString, UK5Q_box*>& map2)
+UK5B_varVI UK5Q_form::UK5Q_init(const QString& s, const bool x, std::vector<int>&& def, const QMap<int, QWidget*>& map,  const QString& label,QMap<QString, UK5Q_box*>& mapbox) const
 {
 	UK5B_varVI u;
 	u.UK5B_setName(s.toStdString());
@@ -178,7 +180,9 @@ UK5B_varVI UK5Q_form::UK5Q_VIinit(const QString& s, const bool x, const std::vec
 	const int place = u.UK5B_getPlace();
 
 	auto box = new UK5Q_box(map[place]);
-	map2.insert(s, box);
+	box->setObjectName("UK5Q_BOX_"+s);
+	mapbox.insert(s, box);
+	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	
 	box->UK5Q_setLabel(label);
 	box->UK5Q_setVectorI(u.UK5B_getValue());
@@ -205,6 +209,83 @@ UK5B_varVI UK5Q_form::UK5Q_VIinit(const QString& s, const bool x, const std::vec
 
 }
 
+std::pair<UK5B_varD, int> UK5Q_form::UK5Q_init(const QString& s, const bool x, std::pair<double, int>&& def, const QMap<int, QWidget*>& map, const QString& label, QMap<QString, UK5Q_box*>& mapbox) const
+{
+	UK5B_varD u1;
+	int u2 = def.second;
+	auto u = std::make_pair(u1, u2);
+	u.first.UK5B_setName(s.toStdString());
+	u.first.UK5B_setValue(x, def.first);
+	const int place = u.first.UK5B_getPlace();
+
+	auto box = new UK5Q_box(map[place]);
+	box->setObjectName("UK5Q_BOX_"+s);
+	mapbox.insert(s, box);
+	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
+	
+	box->UK5Q_setLabel(label);
+	box->UK5Q_setValue(u.first.UK5B_getValue());
+
+	switch(place)
+	{
+		case 0:
+			box->UK5Q_setMode(false);                   
+			box->UK5Q_state(2);                   
+			break;
+		case 1:
+			box->UK5Q_setMode(true);                   
+			box->UK5Q_state(0);                   
+			break;
+		case 2:
+			box->UK5Q_setMode(false);                   
+			box->UK5Q_state(0);                   
+			break;
+		default: ;
+	}
+	box->show();
+
+	return u;
+}
+
+std::pair<UK5B_varVD, std::vector<int>> UK5Q_form::UK5Q_init(const QString& s, const bool x, std::pair<std::vector<double>, std::vector<int>>&& def, const QMap<int, QWidget*>& map, const QString& label, QMap<QString, UK5Q_box*>& mapbox) const
+{
+	UK5B_varVD u1;
+	std::vector<int> u2 = def.second;
+	auto u = std::make_pair(u1, u2);
+	u.first.UK5B_setName(s.toStdString());
+	u.first.UK5B_setValue(x, def.first);
+	const int place = u.first.UK5B_getPlace();
+
+	auto box = new UK5Q_box(map[place]);
+	box->setObjectName("UK5Q_BOX_"+s);
+	mapbox.insert(s, box);
+	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
+	
+	box->UK5Q_setLabel(label);
+	box->UK5Q_setVector(u.first.UK5B_getValue());
+	
+	switch(place)
+	{
+		case 0:
+			box->UK5Q_setMode(false);                   
+			box->UK5Q_state(2);                   
+			break;
+		case 1:
+			box->UK5Q_setMode(true);                   
+			box->UK5Q_state(0);                   
+			break;
+		case 2:
+			box->UK5Q_setMode(false);                   
+			box->UK5Q_state(0);                   
+			break;
+		default: ;
+	}
+	box->show();
+	
+	return u;
+	
+}
+
 void UK5Q_form::UK5Q_exit()
 {
 	QApplication::quit();
@@ -215,9 +296,9 @@ void UK5Q_form::UK5Q_eval()
 	UK5B_river::UK5B_eval();
 }
 
-void UK5Q_form::UK5Q_newtext()
+void UK5Q_form::UK5Q_newtext(QString s)
 {
-	const QString& ss = "";
+	const QString& ss = s.remove(0,9);
 }
 
 
