@@ -24,7 +24,7 @@ UK5Q_box::UK5Q_box(QWidget* parent) : QWidget(parent)
 		if (n) this->move(p);
 
 		connect(ui->UK5Q_check, SIGNAL(stateChanged(int)), this, SLOT(UK5Q_state(int)));
-		connect(ui->UK5Q_input, SIGNAL(editingFinished()), this, SLOT(emit UK5Q_text();));
+		connect(ui->UK5Q_input, SIGNAL(editingFinished()), this, SLOT(UK5Q_slot()));
 }
 
 void UK5Q_box::UK5Q_setLabel(const QString& label) const
@@ -60,6 +60,11 @@ auto UK5Q_box::UK5Q_state(const int state) const -> void
 		break;
 	default: ;
 	}
+}
+
+void UK5Q_box::UK5Q_slot()
+{
+	emit UK5Q_edit();	
 }
 
 double UK5Q_box::UK5Q_getValue() const

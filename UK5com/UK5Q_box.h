@@ -25,12 +25,12 @@ public:
 	void				UK5Q_setValueI(const int) const;
 	void				UK5Q_setVectorI(const std::vector<int>&) const;
 
-signals:
-	void UK5Q_text();
-
 public slots:	
 	void UK5Q_state(int) const;
+	void UK5Q_slot();
 
 private:
 	Ui::UK5Q_box *ui;
+signals:
+	void UK5Q_edit();
 };
