@@ -129,7 +129,8 @@ std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, st
 	auto r2		= rrbb.second;
 
 	auto t1	= rrb.first.UK5B_getValue();
-	auto t2	= rrb.second;
+	std::vector<int> t2;
+	t2 = rrb.second;
 
 	if (t2.size() == static_cast<size_t>(_nl)-1)
 	{

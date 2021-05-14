@@ -57,7 +57,6 @@ public:
 	void UK5B_setValue(const bool x, const double def) {
 
 		ferr.open("error.log", std::ios::out);
-		boost::property_tree::ptree	pt;
 
 		std::map <std::string, int> mapping;
 		mapping["in"] = 0;
@@ -69,6 +68,7 @@ public:
 
 			try
 			{
+				boost::property_tree::ptree pt;
 				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
@@ -114,7 +114,6 @@ public:
 	void UK5B_setValue(const bool x, const int def) {
 
 		ferr.open("error.log", std::ios::out);
-		boost::property_tree::ptree	pt;
 
 		std::map <std::string, int> mapping;
 		mapping["in"] = 0;
@@ -126,6 +125,7 @@ public:
 
 			try
 			{
+				boost::property_tree::ptree pt;
 				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
@@ -176,7 +176,6 @@ public:
 	void UK5B_setValue(const bool x, const std::vector<double>& def) {
 
 		ferr.open("error.log", std::ios::out);
-		boost::property_tree::ptree	pt;
 
 		std::map <std::string, int> mapping;
 		mapping["in"] = 0;
@@ -188,6 +187,7 @@ public:
 
 			try
 			{
+				boost::property_tree::ptree pt;
 				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
@@ -267,8 +267,7 @@ public:
 	void UK5B_setValue(const bool x, const std::vector<int>& def) {
 
 		ferr.open("error.log", std::ios::out);
-		boost::property_tree::ptree	pt;
-		
+
 		std::map<std::string, int> mapping;
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
@@ -279,6 +278,7 @@ public:
 
 			try
 			{
+				boost::property_tree::ptree pt;
 				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
