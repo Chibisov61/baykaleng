@@ -24,8 +24,8 @@ public:
 	static	std::pair<double,int>							UK5B_eval_rw(std::pair<UK5B_varD,int>,std::pair<UK5B_varVD,std::vector<int>>,const UK5B_varI&);	//rbb rb nl
 	static	std::pair<double,int>							UK5B_eval_rh(const UK5B_varD&,const UK5B_varD&);					//h dydz
 	static	std::pair<std::vector<double>,std::vector<int>>	UK5B_eval_rhog(const UK5B_varVD&,const UK5B_varD&);					//hog dydz
-	static	std::pair<double,int>							UK5B_eval_rll(const UK5B_varD&,const UK5B_varD&);					//ll=500 dx
-	static	std::pair<std::vector<double>,std::vector<int>>	UK5B_eval_rl(const UK5B_varVD&,const UK5B_varD&);					//l dx
+	static	std::pair<double,int>							UK5B_eval_rll(const UK5B_varD&,const UK5B_varD&,const UK5B_varD&);	//ll=500 dx xn
+	static	std::pair<std::vector<double>,std::vector<int>>	UK5B_eval_rl(const UK5B_varVD&,const UK5B_varD&,const UK5B_varD&);	//l dx xn
 	static void UK5B_eval();
 	
 };

@@ -31,9 +31,17 @@ public:
 		name = std::move(s);
 	}
 
-	int UK5B_getPlace() const
-	{
+	int UK5B_getPlace() const {
 		return place;
+	}
+	
+	void UK5B_setPlace(const int p) {
+		place = (p >= 0 && p <= 2) ? p : 2;
+	}
+	
+	std::string	UK5B_getName() const
+	{
+		return name;
 	}
 protected:
 	int			place = 2;

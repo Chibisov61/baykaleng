@@ -79,7 +79,7 @@ double UK5B_river::UK5B_eval_dydz(const UK5B_varD& vr, const UK5B_varD& qst, con
 	return sqrt(on);
 }
 
-double UK5B_river::UK5B_eval_dx(const UK5B_varD& vr, const UK5B_varD& pd, const UK5B_varD& dydz)						//vr pd dydz
+double UK5B_river::UK5B_eval_dx(const UK5B_varD& vr, const UK5B_varD& pd, const UK5B_varD& dydz)												//vr pd dydz
 {
 	const double _vr   = vr.UK5B_getValue();
 	const double _pd   = pd.UK5B_getValue();
@@ -88,7 +88,7 @@ double UK5B_river::UK5B_eval_dx(const UK5B_varD& vr, const UK5B_varD& pd, const 
 	return _vr * _dydz * _dydz/ (4. * _pd);
 }
 
-std::pair<double,int> UK5B_river::UK5B_eval_rbb(const UK5B_varD& bb, const UK5B_varD& dydz)									//bb dydz
+std::pair<double,int> UK5B_river::UK5B_eval_rbb(const UK5B_varD& bb, const UK5B_varD& dydz)														//bb dydz
 {
 	const double _bb   = bb.UK5B_getValue();
 	const double _dydz = dydz.UK5B_getValue();
@@ -100,16 +100,16 @@ std::pair<double,int> UK5B_river::UK5B_eval_rbb(const UK5B_varD& bb, const UK5B_
 	return r;
 }
 
-std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rb(const UK5B_varVD& b, const UK5B_varI& nl, const UK5B_varD& dydz)		//b nl dydz
+std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rb(const UK5B_varVD& b, const UK5B_varI& nog, const UK5B_varD& dydz)		//b nl dydz
 {
 	std::vector<double> _b	 = b.UK5B_getValue();
-					int _nl	 = nl.UK5B_getValue();
+					int _nog	 = nog.UK5B_getValue();
 				double _dydz = dydz.UK5B_getValue();
 
 	std::vector<double> r1	= {};
 	std::vector<int>	r2	= {};
 
-	if (_b.size() == static_cast<size_t>(_nl)-1)
+	if (_b.size() == static_cast<size_t>(_nog)-1)
 	{
 		for (auto &i : _b)
 		{
@@ -122,9 +122,9 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rb(const U
 	return r;
 }
 
-std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, std::pair<UK5B_varVD,std::vector<int>> rrb, const UK5B_varI& nl)					//rbb rb nl
+std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, std::pair<UK5B_varVD,std::vector<int>> rrb, const UK5B_varI& nog)	//rbb rb nl	
 {
-	int _nl			= nl.UK5B_getValue();
+	int _nog			= nog.UK5B_getValue();
 	auto r1	= rrbb.first.UK5B_getValue();
 	auto r2		= rrbb.second;
 
@@ -132,7 +132,7 @@ std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, st
 	std::vector<int> t2;
 	t2 = rrb.second;
 
-	if (t2.size() == static_cast<size_t>(_nl)-1)
+	if (t2.size() == static_cast<size_t>(_nog)-1)
 	{
 		for( auto &i	: t1) r1 += i;
 		for( auto &i	: t2) r2 += i;
@@ -145,7 +145,7 @@ std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, st
 	return r;
 }
 
-std::pair<double,int> UK5B_river::UK5B_eval_rh(const UK5B_varD& h, const UK5B_varD& dydz)									//h dydz
+std::pair<double,int> UK5B_river::UK5B_eval_rh(const UK5B_varD& h, const UK5B_varD& dydz)														//h dydz
 {
 	const double _h	 = h.UK5B_getValue();
 	const double _dydz = dydz.UK5B_getValue();
@@ -157,7 +157,7 @@ std::pair<double,int> UK5B_river::UK5B_eval_rh(const UK5B_varD& h, const UK5B_va
 	return r;
 }
 
-std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rhog(const UK5B_varVD& hog, const UK5B_varD& dydz)					//hog dydz
+std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rhog(const UK5B_varVD& hog, const UK5B_varD& dydz)						//hog dydz
 {
 	std::vector<double> _hog  = hog.UK5B_getValue();
 	            double  _dydz = dydz.UK5B_getValue();
@@ -175,29 +175,31 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rhog(const
 	return r;
 }
 
-std::pair<double,int> UK5B_river::UK5B_eval_rll(const UK5B_varD& ll, const UK5B_varD& dx)									//ll=500 dx
+std::pair<double,int> UK5B_river::UK5B_eval_rll(const UK5B_varD& ll, const UK5B_varD& dx, const UK5B_varD& xn)									//ll=500 dx
 {
 	const double _ll  = ll.UK5B_getValue();
 	const double _dx  = dx.UK5B_getValue();
+	const double _xn  = xn.UK5B_getValue();
 
-	int r2 = static_cast<int>(_ll / _dx);
+	int r2 = static_cast<int>((_ll - _xn)/ _dx);
 	double r1 = r2 * _dx;
 
 	auto r = std::make_pair(r1, r2);
 	return r;
 }
 
-std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const UK5B_varVD& l, const UK5B_varD& dx)						//l dx
+std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const UK5B_varVD& l, const UK5B_varD& dx,const UK5B_varD& xn)			//l dx xn
 {
-	std::vector<double> _l  = l.UK5B_getValue();
-	            double _dx  = dx.UK5B_getValue();
+	std::vector<double>	_l	= l.UK5B_getValue();
+	const double		_dx	= dx.UK5B_getValue();
+	const double		_xn	= xn.UK5B_getValue();
 
 	std::vector<double> r1	= {};
 	std::vector<int>	r2	= {};
 
 	for (auto &i : _l)
 	{
-		r2.push_back(static_cast<int>(i / _dx));
+		r2.push_back(static_cast<int>(((i >_xn) ? i-_xn : _xn)/ _dx));
 		r1.push_back(r2.back() * _dx);
 	}
 	

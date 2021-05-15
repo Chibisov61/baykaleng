@@ -15,7 +15,7 @@ UK5Q_box::UK5Q_box(QWidget* parent) : QWidget(parent)
 		this->setEnabled(true);
 
 		UK5Q_setMode(false);
-		UK5Q_state(false);
+		UK5Q_state(0);
 
 		const int n = parent->children().count() - 1;
 		QRect g = this->geometry();
@@ -152,6 +152,11 @@ std::vector<int> UK5Q_box::UK5Q_getVectorI() const
 			}
 		}
 	return(ret);
+}
+
+QObject* UK5Q_box::UK5Q_getPlace() const
+{
+	return(this->parent());
 }
 
 void UK5Q_box::UK5Q_setValue(const double x) const
