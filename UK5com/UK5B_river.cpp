@@ -211,3 +211,32 @@ void UK5B_river::UK5B_eval(UK5B_out* p)
 {
 	p->UK5B_body_csv_print();
 }
+
+void UK5B_river::UK5B_init_cut(const std::pair<UK5B_varD, int>& ch, std::pair<UK5B_varD, int>& cw, UK5B_varI& cn, UK5B_varD& ct,
+	std::pair<UK5B_varD, int>& cbb, std::pair<UK5B_varVD, std::vector<int>>& cb, std::pair<UK5B_varVD, std::vector<int>>& co,
+	UK5B_varD& cnn)
+{
+	const int				_h = ch.second;
+	const int				_w = cw.second;
+	const int				_n = cn.UK5B_getValue();
+	const double			_t = ct.UK5B_getValue();
+	      int				_bb = cbb.second;
+	const std::vector<int>	_b = cb.second;
+	const std::vector<int>	_ho = co.second;
+	const double			_nn = cnn.UK5B_getValue();
+	
+	const int no = static_cast<int>(_ho.size());
+
+	std::vector<int> _wo = { _bb };
+	for (int k = 0; k < no; ++k) _wo.push_back(_bb += _b[k]);
+	
+	const double tt = _t / _nn;
+
+	for(int i=1 ; i < _h + 2; ++i)
+		for(int j=1 ; j < _w + 2; ++j)
+		{
+			if (true) this->cut[i][j] = tt;
+			else this->cut[i][j] = 0;
+		}
+}
+

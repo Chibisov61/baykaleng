@@ -6,13 +6,16 @@
 class UK5B_river
 {
 public:
+	UK5B_river() = default;
+	
 	UK5B_varD  vr, bb, h, dog, qst, cct, psh, nn, xn, ll, pc, pd, dx, dy, dz;
 	UK5B_varI  nog,nl,n;
 	UK5B_varVD b,l,hog;
 	std::pair<UK5B_varD,int>  rbb,rw,rh,rll;
 	std::pair<UK5B_varVD,std::vector<int>> rb, rhog ,rl;
+
+	std::vector<std::vector<double>> cut = {{}};
 	
-	UK5B_river() = default;
 	static				double	UK5B_eval_dog(const UK5B_varD&);																//qst
 	static				double	UK5B_eval_nn(const UK5B_varD&,const UK5B_varD&,const UK5B_varD&);								//vr dog qst
 	static				double	UK5B_eval_xn(const UK5B_varD&, const UK5B_varD&,const UK5B_varD&);								//vr dog qst
@@ -29,6 +32,9 @@ public:
 	static	std::pair<double,int>							UK5B_eval_rll(const UK5B_varD&,const UK5B_varD&,const UK5B_varD&);	//ll=500 dx xn
 	static	std::pair<std::vector<double>,std::vector<int>>	UK5B_eval_rl(const UK5B_varVD&,const UK5B_varD&,const UK5B_varD&);	//l dx xn
 	static void UK5B_eval(UK5B_out*);
+
+	void UK5B_init_cut(const std::pair<UK5B_varD,int>&,std::pair<UK5B_varD,int>&,UK5B_varI&,UK5B_varD&,std::pair<UK5B_varD,int>&,std::pair<UK5B_varVD,
+							  std::vector<int>>&,std::pair<UK5B_varVD,std::vector<int>>&,UK5B_varD&);
 	
 };
 
