@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "UK5B_var.h"
+#include "UK5B_out.h"
+
 
 class UK5B_river
 {
@@ -26,7 +28,7 @@ public:
 	static	std::pair<std::vector<double>,std::vector<int>>	UK5B_eval_rhog(const UK5B_varVD&,const UK5B_varD&);					//hog dydz
 	static	std::pair<double,int>							UK5B_eval_rll(const UK5B_varD&,const UK5B_varD&,const UK5B_varD&);	//ll=500 dx xn
 	static	std::pair<std::vector<double>,std::vector<int>>	UK5B_eval_rl(const UK5B_varVD&,const UK5B_varD&,const UK5B_varD&);	//l dx xn
-	static void UK5B_eval();
+	static void UK5B_eval(UK5B_out*);
 	
 };
 

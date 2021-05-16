@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "UK5B_var.h"
 #include "UK5B_river.h"
 #include <fstream>
 
@@ -7,15 +6,19 @@
 class UK5B_out
 {
 public:
-	UK5B_out();
+	explicit UK5B_out(const std::string&);
 	~UK5B_out();  // NOLINT(bugprone-exception-escape)
+	UK5B_out(const UK5B_out&) = default;
+	UK5B_out(UK5B_out&&) = default;
+	UK5B_out& operator = (const UK5B_out&) = default;
+	UK5B_out& operator = (UK5B_out&&) = default;
+	
 
 	void UK5B_header_csv_print(UK5B_river*);
 	void UK5B_body_csv_print();
 
 
 protected:
-	std::vector<std::tuple<std::string,std::string,std::string>> header = {{}};
 	std::ofstream fout;
 	std::map<std::string, std::string>  lmap{{"vr","Скорость реки"},
 										{"bb","Расстояние до берега"},

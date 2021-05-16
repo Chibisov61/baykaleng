@@ -7,6 +7,7 @@
 #include "UK5B_out.h"
 #include <QFile>
 #include <QMap>
+#include <QTime>
 
 UK5Q_form::UK5Q_form(QWidget *parent)
 	: QMainWindow(parent)
@@ -289,11 +290,13 @@ void UK5Q_form::UK5Q_exit()
 
 void UK5Q_form::UK5Q_eval() const
 {
-	UK5B_out print;
+	const QString f = "UK5." + QTime::currentTime().toString() + ".csv";
+	UK5B_out print(f.toStdString());
+	
 	print.UK5B_header_csv_print(river);
-	UK5B_river::UK5B_eval();
+	river->UK5B_eval(&print);
 	print.~UK5B_out();
-}
+}	
 
 void UK5Q_form::UK5Q_newtext(QString s)
 {

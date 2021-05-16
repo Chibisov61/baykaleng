@@ -1,11 +1,11 @@
 ﻿#include "UK5B_out.h"
-#include <boost/date_time/posix_time/posix_time.hpp>
+//#include <boost/date_time/posix_time/posix_time.hpp>
 
 
 
-UK5B_out::UK5B_out()
+UK5B_out::UK5B_out(const std::string& f)
 {
-	const std::string f = "UK." + to_iso_string(boost::posix_time::second_clock::local_time()) + ".csv";
+//	const std::string f = "UK." + to_iso_string(boost::posix_time::second_clock::local_time()) + ".csv";
 	fout.open(f, std::ios::out);
 }
 
@@ -71,6 +71,6 @@ void UK5B_out::UK5B_header_csv_print(UK5B_river* river)
 void UK5B_out::UK5B_body_csv_print()
 {
 
-	fout << "Тестовый body" << std::endl;
+	fout << "=== Тестовый вывод body ===" << std::endl;
 	
 }

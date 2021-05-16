@@ -1,5 +1,6 @@
 ﻿#include "UK5B_river.h"
 
+
 double UK5B_river::UK5B_eval_dog(const UK5B_varD& qst)													//qst
 {
 	const double pi = 3.1415;
@@ -206,8 +207,7 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const U
 	return r;
 }
 
-void UK5B_river::UK5B_eval()
+void UK5B_river::UK5B_eval(UK5B_out* p)
 {
-
-	
+	p->UK5B_body_csv_print();
 }
