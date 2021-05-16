@@ -91,12 +91,14 @@
     <QtUic Include="UK5Q_box.ui" />
     <QtUic Include="UK5Q_form.ui" />
     <QtMoc Include="UK5Q_form.h" />
+    <ClCompile Include="UK5B_out.cpp" />
     <ClCompile Include="UK5B_river.cpp" />
     <ClCompile Include="UK5Q_box.cpp" />
     <ClCompile Include="UK5Q_form.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UK5B_out.h" />
     <ClInclude Include="UK5B_river.h" />
     <ClInclude Include="UK5B_var.h" />
     <QtMoc Include="UK5Q_box.h" />

@@ -2,9 +2,9 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
 #include <map>
 #include <utility>
-#include <vector>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/tokenizer.hpp>
