@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "UK5B_river.h"
-#include <fstream>
+//#include <fstream>
+//#include <map>
+
+class UK5B_river;
 
 
 class UK5B_out
@@ -14,8 +17,8 @@ public:
 	UK5B_out& operator = (UK5B_out&&) = default;
 	
 
-	void UK5B_header_csv_print(UK5B_river*);
-	void UK5B_body_csv_print(UK5B_river*);
+	void UK5B_header_print(UK5B_river);
+	void UK5B_body_print(UK5B_river);
 
 
 protected:

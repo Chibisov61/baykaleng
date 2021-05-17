@@ -1,6 +1,10 @@
 ﻿#include "UK5B_river.h"
 
 
+//UK5B_river::UK5B_river()
+//{
+//}
+
 std::deque<std::deque<double>> UK5B_river::UK5B_karaush(std::deque<std::deque<double>> p)
 {
 	std::deque<std::deque<double>> r = p;
@@ -21,7 +25,7 @@ std::deque<std::deque<double>> UK5B_river::UK5B_karaush(std::deque<std::deque<do
 	for(int j = 0; j < w + 2; ++j)
 	{
 		r.at(0).at(j) = r.at(1).at(j);		// море
-		r.at(hh + 1).at(j) = r.at(hh).at(j);		// берег
+		r.at(hh + 1).at(j) = r.at(hh).at(j);	// берег
 	}
 
 	std::deque<double> rr = {};
@@ -32,6 +36,47 @@ std::deque<std::deque<double>> UK5B_river::UK5B_karaush(std::deque<std::deque<do
 	this->max = *(std::max_element(rr.begin(), rr.end()));
 	
 	return r;
+}
+
+void UK5B_river::UK5B_init_cut()
+{
+	const int				_h	= this->rh.second;
+	const int				_w	= this->rw.second;
+	const int				_n	= this->n.UK5B_getValue();
+	const double			_t	= this->cct.UK5B_getValue();
+	const int				_bb = this->rbb.second;
+	const std::vector<int>	_b	= this->rb.second;
+	const std::vector<int>	_ho = this->rhog.second;
+	const double			_nn = this->nn.UK5B_getValue();
+	
+	const int no = static_cast<int>(_ho.size());
+	const double tt = _t / _nn;
+		
+	std::vector<int> _wo = {};
+	int _bbl = *(std::min_element(_b.begin(), _b.end())) * 5;
+	_wo.push_back(_bbl);
+	for (int k = 0; k < no; ++k) _wo.push_back(_bbl += _b.at(k));
+	_wo.push_back(_bb);
+	
+	std::vector<std::pair<int, int>> _o = { {0,0} };
+	for (int k = 0; k < no; ++k) _o.emplace_back(_ho.at(k), _wo.at(k));
+
+//	cut = {{}};
+	for (int i = 1; i < _h + 1; ++i)
+	{
+		std::deque<double> cut_inner;
+		for (int j = 0; j < _w + 2; ++j)
+		{
+			for (int k = 0; k < no; ++k)
+				if ((2 * i < 2 * _o.at(k).first - _n) && (2 * j < 2 * _o.at(k).second - _n)) cut_inner.push_back(tt);
+				else cut_inner.push_back(0);
+		}
+		cut.push_back(cut_inner);
+	}
+	
+	cut[0] = cut[1];
+	cut.push_back(cut.back());
+
 }
 
 double UK5B_river::UK5B_eval_dog(const UK5B_varD& qst)													//qst
@@ -198,7 +243,7 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rhog(const
 {
 	std::vector<double> _hog	= hog.UK5B_getValue();
 	const int			_nog	= nog.UK5B_getValue();
-    const double		_dydz	= dydz.UK5B_getValue();
+	const double		_dydz	= dydz.UK5B_getValue();
 
 	std::vector<double> r1	= {};
 	std::vector<int>	r2	= {};
@@ -269,54 +314,5 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const U
 	
 	auto r = std::make_pair(r1, r2);
 	return r;
-}
-
-void UK5B_river::UK5B_init_cut()
-{
-	const int				_h	= this->rh.second;
-	const int				_w	= this->rw.second;
-	const int				_n	= this->n.UK5B_getValue();
-	const double			_t	= this->cct.UK5B_getValue();
-	const int				_bb = this->rbb.second;
-	const std::vector<int>	_b	= this->rb.second;
-	const std::vector<int>	_ho = this->rhog.second;
-	const double			_nn = this->nn.UK5B_getValue();
-	
-	const int no = static_cast<int>(_ho.size());
-	const double tt = _t / _nn;
-		
-	std::vector<int> _wo = {};
-	int _bbl = *(std::min_element(_b.begin(), _b.end())) * 5;
-	_wo.push_back(_bbl);
-	for (int k = 0; k < no; ++k) _wo.push_back(_bbl += _b.at(k));
-	_wo.push_back(_bb);
-	
-	std::vector<std::pair<int, int>> _o = { {0,0} };
-	for (int k = 0; k < no; ++k) _o.emplace_back(_ho.at(k), _wo.at(k));
-
-	for (int i = 1; i < _h + 1; ++i)
-		for (int j = 0; j < _w + 2; ++j)
-		{
-			for (int k = 0; k < no; ++k)
-				if ((2 * i < 2 * _o.at(k).first - _n) && (2 * j < 2 * _o.at(k).second - _n)) this->cut.at(i).push_back(tt);
-				else this->cut.at(i).push_back(0);
-		}
-	
-	this->cut.push_front(this->cut.front());
-	this->cut.push_back(this->cut.back());
-
-}
-
-void UK5B_river::UK5B_eval(UK5B_out* p)
-{
-	p->UK5B_body_csv_print(this);
-	
-	const int lll = this->rll.second;
-	for(int i = 0; i < lll + 1; i++)
-	{
-		this->cut = UK5B_karaush(this->cut);
-		if (std::binary_search(this->rl.second.begin(), this->rl.second.end(), i))
-			p->UK5B_body_csv_print(this);
-	}
 }
 

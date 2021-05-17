@@ -60,8 +60,8 @@ public:
 	UK5B_varD(const UK5B_varD&) = default;
 	UK5B_varD(UK5B_varD&&)  noexcept = default;
 	UK5B_varD& operator = (const UK5B_varD& u) = default;
-	UK5B_varD& operator = (UK5B_varD&&) noexcept = default;
-
+	UK5B_varD& operator = (UK5B_varD&&) noexcept = default; 
+  
 	void UK5B_setValue(const bool x, const double def) {
 
 		ferr.open("error.log", std::ios::out);
@@ -118,6 +118,11 @@ class UK5B_varI : public UK5B_var
 
 public:
 	UK5B_varI() = default;
+	~UK5B_varI() = default;
+	UK5B_varI(const UK5B_varI&) = default;
+	UK5B_varI(UK5B_varI&&)  noexcept = default;
+	UK5B_varI& operator = (const UK5B_varI& u) = default;
+	UK5B_varI& operator = (UK5B_varI&&) noexcept = default; 
 
 	void UK5B_setValue(const bool x, const int def) {
 
@@ -316,10 +321,10 @@ public:
 								else 
 									value.push_back(stoi(itr));
 							}
-						    catch (const std::exception& e)
+							catch (const std::exception& e)
 							{
 								value.push_back(-1.);
-						    	ferr << e.what() << std::endl;
+								ferr << e.what() << std::endl;
 							}
 						}
 						
