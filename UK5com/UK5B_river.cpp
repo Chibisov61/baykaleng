@@ -1,6 +1,39 @@
 ﻿#include "UK5B_river.h"
 
 
+std::deque<std::deque<double>> UK5B_river::UK5B_karaush(std::deque<std::deque<double>> p)
+{
+	std::deque<std::deque<double>> r = p;
+
+	const int hh = static_cast<int>(p.size());
+	const int w = static_cast<int>(p.front().size());
+
+	for (int i = 1; i < hh + 1; ++i)
+		for (int j = 1; j < w + 1; ++j)
+			r.at(i).at(j) = (p.at(i).at(j + 1) + p.at(i + 1).at(j) + p.at(i).at(j - 1) + p.at(i - 1).at(j)) / 4;
+
+	for(int i = 0; i < hh + 2; ++i)
+	{
+		r.at(i).at(0) = r.at(i).at(1);		// дно 
+		r.at(i).at(w + 1) = r.at(i).at(w);		// поверхность
+	}
+
+	for(int j = 0; j < w + 2; ++j)
+	{
+		r.at(0).at(j) = r.at(1).at(j);		// море
+		r.at(hh + 1).at(j) = r.at(hh).at(j);		// берег
+	}
+
+	std::deque<double> rr = {};
+
+	for (int i = 0; i < hh + 1; ++i)
+		rr.push_back(*(std::max_element(r.at(i).begin(), r.at(i).end())));
+
+	this->max = *(std::max_element(rr.begin(), rr.end()));
+	
+	return r;
+}
+
 double UK5B_river::UK5B_eval_dog(const UK5B_varD& qst)													//qst
 {
 	const double pi = 3.1415;
@@ -100,43 +133,47 @@ std::pair<double,int> UK5B_river::UK5B_eval_rbb(const UK5B_varD& bb, const UK5B_
 	return r;
 }
 
-std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rb(const UK5B_varVD& b, const UK5B_varI& nog, const UK5B_varD& dydz)		//b nl dydz
+std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rb(const UK5B_varVD& b, const UK5B_varI& nog, const UK5B_varD& dydz)		//b nog dydz
 {
-	std::vector<double> _b	 = b.UK5B_getValue();
-					int _nog	 = nog.UK5B_getValue();
-				double _dydz = dydz.UK5B_getValue();
+	std::vector<double> _b		= b.UK5B_getValue();
+	const int			_nog	= nog.UK5B_getValue();
+	const double		_dydz	= dydz.UK5B_getValue();
 
 	std::vector<double> r1	= {};
 	std::vector<int>	r2	= {};
 
-	if (_b.size() == static_cast<size_t>(_nog)-1)
+	const int z = static_cast<int>(_b.size());
+	int ng = _nog;
+						
+	do													// по кругу заносим в rx данные из _b (пока не останется меньше z)
 	{
 		for (auto &i : _b)
 		{
 			r2.push_back(static_cast<int>(i / _dydz));
 			r1.push_back(r2.back() * _dydz);
 		}
+	} while ((ng -= z) > 0);
+
+	for(int j=0; j < ng + z; j++)						// заносим остаток. В целом в rx должно оказаться _nog членов
+	{
+			r2.push_back(static_cast<int>(_b.at(j) / _dydz));
+			r1.push_back(r2.back() * _dydz);
 	}
-	
+
 	auto r = std::make_pair(r1, r2);
 	return r;
 }
 
-std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, std::pair<UK5B_varVD,std::vector<int>> rrb, const UK5B_varI& nog)	//rbb rb nl	
+std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, std::pair<UK5B_varVD,std::vector<int>> rrb)	//rbb rb	
 {
-	int _nog		= nog.UK5B_getValue();
 	auto r1	= rrbb.first.UK5B_getValue();
 	auto r2		= rrbb.second;
 
 	auto t1	= rrb.first.UK5B_getValue();
-	std::vector<int> t2;
-	t2 = rrb.second;
+	auto t2    = rrb.second;
 
-	if (t2.size() == static_cast<size_t>(_nog)-1)
-	{
-		for( auto &i	: t1) r1 += i;
-		for( auto &i	: t2) r2 += i;
-	}
+	for( auto &i	: t1) r1 += i;
+	for( auto &i	: t2) r2 += i;
 
 	r1 += *(std::min_element(t1.begin(), t1.end())) * 5.;
 	r2 += *(std::min_element(t2.begin(), t2.end())) * 5;
@@ -157,18 +194,31 @@ std::pair<double,int> UK5B_river::UK5B_eval_rh(const UK5B_varD& h, const UK5B_va
 	return r;
 }
 
-std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rhog(const UK5B_varVD& hog, const UK5B_varD& dydz)	//hog dydz
+std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rhog(const UK5B_varVD& hog, const UK5B_varI& nog, const UK5B_varD& dydz)	//hog dydz
 {
-	std::vector<double> _hog  = hog.UK5B_getValue();
-	            double  _dydz = dydz.UK5B_getValue();
+	std::vector<double> _hog	= hog.UK5B_getValue();
+	const int			_nog	= nog.UK5B_getValue();
+    const double		_dydz	= dydz.UK5B_getValue();
 
 	std::vector<double> r1	= {};
 	std::vector<int>	r2	= {};
 
-	for (auto &i : _hog)
+	const int z = static_cast<int>(_hog.size());
+	int ng = _nog;
+						
+	do													// по кругу заносим в rx данные из _hog (пока не останется меньше z)
 	{
-		r2.push_back(static_cast<int>(i / _dydz));
-		r1.push_back(r2.back() * _dydz);
+		for (auto &i : _hog)
+		{
+			r2.push_back(static_cast<int>(i / _dydz));
+			r1.push_back(r2.back() * _dydz);
+		}
+	} while ((ng -= z) > 0);
+
+	for(int j=0; j < ng + z; j++)						// заносим остаток. В целом в rx должно оказаться _nog членов
+	{
+			r2.push_back(static_cast<int>(_hog.at(j) / _dydz));
+			r1.push_back(r2.back() * _dydz);
 	}
 	
 	auto r = std::make_pair(r1, r2);
@@ -188,8 +238,9 @@ std::pair<double,int> UK5B_river::UK5B_eval_rll(const UK5B_varD& ll, const UK5B_
 	return r;
 }
 
-std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const UK5B_varVD& l, const UK5B_varD& dx,const UK5B_varD& xn)	//l dx xn
+std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const UK5B_varI& nl, const UK5B_varVD& l, const UK5B_varD& dx,const UK5B_varD& xn)	//nl l dx xn
 {
+	const int			_nl = nl.UK5B_getValue();
 	std::vector<double>	_l	= l.UK5B_getValue();
 	const double		_dx	= dx.UK5B_getValue();
 	const double		_xn	= xn.UK5B_getValue();
@@ -197,46 +248,76 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const U
 	std::vector<double> r1	= {};
 	std::vector<int>	r2	= {};
 
-	for (auto &i : _l)
+	const int z = static_cast<int>(_l.size());
+	const int zz = _nl - z;
+	
+	if (zz > 0)
+		for(int i=1; i < zz; i++)
+		{
+			r2.push_back(i);
+			r1.push_back(i * _dx);
+		}
+	
+	for (auto &it : _l)
 	{
-		r2.push_back(static_cast<int>(((i >_xn) ? i-_xn : _xn)/ _dx));
-		r1.push_back(r2.back() * _dx);
+		const int t = static_cast<int>((it > _xn) ? it - _xn : _xn / _dx);
+		if (t > zz) {
+			r2.push_back(t);
+			r1.push_back(t * _dx);
+		}
 	}
 	
 	auto r = std::make_pair(r1, r2);
 	return r;
 }
 
-void UK5B_river::UK5B_eval(UK5B_out* p)
+void UK5B_river::UK5B_init_cut()
 {
-	p->UK5B_body_csv_print();
-}
-
-void UK5B_river::UK5B_init_cut(const std::pair<UK5B_varD, int>& ch, std::pair<UK5B_varD, int>& cw, UK5B_varI& cn, UK5B_varD& ct,
-	std::pair<UK5B_varD, int>& cbb, std::pair<UK5B_varVD, std::vector<int>>& cb, std::pair<UK5B_varVD, std::vector<int>>& co,
-	UK5B_varD& cnn)
-{
-	const int				_h = ch.second;
-	const int				_w = cw.second;
-	const int				_n = cn.UK5B_getValue();
-	const double			_t = ct.UK5B_getValue();
-	      int				_bb = cbb.second;
-	const std::vector<int>	_b = cb.second;
-	const std::vector<int>	_ho = co.second;
-	const double			_nn = cnn.UK5B_getValue();
+	const int				_h	= this->rh.second;
+	const int				_w	= this->rw.second;
+	const int				_n	= this->n.UK5B_getValue();
+	const double			_t	= this->cct.UK5B_getValue();
+	const int				_bb = this->rbb.second;
+	const std::vector<int>	_b	= this->rb.second;
+	const std::vector<int>	_ho = this->rhog.second;
+	const double			_nn = this->nn.UK5B_getValue();
 	
 	const int no = static_cast<int>(_ho.size());
-
-	std::vector<int> _wo = { _bb };
-	for (int k = 0; k < no; ++k) _wo.push_back(_bb += _b[k]);
-	
 	const double tt = _t / _nn;
+		
+	std::vector<int> _wo = {};
+	int _bbl = *(std::min_element(_b.begin(), _b.end())) * 5;
+	_wo.push_back(_bbl);
+	for (int k = 0; k < no; ++k) _wo.push_back(_bbl += _b.at(k));
+	_wo.push_back(_bb);
+	
+	std::vector<std::pair<int, int>> _o = { {0,0} };
+	for (int k = 0; k < no; ++k) _o.emplace_back(_ho.at(k), _wo.at(k));
 
-	for(int i=1 ; i < _h + 2; ++i)
-		for(int j=1 ; j < _w + 2; ++j)
+	for (int i = 1; i < _h + 1; ++i)
+		for (int j = 0; j < _w + 2; ++j)
 		{
-			if (true) this->cut[i][j] = tt;
-			else this->cut[i][j] = 0;
+			for (int k = 0; k < no; ++k)
+				if ((2 * i < 2 * _o.at(k).first - _n) && (2 * j < 2 * _o.at(k).second - _n)) this->cut.at(i).push_back(tt);
+				else this->cut.at(i).push_back(0);
 		}
+	
+	this->cut.push_front(this->cut.front());
+	this->cut.push_back(this->cut.back());
+
+}
+
+
+void UK5B_river::UK5B_eval(UK5B_out* p)
+{
+	p->UK5B_body_csv_print(this);
+	
+	const int lll = this->rll.second;
+	for(int i = 0; i < lll + 1; i++)
+	{
+		this->cut = UK5B_karaush(this->cut);
+		if (std::binary_search(this->rl.second.begin(), this->rl.second.end(), i))
+			p->UK5B_body_csv_print(this);
+	}
 }
 

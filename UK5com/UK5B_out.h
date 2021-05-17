@@ -15,7 +15,7 @@ public:
 	
 
 	void UK5B_header_csv_print(UK5B_river*);
-	void UK5B_body_csv_print();
+	void UK5B_body_csv_print(UK5B_river*);
 
 
 protected:

@@ -68,9 +68,24 @@ void UK5B_out::UK5B_header_csv_print(UK5B_river* river)
 	
 	
 }
-void UK5B_out::UK5B_body_csv_print()
+void UK5B_out::UK5B_body_csv_print(UK5B_river* river)
 {
+	std::deque<std::deque<double>> cut = river->cut;
+	const double max = river->max;
 
-	fout << "=== Тестовый вывод body ===" << std::endl;
+	const int h = static_cast<int>(cut.size());
+	const int w = static_cast<int>(cut.front().size());
+
+	fout << std::endl;
+
+	for(int i = 0; i < h + 1; i++)
+	{
+		for (int j = 0; j < w + 1; j++)
+			fout << cut.at(i).at(j);
+		fout << std::endl;
+	}
+	
+	fout << std::endl;
+	fout << max << std::endl;
 	
 }

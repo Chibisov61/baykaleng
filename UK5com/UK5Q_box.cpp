@@ -79,7 +79,8 @@ std::vector<double> UK5Q_box::UK5Q_getVector() const
 {
 	vector<double> ret = {};
 		bool ok;
-		const QString str = ui->UK5Q_input->text();
+		QString str = ui->UK5Q_input->text();
+		if (str.isEmpty()) str = "0";
 		const QStringList list = str.split(";");
 		for (QStringList::const_iterator itr = list.constBegin(); itr != list.constEnd(); ++itr)
 		{
@@ -122,7 +123,8 @@ std::vector<int> UK5Q_box::UK5Q_getVectorI() const
 {
 	vector<int> ret = {};
 		bool ok;
-		const QString str = ui->UK5Q_input->text();
+		QString str = ui->UK5Q_input->text();
+		if (str.isEmpty()) str = "0";
 		const QStringList list = str.split(";");
 		for (QStringList::const_iterator itr = list.constBegin(); itr != list.constEnd(); ++itr)
 		{
