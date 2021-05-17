@@ -342,7 +342,7 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 		break;
 	case 8:			//l
 		UK5Q_read(s, river->l, box);
-		river->rl = UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river->l,river->dx,river->xn),map_box);			
+		river->rl = UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river->nl,river->l,river->dx,river->xn),map_box);			
 		break;
 	case 9:			//qst
 		UK5Q_read(s, river->qst, box);
@@ -370,7 +370,7 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 		break;
 	case 15:		//xn
 		UK5Q_read(s, river->xn, box);
-		river->rl	= UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river->l,river->dx,river->xn), map_box);		
+		river->rl	= UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river->nl,river->l,river->dx,river->xn), map_box);		
 		river->rll	= UK5Q_recount(s,UK5B_river::UK5B_eval_rll(river->ll,river->dx,river->xn),map_box);		
 		break;
 	case 17:		//pc
@@ -388,7 +388,7 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 		river->rh	= UK5Q_recount(s,UK5B_river::UK5B_eval_rh(river->h,river->dy), map_box);					
 		break;
 	case 21:		//dx
-		river->rl	= UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river->l,river->dx,river->xn), map_box);		
+		river->rl	= UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river->nl,river->l,river->dx,river->xn), map_box);		
 		river->rll	= UK5Q_recount(s,UK5B_river::UK5B_eval_rll(river->ll,river->dx,river->xn),map_box);	UK5Q_rewrite("rll");
 		break;
 	case 22:		//rbb

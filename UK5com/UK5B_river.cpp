@@ -307,7 +307,6 @@ void UK5B_river::UK5B_init_cut()
 
 }
 
-
 void UK5B_river::UK5B_eval(UK5B_out* p)
 {
 	p->UK5B_body_csv_print(this);
