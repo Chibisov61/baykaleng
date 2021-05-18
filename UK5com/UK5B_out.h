@@ -10,15 +10,14 @@ class UK5B_out
 {
 public:
 	explicit UK5B_out(const std::string&);
-	~UK5B_out();  // NOLINT(bugprone-exception-escape)
 	UK5B_out(const UK5B_out&) = delete;
 	UK5B_out(UK5B_out&&) = default;
 	UK5B_out& operator = (const UK5B_out&) = delete;
 	UK5B_out& operator = (UK5B_out&&) = default;
 	
 
-	void UK5B_header_print(UK5B_river);
-	void UK5B_body_print(UK5B_river);
+	void UK5B_header_print(const UK5B_river&);
+	void UK5B_body_print(const UK5B_river&);
 
 
 protected:

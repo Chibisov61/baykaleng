@@ -11,10 +11,10 @@ public:
 	UK5B_varVD b,l,hog;
 	std::pair<UK5B_varD,int>  rbb,rw,rh,rll;
 	std::pair<UK5B_varVD,std::vector<int>> rb, rhog ,rl;
-	std::deque<std::deque<double>> cut = {{}};
+	std::vector<std::vector<double>> cut = {{}};
 	double max = 0;
 	
-	std::deque<std::deque<double>> UK5B_karaush(std::deque<std::deque<double>>);
+	std::vector<std::vector<double>> UK5B_karaush(std::vector<std::vector<double>>);
 	void UK5B_init_cut();
 	
 	static				double	UK5B_eval_dog(const UK5B_varD&);																				//qst

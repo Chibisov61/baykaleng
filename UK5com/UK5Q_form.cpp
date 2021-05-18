@@ -14,6 +14,8 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 	ui = new Ui::MainWindow();
 	ui->setupUi(this);
 
+	ui->UK5Q_progressBar->setValue(0);
+	
 	map.insert(0, ui->UK5Q_scrollAreaWidgetContents_IN);
 	map.insert(1, ui->UK5Q_scrollAreaWidgetContents_IN_OUT);
 	map.insert(2, ui->UK5Q_scrollAreaWidgetContents_OUT);
@@ -55,11 +57,12 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 	river.rll	=  UK5Q_init("rll" ,false	,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn)			,map,lmap,map_box);
 
 	river.UK5B_init_cut();
-		
+
 	connect(ui->UK5Q_Exit, SIGNAL(clicked()), this, SLOT(UK5Q_exit()));
 	connect(ui->UK5Q_Eval, SIGNAL(clicked()), this, SLOT(UK5Q_eval()));
 
 }
+
 void UK5Q_form::UK5Q_exit()
 {
 	QApplication::quit();
@@ -67,22 +70,25 @@ void UK5Q_form::UK5Q_exit()
 
 void UK5Q_form::UK5Q_eval()
 {
-	const QString f = "UK5." + QTime::currentTime().toString() + ".csv";
-	UK5B_out print(f.toStdString());
+  	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
+  	UK5B_out print(f.toStdString());
 	
-	print.UK5B_header_print(river);
-	print.UK5B_body_print(river);
+  	print.UK5B_header_print(river);
+  	print.UK5B_body_print(river);
+
+	ui->UK5Q_progressBar->setValue(0);
 
 	const int lll = river.rll.second;
-	for(int i = 1; i < lll + 1; i++)
+	for(int i = 1; i < lll + 1; ++i)
 	{
 		river.cut = river.UK5B_karaush(river.cut);
-		if (std::binary_search(river.rl.second.begin(), river.rl.second.end(), i))
-			print.UK5B_body_print(river);
+  		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
+  			print.UK5B_body_print(river);
+		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
+		ui->UK5Q_progressBar->setValue(static_cast<int>(ii));
 	}
 	
 	river.UK5B_init_cut();
-	print.~UK5B_out();
 }	
 
 UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def, const QMap<int, QWidget*>& mp, QMap<QString,QString>& label,QMap<QString, UK5Q_box*>& mapbox) const

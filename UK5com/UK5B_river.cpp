@@ -5,34 +5,32 @@
 //{
 //}
 
-std::deque<std::deque<double>> UK5B_river::UK5B_karaush(std::deque<std::deque<double>> p)
+std::vector<std::vector<double>> UK5B_river::UK5B_karaush(std::vector<std::vector<double>> p)
 {
-	std::deque<std::deque<double>> r = p;
+	std::vector<std::vector<double>> r = p;
 
 	const int hh = static_cast<int>(p.size());
 	const int w = static_cast<int>(p.front().size());
 
-	for (int i = 1; i < hh + 1; ++i)
-		for (int j = 1; j < w + 1; ++j)
+	for (int i = 1; i < hh - 1; ++i)
+		for (int j = 1; j < w - 1; ++j)
 			r.at(i).at(j) = (p.at(i).at(j + 1) + p.at(i + 1).at(j) + p.at(i).at(j - 1) + p.at(i - 1).at(j)) / 4;
 
-	for(int i = 0; i < hh + 2; ++i)
+	for(int i = 0; i < hh; ++i)
 	{
-		r.at(i).at(0) = r.at(i).at(1);		// дно 
-		r.at(i).at(w + 1) = r.at(i).at(w);		// поверхность
+		r.at(i).at(0) = r.at(i).at(1);				// дно 
+		r.at(i).at(w - 1) = r.at(i).at(w - 2);		// поверхность
 	}
 
-	for(int j = 0; j < w + 2; ++j)
+	for(int j = 0; j < w; ++j)
 	{
-		r.at(0).at(j) = r.at(1).at(j);		// море
-		r.at(hh + 1).at(j) = r.at(hh).at(j);	// берег
+		r.at(0).at(j) = r.at(1).at(j);				// море
+		r.at(hh - 1).at(j) = r.at(hh - 2).at(j);	// берег
 	}
 
-	std::deque<double> rr = {};
-
-	for (int i = 0; i < hh + 1; ++i)
+	std::vector<double> rr;
+	for (int i = 0; i < hh; ++i)
 		rr.push_back(*(std::max_element(r.at(i).begin(), r.at(i).end())));
-
 	this->max = *(std::max_element(rr.begin(), rr.end()));
 	
 	return r;
@@ -58,25 +56,34 @@ void UK5B_river::UK5B_init_cut()
 	for (int k = 0; k < no; ++k) _wo.push_back(_bbl += _b.at(k));
 	_wo.push_back(_bb);
 	
-	std::vector<std::pair<int, int>> _o = { {0,0} };
+	std::vector<std::pair<int, int>> _o = {};
 	for (int k = 0; k < no; ++k) _o.emplace_back(_ho.at(k), _wo.at(k));
 
-//	cut = {{}};
 	for (int i = 1; i < _h + 1; ++i)
 	{
-		std::deque<double> cut_inner;
+		std::vector<double> cut_inner;
 		for (int j = 0; j < _w + 2; ++j)
 		{
+			bool e = false;
 			for (int k = 0; k < no; ++k)
-				if ((2 * i < 2 * _o.at(k).first - _n) && (2 * j < 2 * _o.at(k).second - _n)) cut_inner.push_back(tt);
-				else cut_inner.push_back(0);
+				if ((2 * i > 2 * _o.at(k).first - _n)  && 
+					(2 * i < 2 * _o.at(k).first + _n + 2)  && 
+					(2 * j > 2 * _o.at(k).second - _n) && 
+					(2 * j < 2 * _o.at(k).second + _n + 2)) 
+				{
+					e = true;
+					break;
+				}
+			cut_inner.push_back(e ? tt : 0);
 		}
 		cut.push_back(cut_inner);
+		cut_inner = {};
 	}
 	
 	cut[0] = cut[1];
 	cut.push_back(cut.back());
 
+	this->max = tt;
 }
 
 double UK5B_river::UK5B_eval_dog(const UK5B_varD& qst)													//qst
