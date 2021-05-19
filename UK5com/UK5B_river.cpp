@@ -204,7 +204,7 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rb(const U
 			r2.push_back(static_cast<int>(i / _dydz));
 			r1.push_back(r2.back() * _dydz);
 		}
-	} while ((ng -= z) > 0);
+	} while ((ng -= z) >= 0);
 
 	for(int j=0; j < ng + z; j++)						// заносим остаток. В целом в rx должно оказаться _nog членов
 	{
@@ -216,7 +216,7 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rb(const U
 	return r;
 }
 
-std::pair<double,int> UK5B_river::UK5B_eval_rw(std::pair<UK5B_varD,int> rrbb, std::pair<UK5B_varVD,std::vector<int>> rrb)	//rbb rb	
+std::pair<double,int> UK5B_river::UK5B_eval_rw(const std::pair<UK5B_varD,int>& rrbb, const std::pair<UK5B_varVD,std::vector<int>>& rrb)	//rbb rb	
 {
 	auto r1	= rrbb.first.UK5B_getValue();
 	auto r2		= rrbb.second;
@@ -304,7 +304,7 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const U
 	const int zz = _nl - z;
 	
 	if (zz > 0)
-		for(int i=1; i < zz; i++)
+		for(int i=1; i < zz + 1; i++)
 		{
 			r2.push_back(i);
 			r1.push_back(i * _dx);

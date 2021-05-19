@@ -35,6 +35,8 @@ void UK5Q_box::UK5Q_setLabel(const QString& label) const
 void UK5Q_box::UK5Q_setMode(const bool mode) const
 {
 	ui->UK5Q_check->setEnabled(mode);
+	const auto c = (mode) ? Qt::Checked : Qt::Unchecked;
+	ui->UK5Q_check->setCheckState(c);
 }
 
 int UK5Q_box::UK5Q_getMode() const
@@ -81,6 +83,7 @@ std::vector<double> UK5Q_box::UK5Q_getVector() const
 		bool ok;
 		QString str = ui->UK5Q_input->text();
 		if (str.isEmpty()) str = "0";
+		if (str.back() == ";") str.truncate(str.size()-1);
 		const QStringList list = str.split(";");
 		for (QStringList::const_iterator itr = list.constBegin(); itr != list.constEnd(); ++itr)
 		{
@@ -125,6 +128,7 @@ std::vector<int> UK5Q_box::UK5Q_getVectorI() const
 		bool ok;
 		QString str = ui->UK5Q_input->text();
 		if (str.isEmpty()) str = "0";
+		if (str.back() == ";") str.truncate(str.size()-1);
 		const QStringList list = str.split(";");
 		for (QStringList::const_iterator itr = list.constBegin(); itr != list.constEnd(); ++itr)
 		{

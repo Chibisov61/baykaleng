@@ -13,6 +13,8 @@ public:
 	void				UK5Q_setLabel(const QString&) const;
 	void				UK5Q_setMode(bool) const;
 	int					UK5Q_getMode() const;
+
+	bool				UK5Q_isCalculated();
 	
 	double				UK5Q_getValue() const;
 	int					UK5Q_getValueI() const;

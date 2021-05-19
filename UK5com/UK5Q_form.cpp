@@ -91,6 +91,105 @@ void UK5Q_form::UK5Q_eval()
 	river.UK5B_init_cut();
 }	
 
+void UK5Q_form::UK5Q_rewrite(const QString& s)
+{
+	const auto box = map_box[s];
+
+	switch (bmap[s])
+	{
+	case 1:			//vr
+		UK5Q_read(s, river.vr, box);
+		if (!map_box["nn"]->UK5Q_getMode()) { river.nn = UK5Q_recount("nn", UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog), map_box);	UK5Q_rewrite("nn"); }
+		if (!map_box["xn"]->UK5Q_getMode()) { river.xn = UK5Q_recount("xn", UK5B_river::UK5B_eval_xn(river.vr, river.qst, river.dog), map_box);	UK5Q_rewrite("xn"); }
+		river.pd = UK5Q_recount("pd",UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc),map_box);		UK5Q_rewrite("pd");
+		break;
+	case 2:			//bb
+		UK5Q_read(s, river.bb, box);
+		river.rbb = UK5Q_recount("rbb",UK5B_river::UK5B_eval_rbb(river.bb,river.dy),map_box);			UK5Q_rewrite("rbb");
+		break;
+	case 3:			//nog
+		UK5Q_read(s, river.nog, box);
+		river.rb	= UK5Q_recount("rb",UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy),map_box);	UK5Q_rewrite("rb");
+		river.rhog = UK5Q_recount("rhog",UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy),map_box);				
+		break;
+	case 4:			//b
+		UK5Q_read(s, river.b, box);
+		river.rb = UK5Q_recount("rb",UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy),map_box);		UK5Q_rewrite("rb");
+		break;
+	case 5:			//h
+		UK5Q_read(s, river.h, box);
+		river.pc = UK5Q_recount("pc",UK5B_river::UK5B_eval_pc(river.h,river.psh),map_box);				UK5Q_rewrite("pc");
+		river.rh = UK5Q_recount("rh",UK5B_river::UK5B_eval_rh(river.h,river.dy),map_box);					
+		break;
+	case 6:			//hog
+		UK5Q_read(s, river.hog, box);
+		river.rhog = UK5Q_recount("rhog",UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy),map_box);				
+		break;
+	case 7:			//nl
+		UK5Q_read(s, river.nl, box);
+		river.rl = UK5Q_recount("rl",UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn),map_box);		UK5Q_rewrite("rl");
+		break;
+	case 8:			//l
+		UK5Q_read(s, river.l, box);
+		river.rl = UK5Q_recount("rl",UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn),map_box);			
+		break;
+	case 9:			//qst
+		UK5Q_read(s, river.qst, box);
+		if (!map_box["nn"]->UK5Q_getMode())  { river.nn = UK5Q_recount("nn", UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog), map_box);	UK5Q_rewrite("nn");  }
+		if (!map_box["xn"]->UK5Q_getMode())  { river.xn = UK5Q_recount("xn", UK5B_river::UK5B_eval_xn(river.vr, river.qst, river.dog), map_box);	UK5Q_rewrite("xn");  }
+		if (!map_box["dog"]->UK5Q_getMode()) { river.dog = UK5Q_recount("dog", UK5B_river::UK5B_eval_dog(river.qst), map_box);					UK5Q_rewrite("dog"); }
+		break;
+	case 11:		//n
+		UK5Q_read(s, river.n, box);
+		river.dz = UK5Q_recount("dz",UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dz");
+		river.dy = UK5Q_recount("dy",UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dy");
+		break;
+	case 12:		//psh
+		UK5Q_read(s, river.psh, box);
+		river.pc = UK5Q_recount("pc",UK5B_river::UK5B_eval_pc(river.h,river.psh),map_box);				UK5Q_rewrite("pc");
+		break;
+	case 13:		//dog
+		UK5Q_read(s, river.dog, box);
+		if (!map_box["nn"]->UK5Q_getMode()) { river.nn = UK5Q_recount("nn", UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog), map_box);	UK5Q_rewrite("nn"); }
+		if (!map_box["xn"]->UK5Q_getMode()) { river.xn = UK5Q_recount("xn", UK5B_river::UK5B_eval_xn(river.vr, river.qst, river.dog), map_box);	UK5Q_rewrite("xn"); }
+		break;
+	case 14:		//nn
+		UK5Q_read(s, river.nn, box);
+		river.dz = UK5Q_recount("dz",UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dz");
+		river.dy = UK5Q_recount("dy",UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dy");
+		break;
+	case 15:		//xn
+		UK5Q_read(s, river.xn, box);
+		river.rl	= UK5Q_recount("rl",UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn), map_box);		
+		river.rll	= UK5Q_recount("rll",UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn),map_box);		
+		break;
+	case 17:		//pc
+		river.pd	= UK5Q_recount("pd",UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc),map_box);		UK5Q_rewrite("pd");
+		break;
+	case 18:		//pd
+		river.dx	= UK5Q_recount("dx",UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy),map_box);		UK5Q_rewrite("dx");
+		break;
+	case 19:		//dz
+	case 20:		//dy
+		river.dx	= UK5Q_recount("dx",UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy),map_box);		UK5Q_rewrite("dx");
+		river.rbb	= UK5Q_recount("rbb",UK5B_river::UK5B_eval_rbb(river.bb,river.dy), map_box);			UK5Q_rewrite("rbb");
+		river.rb	= UK5Q_recount("rb",UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy),map_box);		UK5Q_rewrite("rb");
+		river.rhog	= UK5Q_recount("rhog",UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy), map_box);				
+		river.rh	= UK5Q_recount("rh",UK5B_river::UK5B_eval_rh(river.h,river.dy), map_box);					
+		break;
+	case 21:		//dx
+		river.rl	= UK5Q_recount("rl",UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn), map_box);		
+		river.rll	= UK5Q_recount("rll",UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn),map_box);
+		break;
+	case 22:		//rbb
+	case 23:		//rb
+		river.rw = UK5Q_recount("rw",UK5B_river::UK5B_eval_rw(river.rbb,river.rb),map_box);		
+		break;
+	default: ;
+		break;
+	}
+}
+
 UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def, const QMap<int, QWidget*>& mp, QMap<QString,QString>& label,QMap<QString, UK5Q_box*>& mapbox) const
 {
 	UK5B_varD u;
@@ -114,7 +213,7 @@ UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def,
 			break;
 		case 1:
 			box->UK5Q_setMode(true);                   
-			box->UK5Q_state(0);                   
+			box->UK5Q_state(2);                   
 			break;
 		case 2:
 			box->UK5Q_setMode(false);                   
@@ -197,7 +296,6 @@ UK5B_varVD UK5Q_form::UK5Q_init(const QString& s, const bool x, std::vector<doub
 	box->show();
 	
 	return u;
-
 }
 
 UK5B_varVI UK5Q_form::UK5Q_init(const QString& s, const bool x, std::vector<int> def, const QMap<int, QWidget*>& mp,  QMap<QString,QString>& label,QMap<QString, UK5Q_box*>& mapbox) const
@@ -314,99 +412,6 @@ std::pair<UK5B_varVD, std::vector<int>> UK5Q_form::UK5Q_init(const QString& s, c
 	
 }
 
-void UK5Q_form::UK5Q_rewrite(const QString& s)
-{
-	const auto box = map_box[s];
-
-	switch(bmap[s])
-	{
-	case 1:			//vr
-		UK5Q_read(s, river.vr, box);
-		river.nn = UK5Q_recount(s,UK5B_river::UK5B_eval_nn(river.vr,river.qst,river.dog),map_box);	UK5Q_rewrite("nn");
-		river.xn = UK5Q_recount(s,UK5B_river::UK5B_eval_xn(river.vr,river.qst,river.dog),map_box);	UK5Q_rewrite("xn");
-		river.pd = UK5Q_recount(s,UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc),map_box);		UK5Q_rewrite("pd");
-		break;
-	case 2:			//bb
-		UK5Q_read(s, river.bb, box);
-		river.rbb = UK5Q_recount(s,UK5B_river::UK5B_eval_rbb(river.bb,river.dy),map_box);				UK5Q_rewrite("rbb");
-		break;
-	case 3:			//nog
-		UK5Q_read(s, river.nog, box);
-		river.rb	= UK5Q_recount(s,UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy),map_box);	UK5Q_rewrite("rb");
-		river.rhog = UK5Q_recount(s,UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy),map_box);				
-		break;
-	case 4:			//b
-		UK5Q_read(s, river.b, box);
-		river.rb = UK5Q_recount(s,UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy),map_box);		UK5Q_rewrite("rb");
-		break;
-	case 5:			//h
-		UK5Q_read(s, river.h, box);
-		river.pc = UK5Q_recount(s,UK5B_river::UK5B_eval_pc(river.h,river.psh),map_box);				UK5Q_rewrite("pc");
-		river.rh = UK5Q_recount(s,UK5B_river::UK5B_eval_rh(river.h,river.dy),map_box);					
-		break;
-	case 6:			//hog
-		UK5Q_read(s, river.hog, box);
-		river.rhog = UK5Q_recount(s,UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy),map_box);				
-		break;
-	case 8:			//l
-		UK5Q_read(s, river.l, box);
-		river.rl = UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn),map_box);			
-		break;
-	case 9:			//qst
-		UK5Q_read(s, river.qst, box);
-		river.nn = UK5Q_recount(s,UK5B_river::UK5B_eval_nn(river.vr,river.qst,river.dog),map_box);	UK5Q_rewrite("nn");
-		river.xn = UK5Q_recount(s,UK5B_river::UK5B_eval_xn(river.vr,river.qst,river.dog),map_box);	UK5Q_rewrite("xn");
-		break;
-	case 11:		//n
-		UK5Q_read(s, river.n, box);
-		river.dz = UK5Q_recount(s,UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dz");
-		river.dy = UK5Q_recount(s,UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dy");
-		break;
-	case 12:		//psh
-		UK5Q_read(s, river.psh, box);
-		river.pc = UK5Q_recount(s,UK5B_river::UK5B_eval_pc(river.h,river.psh),map_box);				UK5Q_rewrite("pc");
-		break;
-	case 13:		//dog
-		UK5Q_read(s, river.dog, box);
-		river.nn = UK5Q_recount(s,UK5B_river::UK5B_eval_nn(river.vr,river.qst,river.dog),map_box);	UK5Q_rewrite("nn");
-		river.xn = UK5Q_recount(s,UK5B_river::UK5B_eval_xn(river.vr,river.qst,river.dog),map_box);	UK5Q_rewrite("xn");
-		break;
-	case 14:		//nn
-		UK5Q_read(s, river.nn, box);
-		river.dz = UK5Q_recount(s,UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dz");
-		river.dy = UK5Q_recount(s,UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn),map_box);	UK5Q_rewrite("dy");
-		break;
-	case 15:		//xn
-		UK5Q_read(s, river.xn, box);
-		river.rl	= UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn), map_box);		
-		river.rll	= UK5Q_recount(s,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn),map_box);		
-		break;
-	case 17:		//pc
-		river.pd = UK5Q_recount(s,UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc),map_box);		UK5Q_rewrite("pd");
-		break;
-	case 18:		//pd
-		river.dx = UK5Q_recount(s,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy),map_box);		UK5Q_rewrite("dx");
-		break;
-	case 19:		//dz
-	case 20:		//dy
-		river.dx	= UK5Q_recount(s,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy),map_box);	UK5Q_rewrite("dx");
-		river.rbb	= UK5Q_recount(s,UK5B_river::UK5B_eval_rbb(river.bb,river.dy), map_box);			UK5Q_rewrite("rbb");
-		river.rb	= UK5Q_recount(s,UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy),map_box);	UK5Q_rewrite("rb");
-		river.rhog = UK5Q_recount(s,UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy), map_box);				
-		river.rh	= UK5Q_recount(s,UK5B_river::UK5B_eval_rh(river.h,river.dy), map_box);					
-		break;
-	case 21:		//dx
-		river.rl	= UK5Q_recount(s,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn), map_box);		
-		river.rll	= UK5Q_recount(s,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn),map_box);	UK5Q_rewrite("rll");
-		break;
-	case 22:		//rbb
-	case 23:		//rb
-		river.rw = UK5Q_recount(s,UK5B_river::UK5B_eval_rw(river.rbb,river.rb),map_box);		
-		break;
-	default: ;
-	}
-}
-
 UK5B_varD UK5Q_form::UK5Q_recount(const QString& s, double def, QMap<QString, UK5Q_box*>& mapbox) const
 {
 	UK5B_varD u;
@@ -501,28 +506,28 @@ std::pair<UK5B_varVD, std::vector<int>> UK5Q_form::UK5Q_recount(const QString& s
 	return u;
 }
 
-void UK5Q_form::UK5Q_read(const QString& s, UK5B_varD u, UK5Q_box* box) const
+void UK5Q_form::UK5Q_read(const QString& s, UK5B_varD& u, UK5Q_box* box) const
 {
 	u.UK5B_setName(s.toStdString());
 	u.UK5B_setValue(false, box->UK5Q_getValue());
 	u.UK5B_setPlace(map.key(qobject_cast<UK5Q_box*>(box->UK5Q_getPlace())));
 }
 
-void UK5Q_form::UK5Q_read(const QString& s, UK5B_varI u, UK5Q_box* box) const
+void UK5Q_form::UK5Q_read(const QString& s, UK5B_varI& u, UK5Q_box* box) const
 {
 	u.UK5B_setName(s.toStdString());
 	u.UK5B_setValue(false, box->UK5Q_getValueI());
 	u.UK5B_setPlace(map.key(qobject_cast<UK5Q_box*>(box->UK5Q_getPlace())));
 }
 
-void UK5Q_form::UK5Q_read(const QString& s, UK5B_varVD u, UK5Q_box* box) const
+void UK5Q_form::UK5Q_read(const QString& s, UK5B_varVD& u, UK5Q_box* box) const
 {
 	u.UK5B_setName(s.toStdString());
 	u.UK5B_setValue(false, box->UK5Q_getVector());
 	u.UK5B_setPlace(map.key(qobject_cast<UK5Q_box*>(box->UK5Q_getPlace())));
 }
 
-void UK5Q_form::UK5Q_read(const QString& s, UK5B_varVI u, UK5Q_box* box) const
+void UK5Q_form::UK5Q_read(const QString& s, UK5B_varVI& u, UK5Q_box* box) const
 {
 	u.UK5B_setName(s.toStdString());
 	u.UK5B_setValue(false, box->UK5Q_getVectorI());
