@@ -17,7 +17,7 @@ public:
 	
 
 	void UK5B_header_print(const UK5B_river&);
-	void UK5B_body_print(const UK5B_river&);
+	void UK5B_body_print(int,const UK5B_river&);
 
 
 protected:

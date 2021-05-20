@@ -62,25 +62,27 @@ void UK5B_out::UK5B_header_print(const UK5B_river& river)
 	
 	
 }
-void UK5B_out::UK5B_body_print(const UK5B_river& river)
+void UK5B_out::UK5B_body_print(const int lvl,  const UK5B_river& river)
 {
 	std::vector<std::vector<double>> cut = river.cut;
 	const double max = river.max;
 	const double tt = river.cct.UK5B_getValue();
 
-	const int h = static_cast<int>(cut.size());
-	const int w = static_cast<int>(cut.front().size());
+	const int h = river.rh.second + 2;
+	const int w = river.rw.second + 2;
 
 	fout << std::endl;
 
 	for(int i = 0; i <  h - 1; ++i)
 	{
-		for (int j = 0; j < w; j++)
+		for (int j = 0; j < w - 1; j++)
 			fout << cut.at(h - i - 1).at(j) << ";";
 		fout << std::endl;
 	}
+
+	
 	
 	fout << std::endl;
-	fout << tt / max << ";" << max << std::endl;
+	fout << lvl * river.dx.UK5B_getValue() + river.xn.UK5B_getValue() << "(" << lvl << ")" << ";" << tt / max << ";" << max << std::endl;
 	
 }

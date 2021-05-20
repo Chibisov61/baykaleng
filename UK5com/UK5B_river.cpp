@@ -314,8 +314,8 @@ std::pair<std::vector<double>,std::vector<int>> UK5B_river::UK5B_eval_rl(const U
 	{
 		const int t = static_cast<int>((it > _xn) ? it - _xn : _xn / _dx);
 		if (t > zz) {
-			r2.push_back(t);
-			r1.push_back(t * _dx);
+			r2.push_back(static_cast<int>(t / _dx));
+			r1.push_back(t);
 		}
 	}
 	
