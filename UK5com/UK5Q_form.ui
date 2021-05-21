@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>935</width>
+    <width>941</width>
     <height>942</height>
    </rect>
   </property>
@@ -207,8 +207,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>641</width>
-            <height>581</height>
+            <width>460</width>
+            <height>580</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -219,8 +219,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>639</width>
-             <height>579</height>
+             <width>458</width>
+             <height>578</height>
             </rect>
            </property>
           </widget>
@@ -237,8 +237,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>641</width>
-            <height>581</height>
+            <width>460</width>
+            <height>580</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -249,8 +249,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>639</width>
-             <height>579</height>
+             <width>458</width>
+             <height>578</height>
             </rect>
            </property>
           </widget>
@@ -271,8 +271,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>641</width>
-            <height>581</height>
+            <width>459</width>
+            <height>580</height>
            </rect>
           </property>
           <property name="widgetResizable">
@@ -283,8 +283,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>639</width>
-             <height>579</height>
+             <width>457</width>
+             <height>578</height>
             </rect>
            </property>
           </widget>

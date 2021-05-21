@@ -64,8 +64,6 @@ public:
   
 	void UK5B_setValue(const bool x, const double def) {
 
-		ferr.open("error.log", std::ios::out);
-
 		std::map <std::string, int> mapping;
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
@@ -83,15 +81,22 @@ public:
 					auto f = pos->second.find(name);
 					if (f != pos->second.not_found())
 					{
-						value = (*f).second.get_value<double>();
 						place = mapping[pos->first];
+						value = (*f).second.get_value<double>();
+						if (place == 1) value2 = def;
 						break;
+					}
+					else
+					{
+						value = def;
+						place = 2;
 					}
 				}
 			}
 			
 			catch (const boost::property_tree::ptree_error &e)
 			{
+				ferr.open("error.log", std::ios::out);
 				ferr << e.what() << std::endl;
 			}
 		}
@@ -109,8 +114,14 @@ public:
 		return (value);
 	}
 
+	double UK5B_getValue2() const		
+	{
+		return (value2);
+	}
+
 private:
 	double value = 0.;
+	double value2 = 0;
 };
 
 class UK5B_varI : public UK5B_var
@@ -125,8 +136,6 @@ public:
 	UK5B_varI& operator = (UK5B_varI&&) noexcept = default; 
 
 	void UK5B_setValue(const bool x, const int def) {
-
-		ferr.open("error.log", std::ios::out);
 
 		std::map <std::string, int> mapping;
 		mapping["in"] = 0;
@@ -145,15 +154,22 @@ public:
 					auto f = pos->second.find(name);
 					if (f != pos->second.not_found())
 					{
-						value = (*f).second.get_value<int>();
 						place = mapping[pos->first];
+						value = (*f).second.get_value<int>();
+						if (place == 1) value2 = def;
 						break;
+					}
+					else
+					{
+						value = def;
+						place = 2;
 					}
 				}
 			}
 
 			catch (const boost::property_tree::ptree_error& e)
 			{
+				ferr.open("error.log", std::ios::out);
 				ferr << e.what() << std::endl;
 			}
 		}
@@ -171,8 +187,14 @@ public:
 		return (value);
 	}
 
+	int UK5B_getValue2() const
+	{
+		return (value2);
+	}
+
 private:
 	int value = 0;
+	int value2 = 0;
 };
 
 class UK5B_varVD : public UK5B_var
@@ -187,8 +209,6 @@ public:
 	UK5B_varVD& operator = (UK5B_varVD&&) noexcept = default;
 	
 	void UK5B_setValue(const bool x, const std::vector<double>& def) {
-
-		ferr.open("error.log", std::ios::out);
 
 		std::map <std::string, int> mapping;
 		mapping["in"] = 0;
@@ -207,6 +227,7 @@ public:
 					auto f = pos->second.find(name);
 					if (f != pos->second.not_found())
 					{
+						place = mapping[pos->first];
 						auto s = (*f).second.get_value<std::string>();
 						if (s.empty()) s = "0";
 						boost::char_separator<char> sep(";");
@@ -233,12 +254,17 @@ public:
 							catch (const std::exception& e)
 							{
 								value.push_back(-1.);
+								ferr.open("error.log", std::ios::out);
 								ferr << e.what() << std::endl;
 							}
 						}
-
-						place = mapping[pos->first];
+						if (place == 1) value2 = def;
 						break;
+					}
+					else
+					{
+						value = def;
+						place = 2;
 					}
 				}
 			}
@@ -262,8 +288,14 @@ public:
 		return (value);
 	}
 
+	std::vector<double> UK5B_getValue2() const
+	{
+		return (value2);
+	}
+
 private:
 	std::vector<double> value = {};
+	std::vector<double> value2 = {};
 };
 
 class UK5B_varVI : public UK5B_var
@@ -278,8 +310,6 @@ public:
 	UK5B_varVI& operator = (UK5B_varVI&&) noexcept = default;
 
 	void UK5B_setValue(const bool x, const std::vector<int>& def) {
-
-		ferr.open("error.log", std::ios::out);
 
 		std::map<std::string, int> mapping;
 		mapping["in"] = 0;
@@ -298,6 +328,7 @@ public:
 					auto f = pos->second.find(name);
 					if (f != pos->second.not_found())
 					{
+						place = mapping[pos->first];
 						auto s = (*f).second.get_value<std::string>();
 						if (s.empty()) s = "0";
 						boost::char_separator<char> sep(";");
@@ -324,12 +355,18 @@ public:
 							catch (const std::exception& e)
 							{
 								value.push_back(-1.);
+								ferr.open("error.log", std::ios::out);
 								ferr << e.what() << std::endl;
 							}
 						}
 						
-						place = mapping[pos->first];
+						if (place == 1) value2 = def;
 						break;
+					}
+					else
+					{
+						value = def;
+						place = 2;
 					}
 				}
 			}
@@ -353,6 +390,12 @@ public:
 		return (value);
 	}
 
+	std::vector<int> UK5B_getValue2() const		
+	{
+		return (value2);
+	}
+
 private:
 	std::vector<int> value = {};
+	std::vector<int> value2 = {};
 };

@@ -21,8 +21,11 @@ void UK5B_out::UK5B_header_print(const UK5B_river& river)
 	for (auto& i : river.rb.first.UK5B_getValue())  fout << i << " ";
 	fout << std::endl;
 	
-	fout << lmap["bb"] << ":" << river.bb.UK5B_getValue() << t;
-	fout << lmap["rbb"] << ":" << river.rbb.first.UK5B_getValue() << std::endl;
+	fout << lmap["bl"] << ":" << river.bl.UK5B_getValue() << t;
+	fout << lmap["rbl"] << ":" << river.rbl.first.UK5B_getValue() << std::endl;
+	
+	fout << lmap["br"] << ":" << river.br.UK5B_getValue() << t;
+	fout << lmap["rbr"] << ":" << river.rbr.first.UK5B_getValue() << std::endl;
 	
 	fout << ":" << t;
 	fout << lmap["rw"] << ":" << river.rw.first.UK5B_getValue() << std::endl;

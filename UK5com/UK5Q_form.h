@@ -15,10 +15,11 @@ public:
 	UK5B_river					river;
 	QMap<QString, UK5Q_box*>	map_box;
 	QMap<int, QWidget*>			map;
-	QMap<QString,int>			bmap = {{"vr",1},	{"bb",2},	{"nog",3},{"b",4},	{"h",5},	{"hog",6},{"nl",7},	{"l",8},	{"qst",9},{"cct",10},	{"n",11},	{"psh",12},	{"dog",13},	{"nn",14},
-										{"xn",15},	{"ll",16},	{"pc",17},{"pd",18},{"dz",19},	{"dy",20},{"dx",21},{"rbb",22},	{"rb",23},{"rw",24},	{"rhog",25},{"rh",26},	{"rl",27},	{"rll",28}};
+	QMap<QString,int>			bmap = {{"vr",1}, {"br",2},	{"bl",3}, {"nog",4},{"b",5},  {"h",6},  {"hog",7},{"nl",8},  {"l",9},	{"qst",10},{"cct",11},{"n",12},	  {"psh",13},{"dog",14},{"nn",15},
+										{"xn",16},{"ll",17},{"pc",18},{"pd",19},{"dz",20},{"dy",21},{"dx",22},{"rbr",23},{"rbl",24},{"rb",25}, {"rw",26}, {"rhog",27},{"rh",28}, {"rl",29},	{"rll",30}};
 	QMap<QString, QString>		lmap = {{"vr",QStringLiteral(u"Скорость реки")},
-										{"bb",QStringLiteral(u"Расстояние до берега")},
+										{"br",QStringLiteral(u"Расстояние до правого берега")},
+										{"bl",QStringLiteral(u"Расстояние до левого берега")},
 										{"nog",QStringLiteral(u"Количество оголовков")},				
 										{"b",QStringLiteral(u"Расстояния между оголовками")},
 										{"h",QStringLiteral(u"Глубина")},
@@ -38,7 +39,8 @@ public:
 										{"dz",QStringLiteral(u"dz")},
 										{"dy",QStringLiteral(u"dy")},							
 										{"dx",QStringLiteral(u"dx")},							
-										{"rbb",QStringLiteral(u"Расстояние до берега (расч.)")},
+										{"rbr",QStringLiteral(u"Расстояние до правого берега (расч.)")},
+										{"rbl",QStringLiteral(u"Расстояние до левого берега (расч.)")},
 										{"rb",QStringLiteral(u"Расстояния между оголовками (расч.)")},
 										{"rw",QStringLiteral(u"Общая ширина (расч.)")},
 										{"rhog",QStringLiteral(u"Высоты оголовков (расч.)")},
@@ -50,12 +52,12 @@ public:
 
 									void	UK5Q_rewrite(const QString&);
 	
-	UK5B_varD								UK5Q_init(const QString&, bool, double) const;
-	UK5B_varI								UK5Q_init(const QString&, bool, int) const;
-	UK5B_varVD								UK5Q_init(const QString&, bool, std::vector<double>) const;
-	UK5B_varVI								UK5Q_init(const QString&, bool, std::vector<int>) const;
-	std::pair<UK5B_varD,int>				UK5Q_init(const QString&, bool, std::pair<double,int>) const;
-	std::pair<UK5B_varVD,std::vector<int>>	UK5Q_init(const QString&, bool, std::pair<std::vector<double>,std::vector<int>>) const;
+	UK5B_varD								UK5Q_init(const QString&, bool, double);
+	UK5B_varI								UK5Q_init(const QString&, bool, int);
+	UK5B_varVD								UK5Q_init(const QString&, bool, std::vector<double>);
+	UK5B_varVI								UK5Q_init(const QString&, bool, std::vector<int>);
+	std::pair<UK5B_varD,int>				UK5Q_init(const QString&, bool, std::pair<double,int>);
+	std::pair<UK5B_varVD,std::vector<int>>	UK5Q_init(const QString&, bool, std::pair<std::vector<double>,std::vector<int>>);
 	
 	UK5B_varD								UK5Q_recount(const QString&, double) const;
 	UK5B_varI								UK5Q_recount(const QString&, int) const;
