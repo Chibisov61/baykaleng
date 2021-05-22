@@ -44,7 +44,7 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 	river.nn 	=  UK5Q_init("nn"	,x			,UK5B_river::UK5B_eval_nn(river.vr,river.dog,river.qst));			// Начальное разбавление
 	river.xn 	=  UK5Q_init("xn"	,x			,UK5B_river::UK5B_eval_xn(river.vr,river.dog,river.qst));			// Расстояние до створа выпуска
 	river.pc	=  UK5Q_init("pc"  ,false	,UK5B_river::UK5B_eval_pc(river.h,river.psh));						// Коэффициент Шези
-  	river.pd	=  UK5Q_init("pd" ,x			,UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc));				// Коэффициент диффузии
+	river.pd	=  UK5Q_init("pd" ,x			,UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc));				// Коэффициент диффузии
 	river.dz	=  UK5Q_init("dz"  ,false	,UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn));	// dz
 	river.dy	=  UK5Q_init("dy"  ,false	,UK5B_river::UK5B_eval_dydz(river.vr,river.qst,river.n,river.nn));	// dy
 	river.dx	=  UK5Q_init("dx"  ,false	,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy));				// dx
@@ -213,17 +213,17 @@ UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def)
 	box->UK5Q_setMode((place !=1 ) ? false : true);
 	box->UK5Q_state((place == 2) ? 0 : 2);
 	box->show();
-  	if 	(place == 1)
-    {
-  		auto box2 = new UK5Q_box(map[2]);
-  		box2->setObjectName("UK5Q_BOX_"+s+"_eval");
-  		map_box.insert(s+"_eval",box2);
-  		box2->UK5Q_setLabel(lmap[s]+QStringLiteral(u" (расч.)"));
-  		box2->UK5Q_setValue(u.UK5B_getValue2());
-  		box2->UK5Q_setMode(false);
-  		box2->UK5Q_state(0);
-  		box2->show();
-  	}  
+	if 	(place == 1)
+	{
+		auto box2 = new UK5Q_box(map[2]);
+		box2->setObjectName("UK5Q_BOX_"+s+"_eval");
+		map_box.insert(s+"_eval",box2);
+		box2->UK5Q_setLabel(lmap[s]+QStringLiteral(u" (расч.)"));
+		box2->UK5Q_setValue(u.UK5B_getValue2());
+		box2->UK5Q_setMode(false);
+		box2->UK5Q_state(0);
+		box2->show();
+	}  
 	return u;
 }
 
