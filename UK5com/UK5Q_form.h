@@ -4,6 +4,7 @@
 #include "UK5B_river.h"
 #include "UK5Q_box.h"
 #include <vector>
+#include <array>
 #include <QMap>
 
 
@@ -14,7 +15,7 @@ class UK5Q_form : public QMainWindow
 public:
 	UK5B_river					river;
 	QMap<QString, UK5Q_box*>	map_box;
-	QMap<int, QWidget*>			map;
+	QMap<int, QVBoxLayout*>		map;
 	QMap<QString,int>			bmap = {{"vr",1}, {"br",2},	{"bl",3}, {"nog",4},{"b",5},  {"h",6},  {"hog",7},{"nl",8},  {"l",9},	{"qst",10},{"cct",11},{"n",12},	  {"psh",13},{"dog",14},{"nn",15},
 										{"xn",16},{"ll",17},{"pc",18},{"pd",19},{"dz",20},{"dy",21},{"dx",22},{"rbr",23},{"rbl",24},{"rb",25}, {"rw",26}, {"rhog",27},{"rh",28}, {"rl",29},	{"rll",30}};
 	QMap<QString, QString>		lmap = {{"vr",QStringLiteral(u"Скорость реки")},

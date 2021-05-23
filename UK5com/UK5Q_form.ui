@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>941</width>
+    <width>940</width>
     <height>942</height>
    </rect>
   </property>
@@ -190,7 +190,7 @@
      <rect>
       <x>0</x>
       <y>30</y>
-      <width>931</width>
+      <width>932</width>
       <height>781</height>
      </rect>
     </property>
@@ -199,72 +199,129 @@
       <layout class="QVBoxLayout" name="verticalLayout_LEFT">
        <item>
         <widget class="QGroupBox" name="groupBox_IN">
+         <property name="minimumSize">
+          <size>
+           <width>460</width>
+           <height>385</height>
+          </size>
+         </property>
          <property name="title">
           <string/>
          </property>
-         <widget class="QScrollArea" name="scrollArea_IN">
+         <widget class="QScrollArea" name="UK5Q_scrollArea_IN">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>460</width>
-            <height>580</height>
+            <width>451</width>
+            <height>621</height>
            </rect>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
           </property>
           <property name="widgetResizable">
            <bool>true</bool>
           </property>
-          <widget class="QWidget" name="UK5Q_scrollAreaWidgetContents_IN">
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_IN">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>458</width>
-             <height>578</height>
+             <width>432</width>
+             <height>619</height>
             </rect>
            </property>
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <widget class="QWidget" name="verticalLayoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>451</width>
+              <height>621</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="UK5Q_scrollLayout_IN">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+             </property>
+            </layout>
+           </widget>
           </widget>
          </widget>
         </widget>
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_IN_OUT">
+         <property name="minimumSize">
+          <size>
+           <width>460</width>
+           <height>385</height>
+          </size>
+         </property>
          <property name="title">
           <string/>
          </property>
-         <widget class="QScrollArea" name="scrollArea_IN_OUT">
+         <widget class="QScrollArea" name="UK5Q_scrollArea_IN_OUT">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>460</width>
-            <height>580</height>
+            <width>451</width>
+            <height>461</height>
            </rect>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustIgnored</enum>
           </property>
           <property name="widgetResizable">
            <bool>true</bool>
           </property>
-          <widget class="QWidget" name="UK5Q_scrollAreaWidgetContents_IN_OUT">
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_IN_OUT">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>458</width>
-             <height>578</height>
+             <width>432</width>
+             <height>459</height>
             </rect>
            </property>
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <widget class="QWidget" name="verticalLayoutWidget_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>461</width>
+              <height>451</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="UK5Q_scrollLayout_IN_OUT">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+             </property>
+            </layout>
+           </widget>
           </widget>
          </widget>
         </widget>
@@ -275,36 +332,66 @@
       <layout class="QVBoxLayout" name="verticalLayout_RIGHT">
        <item>
         <widget class="QGroupBox" name="groupBox_OUT">
+         <property name="minimumSize">
+          <size>
+           <width>460</width>
+           <height>385</height>
+          </size>
+         </property>
          <property name="title">
           <string/>
          </property>
-         <widget class="QScrollArea" name="scrollArea_OUT">
+         <widget class="QScrollArea" name="UK5Q_scrollArea_OUT">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>459</width>
-            <height>580</height>
+            <width>451</width>
+            <height>631</height>
            </rect>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustIgnored</enum>
           </property>
           <property name="widgetResizable">
            <bool>true</bool>
           </property>
-          <widget class="QWidget" name="UK5Q_scrollAreaWidgetContents_OUT">
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_OUT">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>457</width>
-             <height>578</height>
+             <width>432</width>
+             <height>629</height>
             </rect>
            </property>
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <widget class="QWidget" name="verticalLayoutWidget_3">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>451</width>
+              <height>631</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="UK5Q_scrollLayout_OUT">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+             </property>
+            </layout>
+           </widget>
           </widget>
          </widget>
         </widget>
@@ -319,7 +406,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>641</width>
+            <width>461</width>
             <height>192</height>
            </rect>
           </property>
