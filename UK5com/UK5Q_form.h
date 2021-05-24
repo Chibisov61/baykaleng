@@ -14,6 +14,7 @@ class UK5Q_form : public QMainWindow
 
 public:
 	UK5B_river					river;
+	std::array<QSize, 3>		p;
 	QMap<QString, UK5Q_box*>	map_box;
 	QMap<int, QVBoxLayout*>		map;
 	QMap<QString,int>			bmap = {{"vr",1}, {"br",2},	{"bl",3}, {"nog",4},{"b",5},  {"h",6},  {"hog",7},{"nl",8},  {"l",9},	{"qst",10},{"cct",11},{"n",12},	  {"psh",13},{"dog",14},{"nn",15},
@@ -48,7 +49,6 @@ public:
 										{"rh",QStringLiteral(u"Глубина (расч.)")},
 										{"rl",QStringLiteral(u"Помежуточные сечения (расч.)")},
 										{"rll",QStringLiteral(u"Участок реки (расч.)")}};
-	
 								explicit	UK5Q_form(QWidget* parent = Q_NULLPTR);
 
 									void	UK5Q_rewrite(const QString&);

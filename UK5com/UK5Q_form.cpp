@@ -25,6 +25,10 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 
 	const std::vector<double> dnul = {0.};
 
+	p[0] = { ui->groupBox_IN->width(),0};
+	p[1] = { ui->groupBox_IN_OUT->width(),0};
+	p[2] = { ui->groupBox_OUT->width(),0};
+
 //in
 	river.vr	=  UK5Q_init("vr"	,x,0.);																			// Скорость реки
 	river.br	=  UK5Q_init("br"	,x,0.);																			// Расстояние от правого берега
@@ -60,12 +64,15 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 
 	river.UK5B_init_cut();
 
+	ui->verticalLayoutWidget->setGeometry({ QPoint(0,0),p[0] });
 	ui->UK5Q_scrollArea_IN->resize(ui->groupBox_IN->size());
 	ui->UK5Q_scrollArea_IN->setWidgetResizable(false);
-	
+
+	ui->verticalLayoutWidget_2->setGeometry({ QPoint(0,0),p[1] });
 	ui->UK5Q_scrollArea_IN_OUT->resize(ui->groupBox_IN_OUT->size());
 	ui->UK5Q_scrollArea_IN_OUT->setWidgetResizable(false);
 	
+	ui->verticalLayoutWidget_3->setGeometry({ QPoint(0,0),p[2] });
 	ui->UK5Q_scrollArea_OUT->resize(ui->groupBox_OUT->size());
 	ui->UK5Q_scrollArea_OUT->setWidgetResizable(false);
 
@@ -217,6 +224,7 @@ UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def)
 	auto box = new UK5Q_box(nullptr);
 	map[place]->addWidget(box);		
 	box->setObjectName("UK5Q_BOX_"+s);
+	p[place] += {0, box->height()+2};
 	map_box.insert(s,box);
 	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	box->UK5Q_setLabel(lmap[s]);
@@ -229,6 +237,7 @@ UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def)
 		auto box2 = new UK5Q_box(nullptr);
 		map[2]->addWidget(box2);		
 		box2->setObjectName("UK5Q_BOX_"+s+"_eval");
+		p[2] += {0, box->height()+2};
 		map_box.insert(s+"_eval",box2);
 		box2->UK5Q_setLabel(lmap[s]+QStringLiteral(u" (расч.)"));
 		box2->UK5Q_setValue(u.UK5B_getValue2());
@@ -249,6 +258,7 @@ UK5B_varI UK5Q_form::UK5Q_init(const QString& s, const bool x, const int def)
 	auto box = new UK5Q_box(nullptr);
 	map[place]->addWidget(box);		
 	box->setObjectName("UK5Q_BOX_"+s);
+	p[place] += {0, box->height()+2};
 	map_box.insert(s,box);
 	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	box->UK5Q_setLabel(lmap[s]);
@@ -269,6 +279,7 @@ UK5B_varVD UK5Q_form::UK5Q_init(const QString& s, const bool x, const std::vecto
 	auto box = new UK5Q_box(nullptr);
 	map[place]->addWidget(box);		
 	box->setObjectName("UK5Q_BOX_"+s);
+	p[place] += {0, box->height()+2};
 	map_box.insert(s,box);
 	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	box->UK5Q_setLabel(lmap[s]);
@@ -289,6 +300,7 @@ UK5B_varVI UK5Q_form::UK5Q_init(const QString& s, const bool x, const std::vecto
 	auto box = new UK5Q_box(nullptr);
 	map[place]->addWidget(box);		
 	box->setObjectName("UK5Q_BOX_"+s);
+	p[place] += {0, box->height()+2};
 	map_box.insert(s,box);
 	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	box->UK5Q_setLabel(lmap[s]);
@@ -312,6 +324,7 @@ std::pair<UK5B_varD, int> UK5Q_form::UK5Q_init(const QString& s, const bool x, s
 	auto box = new UK5Q_box(nullptr);
 	map[place]->addWidget(box);		
 	box->setObjectName("UK5Q_BOX_"+s);
+	p[place] += {0, box->height()+2};
 	map_box.insert(s,box);
 	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	box->UK5Q_setLabel(lmap[s]);
@@ -334,6 +347,7 @@ std::pair<UK5B_varVD, std::vector<int>> UK5Q_form::UK5Q_init(const QString& s, c
 	auto box = new UK5Q_box(nullptr);
 	map[place]->addWidget(box);		
 	box->setObjectName("UK5Q_BOX_"+s);
+	p[place] += {0, box->height()+2};
 	map_box.insert(s,box);
 	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
 	box->UK5Q_setLabel(lmap[s]);
