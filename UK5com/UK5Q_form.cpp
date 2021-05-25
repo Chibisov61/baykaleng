@@ -45,24 +45,24 @@ UK5Q_form::UK5Q_form(QWidget *parent)
 	river.psh	=	UK5Q_init("psh",x,0.);																				// Коэффициент шероховатости
 //in-out и out
 	river.ll	=	UK5Q_init("ll"  ,x,500.);																			// Длина участка реки
-	river.dog	=	UK5Q_init("dog" ,x,UK5B_river::UK5B_eval_dog(river.qst));											// Диаметр оголовка
-	river.vst	=	UK5Q_init("vst" ,false, UK5B_river::UK5B_eval_vst(river.qst, river.dog));							// Скорсть сточных вод на оголовок
-	river.dt	=	UK5Q_init("dt"  ,false, UK5B_river::UK5B_eval_dt(river.vr, river.vst));								// Относительный диаметр			
-	river.dzz	=	UK5Q_init("dzz" ,false, UK5B_river::UK5B_eval_dzz(river.vr, river.qst, river.dt, river.vst));		// Площадь пятна загрязнения
+	river.dog	=	UK5Q_init("dog" ,x        ,UK5B_river::UK5B_eval_dog(river.qst));									// Диаметр оголовка
+	river.vst	=	UK5Q_init("vst" ,false  ,UK5B_river::UK5B_eval_vst(river.qst, river.dog));						// Скорсть сточных вод на оголовок
+	river.dt	=	UK5Q_init("dt"  ,false  ,UK5B_river::UK5B_eval_dt(river.vr, river.vst));							// Относительный диаметр			
+	river.dzz	=	UK5Q_init("dzz" ,false  ,UK5B_river::UK5B_eval_dzz(river.vr, river.qst, river.dt, river.vst));	// Площадь пятна загрязнения
 	river.nn 	=	UK5Q_init("nn"  ,x			,UK5B_river::UK5B_eval_nn(river.vr,river.dog,river.qst));				// Начальное разбавление
 	river.xn 	=	UK5Q_init("xn"  ,x			,UK5B_river::UK5B_eval_xn(river.vr,river.dog,river.qst));				// Расстояние до створа выпуска
-	river.pc	=	UK5Q_init("pc"  ,false	,UK5B_river::UK5B_eval_pc(river.h,river.psh));								// Коэффициент Шези
+	river.pc	=	UK5Q_init("pc"  ,false	,UK5B_river::UK5B_eval_pc(river.h,river.psh));							// Коэффициент Шези
 	river.pd	=	UK5Q_init("pd"  ,x			,UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc));					// Коэффициент диффузии
 	river.dz	=	UK5Q_init("dz"  ,false	,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));							// dz
 	river.dy	=	UK5Q_init("dy"  ,false	,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));							// dy
-	river.dx	=	UK5Q_init("dx"  ,false	,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy));						// dx
-	river.rbr	=	UK5Q_init("rbr" ,false	,UK5B_river::UK5B_eval_rbr(river.br,river.dy));								// Расстояние от правого берега (расч.)
-	river.rbl	=	UK5Q_init("rbl" ,false	,UK5B_river::UK5B_eval_rbl(river.bl,river.dy));								// Расстояние от левого берега (расч.)
-	river.rb	=	UK5Q_init("rb"  ,false	,UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy));						// Расстояния между оголовками (расч.)
-	river.rw	=	UK5Q_init("rw"  ,false	,UK5B_river::UK5B_eval_rw(river.rbr,river.rb,river.rbr));					// Общая ширина (расч.) 
-	river.rhog	=	UK5Q_init("rhog",false	,UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy));					// Высоты оголовков (расч.)
-	river.rh	=	UK5Q_init("rh"  ,false	,UK5B_river::UK5B_eval_rh(river.h,river.dy));								// Глубина (расч.)
-	river.rl	=	UK5Q_init("rl"  ,false	,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));				// Расстояния до промеж. сечений (расч.)
+	river.dx	=	UK5Q_init("dx"  ,false	,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy));					// dx
+	river.rbr	=	UK5Q_init("rbr" ,false	,UK5B_river::UK5B_eval_rbr(river.br,river.dy));							// Расстояние от правого берега (расч.)
+	river.rbl	=	UK5Q_init("rbl" ,false	,UK5B_river::UK5B_eval_rbl(river.bl,river.dy));							// Расстояние от левого берега (расч.)
+	river.rb	=	UK5Q_init("rb"  ,false	,UK5B_river::UK5B_eval_rb(river.b,river.nog,river.dy));					// Расстояния между оголовками (расч.)
+	river.rw	=	UK5Q_init("rw"  ,false	,UK5B_river::UK5B_eval_rw(river.rbr,river.rb,river.rbr));				// Общая ширина (расч.) 
+	river.rhog	=	UK5Q_init("rhog",false	,UK5B_river::UK5B_eval_rhog(river.hog,river.nog,river.dy));				// Высоты оголовков (расч.)
+	river.rh	=	UK5Q_init("rh"  ,false	,UK5B_river::UK5B_eval_rh(river.h,river.dy));							// Глубина (расч.)
+	river.rl	=	UK5Q_init("rl"  ,false	,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));			// Расстояния до промеж. сечений (расч.)
 	river.rll	=	UK5Q_init("rll" ,false	,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn));					// Длина учаска реки (расч.)
 
 	river.UK5B_init_cut();
@@ -123,6 +123,7 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 		if (!map_box["nn"]->UK5Q_getMode()) { river.nn = UK5Q_recount("nn", UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog));}
 		if (!map_box["xn"]->UK5Q_getMode()) { river.xn = UK5Q_recount("xn", UK5B_river::UK5B_eval_xn(river.vr, river.qst, river.dog));		UK5Q_rewrite("xn"); }
 		river.pd = UK5Q_recount("pd",UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc));													UK5Q_rewrite("pd");
+		river.dt = UK5Q_recount("dt",UK5B_river::UK5B_eval_dt(river.vr, river.dzz));														UK5Q_rewrite("dt");
 		break;
 	case 2:			//br
 		UK5Q_read(s, river.br, box);
@@ -160,11 +161,11 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 		break;
 	case 10:		//qst
 		UK5Q_read(s, river.qst, box);
-		if (!map_box["nn"]->UK5Q_getMode())  { river.nn = UK5Q_recount("nn", UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog));}
-		if (!map_box["xn"]->UK5Q_getMode())  { river.xn = UK5Q_recount("xn", UK5B_river::UK5B_eval_xn(river.vr, river.qst, river.dog));	UK5Q_rewrite("xn"); }
+//		if (!map_box["nn"]->UK5Q_getMode())  { river.nn = UK5Q_recount("nn", UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog));}
+//		if (!map_box["xn"]->UK5Q_getMode())  { river.xn = UK5Q_recount("xn", UK5B_river::UK5B_eval_xn(river.vr, river.qst, river.dog));	UK5Q_rewrite("xn"); }
 		if (!map_box["dog"]->UK5Q_getMode()) { river.dog = UK5Q_recount("dog", UK5B_river::UK5B_eval_dog(river.qst));						UK5Q_rewrite("dog");}
-		river.vst = UK5Q_recount("vst", UK5B_river::UK5B_eval_vst(river.qst,river.dog));													UK5Q_rewrite("vst");
-		river.dzz = UK5Q_recount("dzz", UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));						            UK5Q_rewrite("dzz");
+//		river.vst = UK5Q_recount("vst", UK5B_river::UK5B_eval_vst(river.qst,river.dog));													UK5Q_rewrite("vst");
+//		river.dzz = UK5Q_recount("dzz", UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));						            UK5Q_rewrite("dzz");
 		break;
 	case 12:		//n
 		UK5Q_read(s, river.n, box);
