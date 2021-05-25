@@ -92,40 +92,59 @@ double UK5B_river::UK5B_eval_dog(const UK5B_varD& qst)													//qst
 	const double pi = 3.1415;
 	const double _qst = qst.UK5B_getValue();
 	
-	return pow(4. * _qst / pi / 25., 0.4);
+	return pow(4. * _qst / pi / 25., 0.4); 
 }
 
-double UK5B_river::UK5B_eval_nn(const UK5B_varD& vr, const UK5B_varD& dog, const UK5B_varD& qst)		//vr dog qst
+double UK5B_river::UK5B_eval_vst(const UK5B_varD& qst, const UK5B_varD& dog)							//qst dog
 {
 	const double pi = 3.1415;
+	const double _dog = dog.UK5B_getValue();								
+	const double _qst = qst.UK5B_getValue();
+	
+	return (4 * _qst) / (pi * _dog * _dog);
+}
+
+double UK5B_river::UK5B_eval_dt(const UK5B_varD& vr, const UK5B_varD& vst)								//vr vst
+{
 	const double dvm = 0.1;
 	const double _vr  = vr.UK5B_getValue();
-	const double _dog = dog.UK5B_getValue();
-	const double _qst = qst.UK5B_getValue();
+	const double _vst  = vst.UK5B_getValue();
 
-	const auto vst = 2 * _qst * 2 / (pi * _dog * _dog);										// V сточное
-	const auto m = _vr / vst;																	// m
-	const auto dt = sqrt(8.1 / (((1 - m) * dvm * dvm / 0.92) + (2 * m * dvm / 0.96)));		// d с тильдой
+	const auto m = _vr / _vst;																	// m
+	return sqrt(8.1 / (((1 - m) * dvm * dvm / 0.92) + (2 * m * dvm / 0.96)));
+}
+
+double UK5B_river::UK5B_eval_dzz(const UK5B_varD& vr, const UK5B_varD& qst, const UK5B_varD& dt, const UK5B_varD& vst)
+{
+	const double _qst = qst.UK5B_getValue();
+	const double _vr  = vr.UK5B_getValue();
+	const double _vst = vst.UK5B_getValue();								
+	const double _dt  = dt.UK5B_getValue();
+
+	const auto m = _vr / _vst;																	// m
+	return ((m < 0.25) && (_vst < 2.)) ? (_qst / _vr) : (_qst * _dt * _dt / _vst);
+}
+
+double UK5B_river::UK5B_eval_nn(const UK5B_varD& vr, const UK5B_varD& vst, const UK5B_varD& dt)								//vr vst dt
+{
+	const double _vr  = vr.UK5B_getValue();
+	const double _vst  = vst.UK5B_getValue();
+	const double _dt  = dt.UK5B_getValue();
+
+	const auto m = _vr / _vst;																	// m
 //	if (_h / dzz <= 1)
 //	nnr = nnr * f(_h / dzz);																	// проверка на влияние дна
-
-	return (0.248 * dt * dt / (1 - m)) * (sqrt(m * m + 8.1 * (1 - m) / dt / dt) - m);
+	return ((m < 0.25) && (_vst < 2.)) ? 1. : (0.248 * _dt * _dt / (1 - m)) * (sqrt(m * m + 8.1 * (1 - m) / _dt / _dt) - m);
 }
 
-double UK5B_river::UK5B_eval_xn(const UK5B_varD& vr, const UK5B_varD& dog, const UK5B_varD& qst)		//vr dog qst
+double UK5B_river::UK5B_eval_xn(const UK5B_varD& vr, const UK5B_varD& vst, const UK5B_varD& dzz)		//vr vst dzz
 {
-	const double pi = 3.1415;
-	const double dvm = 0.1;
 	const double _vr  = vr.UK5B_getValue();
-	const double _dog = dog.UK5B_getValue();
-	const double _qst = qst.UK5B_getValue();
+	const double _vst = vst.UK5B_getValue();
+	const double _dzz = dzz.UK5B_getValue();
 
-	const auto vst = 2 * _qst * 2 / (pi * _dog * _dog);										// V сточное
-	const auto m = _vr / vst;																	// m
-	const auto dt = sqrt(8.1 / (((1 - m) * dvm * dvm / 0.92) + (2 * m * dvm / 0.96)));		// d с тильдой
-	const auto dzz = dt * _dog;																// диаметр струи
-	
-	return dzz / 0.48 / (1 - 3.12 * m);
+	const auto m = _vr / _vst;																	// m
+	return ((m < 0.25) && (_vst < 2.)) ? 0. : (_dzz / 0.48 / (1 - 3.12 * m));
 }
 
 double UK5B_river::UK5B_eval_pc(const UK5B_varD& h, const UK5B_varD& psh)								//h psh
@@ -136,7 +155,6 @@ double UK5B_river::UK5B_eval_pc(const UK5B_varD& h, const UK5B_varD& psh)							
 
 	auto const a1 = 1 / _psh - sqrt(g) * (1 - log10(_h)) / 0.13;
 	auto const a2 = sqrt(g) * (1 / _psh + sqrt(g) * log10(_h)) / 0.13;
-	
 	return a1 / 2 + sqrt(a1 * a1 / 4 + a2);	//-V112
 }
 
@@ -148,20 +166,15 @@ auto UK5B_river::UK5B_eval_pd(const UK5B_varD& vr, const UK5B_varD& h, const UK5
 	const double _pc  = pc.UK5B_getValue();
 	
 	auto const mm = _pc < 60 ? 0.75 * _pc + 6 : 48;									
-
 	return g * _h * _vr / mm / _pc;																
 }
 
-double UK5B_river::UK5B_eval_dydz(const UK5B_varD& vr, const UK5B_varD& qst, const UK5B_varI& n, const UK5B_varD& nn)		//vr qst n nn
+double UK5B_river::UK5B_eval_dydz(const UK5B_varI& n, const UK5B_varD& dzz)		//vr qst n nn
 {
-	const double _vr	= vr.UK5B_getValue();
-	const double _qst	= qst.UK5B_getValue();
 	const int	 _n		= n.UK5B_getValue();
-	const double _nn	= nn.UK5B_getValue();
+	const double _dzz	= dzz.UK5B_getValue();
 
-	const auto dn = _qst * _nn / _vr;															// условная площадь поперечного сечения загрязненной струи
-	const auto on = dn / static_cast<double>(_n) / static_cast<double>(_n);
-	
+	const auto on = _dzz / static_cast<double>(_n) / static_cast<double>(_n);
 	return sqrt(on);
 }
 

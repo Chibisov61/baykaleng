@@ -6,7 +6,7 @@ class UK5B_river
 public:
 	UK5B_river() = default;
 	
-	UK5B_varD  vr, br, bl, h, dog, qst, cct, psh, nn, xn, ll, pc, pd, dx, dy, dz;
+	UK5B_varD  vr, br, bl, h, dog, qst, cct, psh, vst, dt, dzz, nn, xn, ll, pc, pd, dx, dy, dz;
 	UK5B_varI  nog,nl,n;
 	UK5B_varVD b,l,hog;
 	std::pair<UK5B_varD,int>  rbr,rbl,rw,rh,rll;
@@ -18,11 +18,14 @@ public:
 	void UK5B_init_cut();
 	
 	static				double	UK5B_eval_dog(const UK5B_varD&);																				//qst
+	static				double  UK5B_eval_vst(const UK5B_varD&,const UK5B_varD&);																//
+	static				double  UK5B_eval_dt(const UK5B_varD&,const UK5B_varD&);																//
+	static				double  UK5B_eval_dzz(const UK5B_varD&,const UK5B_varD&,const UK5B_varD&,const UK5B_varD&);								//
 	static				double	UK5B_eval_nn(const UK5B_varD&,const UK5B_varD&,const UK5B_varD&);												//vr dog qst
 	static				double	UK5B_eval_xn(const UK5B_varD&, const UK5B_varD&,const UK5B_varD&);												//vr dog qst
 	static				double	UK5B_eval_pc(const UK5B_varD&, const UK5B_varD&);																//h psh
 	static				double	UK5B_eval_pd(const UK5B_varD&, const UK5B_varD&, const UK5B_varD&);												//vr h pc
-	static				double	UK5B_eval_dydz(const UK5B_varD&,const UK5B_varD&,const UK5B_varI&,const UK5B_varD&);							//vr qst n nn
+	static				double	UK5B_eval_dydz(const UK5B_varI&,const UK5B_varD&);							//vr qst n nn
 	static				double	UK5B_eval_dx(const UK5B_varD&,const UK5B_varD&,const UK5B_varD&);												//vr pd dydz
 	
 	static	std::pair<double,int>							UK5B_eval_rbr(const UK5B_varD&,const UK5B_varD&);									//br dydz
