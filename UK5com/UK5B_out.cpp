@@ -1,7 +1,4 @@
 ﻿#include "UK5B_out.h"
-//#include <vector>
-
-
 
 UK5B_out::UK5B_out(const std::string& f)
 {

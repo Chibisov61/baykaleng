@@ -50,6 +50,8 @@ void UK5B_river::UK5B_init_cut()
 	
 	const int no = static_cast<int>(_ho.size());
 	const double tt = _t / _nn;
+
+	cut = {};
 		
 	std::vector<int> _wo = {};
 	int bb = _bl;
@@ -58,6 +60,7 @@ void UK5B_river::UK5B_init_cut()
 	_wo.push_back(bb += _br);
 	
 	std::vector<std::pair<int, int>> _o = {};
+	_o.reserve(no);
 	for (int k = 0; k < no; ++k) _o.emplace_back(_ho.at(k), _wo.at(k));
 
 	for (int i = 1; i < _h + 1; ++i)
@@ -78,10 +81,10 @@ void UK5B_river::UK5B_init_cut()
 			cut_inner.push_back(e ? tt : 0);
 		}
 		cut.push_back(cut_inner);
+		if (i == 1) cut.push_back(cut_inner);
 		cut_inner = {};
 	}
 	
-	cut[0] = cut[1];
 	cut.push_back(cut.back());
 
 	this->max = tt;
@@ -114,7 +117,7 @@ double UK5B_river::UK5B_eval_dt(const UK5B_varD& vr, const UK5B_varD& vst)						
 	return sqrt(8.1 / (((1 - m) * dvm * dvm / 0.92) + (2 * m * dvm / 0.96)));
 }
 
-double UK5B_river::UK5B_eval_dzz(const UK5B_varD& vr, const UK5B_varD& qst, const UK5B_varD& dt, const UK5B_varD& vst)
+double UK5B_river::UK5B_eval_dzz(const UK5B_varD& vr, const UK5B_varD& qst, const UK5B_varD& dt, const UK5B_varD& vst)	//vr qst dt vst
 {
 	const double _qst = qst.UK5B_getValue();
 	const double _vr  = vr.UK5B_getValue();
@@ -125,15 +128,16 @@ double UK5B_river::UK5B_eval_dzz(const UK5B_varD& vr, const UK5B_varD& qst, cons
 	return ((m < 0.25) && (_vst < 2.)) ? (_qst / _vr) : (_qst * _dt * _dt / _vst);
 }
 
-double UK5B_river::UK5B_eval_nn(const UK5B_varD& vr, const UK5B_varD& vst, const UK5B_varD& dt)								//vr vst dt
+double UK5B_river::UK5B_eval_nn(const UK5B_varD& vr, const UK5B_varD& vst, const UK5B_varD& dt)			//vr vst dt
 {
 	const double _vr  = vr.UK5B_getValue();
 	const double _vst  = vst.UK5B_getValue();
 	const double _dt  = dt.UK5B_getValue();
 
-	const auto m = _vr / _vst;																	// m
 //	if (_h / dzz <= 1)
-//	nnr = nnr * f(_h / dzz);																	// проверка на влияние дна
+//	nnr = nnr * f(_h / dzz);																			// проверка на влияние дна
+	
+	const auto m = _vr / _vst;																	// m
 	return ((m < 0.25) && (_vst < 2.)) ? 1. : (0.248 * _dt * _dt / (1 - m)) * (sqrt(m * m + 8.1 * (1 - m) / _dt / _dt) - m);
 }
 
