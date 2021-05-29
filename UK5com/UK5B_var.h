@@ -10,7 +10,6 @@
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
 
-
 class UK5B_var
 {
 
@@ -47,7 +46,6 @@ protected:
 	int			place = 2;
 	std::string	name;
 	std::ofstream ferr;
-	
 	
 };
 
