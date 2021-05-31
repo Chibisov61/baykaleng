@@ -581,7 +581,7 @@ void UKcom4::eval0()
 		if ((NN == -1) || (XN == -1))	// если хотя или NN или XN отсутствуют - считаем все варианты
 		{
 			//Расчет nnr и xnr
-			auto vst = 2 * P.qst * 2 / (pi * P.DOG * P.DOG);												// V сточное
+			auto vst = 2 * P.qst * 2 / (pi * P.DOG * P.DOG);											// V сточное
 			auto m = P.VR / vst;																		// m
 			auto dt = sqrt(8.1 / (((1 - m) * dvm * dvm / 0.92) + (2 * m * dvm / 0.96)));				// d с тильдой
 			auto dzz = dt * P.DOG;																		// диаметр струи

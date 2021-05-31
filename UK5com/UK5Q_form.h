@@ -54,7 +54,8 @@ public:
 										 {"rl",QStringLiteral(u"Помежуточные сечения (расч.)")},
 										{"rll",QStringLiteral(u"Участок реки (расч.)")}};
 								explicit	UK5Q_form(QWidget* parent = Q_NULLPTR);
-
+	
+									void	viewCharts(QChartView*, std::vector<double>, double, double, int, int) const;
 									void	UK5Q_rewrite(const QString&);
 	
 	UK5B_varD								UK5Q_init(const QString&, bool, double);

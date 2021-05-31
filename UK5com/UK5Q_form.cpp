@@ -96,24 +96,85 @@ void UK5Q_form::UK5Q_eval()
 {
 	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
 	UK5B_out print(f.toStdString());
-	
+
+	std::vector<double> m = { river.max };
+
+// вывод заголовка и нулевого среза	
 	print.UK5B_header_print(river);
 	print.UK5B_body_print(0, river);
 
+// расчет по караушеву с выводом промежуточных и конечного срезов
 	ui->UK5Q_progressBar->setValue(0);
-
 	const int lll = river.rll.second;
 	for(int i = 1; i < lll + 1; ++i)
 	{
 		river.cut = river.UK5B_karaush(river.cut);
+		m.push_back(river.max);
 		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
 			print.UK5B_body_print(i,river);
 		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
 		ui->UK5Q_progressBar->setValue(static_cast<int>(ii));
 	}
+
+// вывод графика, максимального загрязнения на 500 м. и конечного разбавления
+	viewCharts(ui->UK5_chart, m, 0., river.ll.UK5B_getValue(), 11, 5);
 	
+// обнуление рабочего поля для следующего расчета
 	river.UK5B_init_cut();
-}	
+}
+
+void UK5Q_form::viewCharts(QChartView* chw, std::vector<double> r, const double tmin, const double tmax, const int tx, const int ty) const
+{
+	const auto res = minmax_element(r.begin(), r.end());
+
+	auto low = *res.first;
+	auto high = *res.second;
+
+	const auto cct = river.cct.UK5B_getValue();
+
+	low = static_cast<int>(cct / low / 10.) * 10.;
+	high = static_cast<int>((cct / high / 10.) + 1) * 10.;
+
+	auto ch = new QtCharts::QChart;
+	ch->layout()->setContentsMargins(0, 0, 0, 0);
+	ch->setBackgroundRoundness(0);
+	ch->setMargins(QMargins(0, 0, 0, 0));
+	ch->legend()->hide();
+	chw->setRenderHint(QPainter::Antialiasing);
+	chw->setChart(ch);
+
+	const auto cit = r.size();
+	const auto step = (tmax - tmin) / static_cast<double>(cit - 1);
+
+	QPen pen;
+	pen.setStyle(Qt::SolidLine);
+	pen.setWidth(2);
+	pen.setColor(Qt::red);
+	auto* series = new QLineSeries();
+	for (size_t j = 1; j < cit; j++)
+		series->append(step * static_cast<double>(j - 1) + tmin, cct / r[j]);
+	series->setPen(pen);
+
+	// ось Х
+	auto* axisX = new QValueAxis;
+	axisX->setRange(tmin, tmax);		// диапазон значений на оси X
+	axisX->setTickCount(tx);				// число линий сетки
+	axisX->setLabelFormat("%g");			// формат отображения чисел на оси X
+	axisX->setGridLineVisible(true);
+
+	// ось Y
+	auto* axisY = new QValueAxis;
+	axisY->setRange(low, high);		// диапазон значений на оси Y
+	axisY->setTickCount(ty);				// число линий сетки
+	axisY->setLabelFormat("%g");			// формат отображения чисел на оси Y
+	axisY->setGridLineVisible(true);
+
+	ch->addSeries(series);
+	ch->addAxis(axisX, Qt::AlignBottom);
+	series->attachAxis(axisX);
+	ch->addAxis(axisY, Qt::AlignLeft);
+	series->attachAxis(axisY);
+}
 
 void UK5Q_form::UK5Q_rewrite(const QString& s)
 {
