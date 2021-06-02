@@ -6,11 +6,12 @@ class UK5B_river
 public:
 	UK5B_river() = default;
 	
-	UK5B_varD  vr, br, bl, h, dog, qst, cct, psh, vst, dt, dzz, nn, xn, ll, pc, pd, dx, dy, dz;
-	UK5B_varI  nog,nl,n;
-	UK5B_varVD b,l,hog;
+	UK5B_varD	vr, br, bl, h, dog, qst, cct, psh, vst, dt, dzz, nn, xn, ll, pc, pd, dx, dy, dz;
+	UK5B_varI	nog,nl,n;
+	UK5B_varVD	b,l,hog;
 	std::pair<UK5B_varD,int>  rbr,rbl,rw,rh,rll;
 	std::pair<UK5B_varVD,std::vector<int>> rb, rhog ,rl;
+	UK5B_varD	mx, mm;
 	std::vector<std::vector<double>> cut = {{}};
 	double max = 0;
 	

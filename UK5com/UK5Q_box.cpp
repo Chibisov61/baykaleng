@@ -17,12 +17,6 @@ UK5Q_box::UK5Q_box(QWidget* parent = nullptr) : QWidget(parent)
 		UK5Q_setMode(false);
 		UK5Q_state(0);
 
-//		const int n = parent->children().count() - 1;
-//		QRect g = this->geometry();
-//		const auto h = g.height();
-//		const QPoint p = { g.x(), g.y() + h * n };
-//		if (n) this->move(p);
-
 		connect(ui->UK5Q_check, SIGNAL(stateChanged(int)), this, SLOT(UK5Q_state(int)));
 		connect(ui->UK5Q_input, SIGNAL(editingFinished()), this, SLOT(UK5Q_slot()));
 }
@@ -44,7 +38,7 @@ int UK5Q_box::UK5Q_getMode() const
 	return ui->UK5Q_check->checkState();
 }
 
-auto UK5Q_box::UK5Q_state(const int state) const -> void
+void UK5Q_box::UK5Q_state(const int state)
 {
 	switch(state)
 	{
@@ -62,6 +56,7 @@ auto UK5Q_box::UK5Q_state(const int state) const -> void
 		break;
 	default: ;
 	}
+	emit UK5Q_check(this->objectName());	
 }
 
 

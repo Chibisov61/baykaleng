@@ -14,7 +14,7 @@ class UK5Q_form : public QMainWindow
 
 public:
 	UK5B_river					river;
-	std::array<QSize, 3>		p;
+	std::array<QSize, 4>		p;
 	QMap<QString, UK5Q_box*>	map_box;
 	QMap<int, QVBoxLayout*>		map;
 	QMap<QString,int>			bmap = {{"vr",1}, {"br",2},	{"bl",3}, {"nog",4},{"b",5},  {"h",6},  {"hog",7},{"nl",8},  {"l",9},	{"qst",10},{"cct",11},{"n",12},	  {"psh",13},{"dog",14},{"nn",15},
@@ -52,7 +52,10 @@ public:
 									   {"rhog",QStringLiteral(u"Высоты оголовков (расч.)")},
 										 {"rh",QStringLiteral(u"Глубина (расч.)")},
 										 {"rl",QStringLiteral(u"Помежуточные сечения (расч.)")},
-										{"rll",QStringLiteral(u"Участок реки (расч.)")}};
+										{"rll",QStringLiteral(u"Участок реки (расч.)")},
+										 {"mx",QStringLiteral(u"Максимальная концентрация")},
+										 {"mm",QStringLiteral(u"Кратное разбавление")}};
+	
 								explicit	UK5Q_form(QWidget* parent = Q_NULLPTR);
 	
 									void	viewCharts(QChartView*, std::vector<double>, double, double, int, int) const;
@@ -79,12 +82,15 @@ public:
 
 public slots:
 	void UK5Q_newtext(QString);
+	void UK5Q_chck(QString);
 private:
 	Ui::MainWindow* ui;
 private slots:
 	static void UK5Q_exit();
 	void UK5Q_eval();
 signals:
+	void UK5Q_check(QString);
 	void UK5Q_edit(QString);
+
 };
 

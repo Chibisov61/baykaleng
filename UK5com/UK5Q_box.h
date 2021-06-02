@@ -14,8 +14,6 @@ public:
 	void				UK5Q_setMode(bool) const;
 	int					UK5Q_getMode() const;
 
-//	bool				UK5Q_isCalculated();
-	
 	double				UK5Q_getValue() const;
 	int					UK5Q_getValueI() const;
 	std::vector<double>	UK5Q_getVector() const;
@@ -29,12 +27,13 @@ public:
 	void				UK5Q_setVectorI(const std::vector<int>&) const;
 
 public slots:	
-	void UK5Q_state(int) const;
+	void UK5Q_state(int);
 	void UK5Q_slot();
 
 private:
 	Ui::UK5Q_box *ui;
 
 signals:
+	void UK5Q_check(QString);
 	void UK5Q_edit(QString);
 };

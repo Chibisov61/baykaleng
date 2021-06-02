@@ -35,7 +35,7 @@ public:
 	}
 	
 	void UK5B_setPlace(const int p) {
-		place = (p >= 0 && p <= 2) ? p : 2;
+		place = (p >= 0 && p <= 3) ? p : 2;
 	}
 	
 	std::string	UK5B_getName() const
@@ -66,6 +66,8 @@ public:
 		mapping["in"] = 0;
 		mapping["in_out"] = 1;
 		mapping["out"] = 2;
+		mapping["final"] = 3;
+		
 
 		if (x) {
 			// взять данные из config.ini
@@ -80,7 +82,7 @@ public:
 					if (f != pos->second.not_found())
 					{
 						place = mapping[pos->first];
-						value = (*f).second.get_value<double>();
+						value = (place != 3) ? (*f).second.get_value<double>() : def;
 						if (place == 1) value2 = def;
 						break;
 					}
