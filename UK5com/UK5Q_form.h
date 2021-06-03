@@ -68,12 +68,12 @@ public:
 	std::pair<UK5B_varD,int>				UK5Q_init(const QString&, bool, std::pair<double,int>);
 	std::pair<UK5B_varVD,std::vector<int>>	UK5Q_init(const QString&, bool, std::pair<std::vector<double>,std::vector<int>>);
 	
-	void	UK5Q_recount(const QString&, UK5B_varD,								double) const;
-	void	UK5Q_recount(const QString&, UK5B_varI,								int) const;
-	void	UK5Q_recount(const QString&, UK5B_varVD,							std::vector<double>) const;
-	void	UK5Q_recount(const QString&, UK5B_varVI,							std::vector<int>) const;
-	void	UK5Q_recount(const QString&, std::pair<UK5B_varD,int>,				std::pair<double,int>) const;
-	void	UK5Q_recount(const QString&, std::pair<UK5B_varVD,std::vector<int>>,std::pair<std::vector<double>,std::vector<int>>) const;
+	void	UK5Q_recount(const QString&, UK5B_varD&,							 double) const;
+	void	UK5Q_recount(const QString&, UK5B_varI&,							 int) const;
+	void	UK5Q_recount(const QString&, UK5B_varVD&,							 std::vector<double>) const;
+	void	UK5Q_recount(const QString&, UK5B_varVI&,							 std::vector<int>) const;
+	void	UK5Q_recount(const QString&, std::pair<UK5B_varD,int>&,				 std::pair<double,int>) const;
+	void	UK5Q_recount(const QString&, std::pair<UK5B_varVD,std::vector<int>>&,std::pair<std::vector<double>,std::vector<int>>) const;
 
 	static void	UK5Q_read(const QString&,	UK5B_varD&,	UK5Q_box*);
 	static void	UK5Q_read(const QString&,	UK5B_varI&,	UK5Q_box*);

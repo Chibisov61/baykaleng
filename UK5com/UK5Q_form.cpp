@@ -249,7 +249,12 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 	case 10:		//qst
 		UK5Q_read(s, river.qst, box);
 		UK5Q_recount("dog",river.dog,UK5B_river::UK5B_eval_dog(river.qst));
-		UK5Q_rewrite("dog");
+		UK5Q_recount("nn",river.nn,UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog));		                         
+		UK5Q_recount("xn",river.xn,UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
+		UK5Q_recount("rl",river.rl,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));										
+		UK5Q_recount("rll",river.rll,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn));											                      
+		UK5Q_recount("vst",river.vst,UK5B_river::UK5B_eval_vst(river.qst,river.dog));
+		UK5Q_rewrite("vst");
 		break;
 	case 11:		//cct
 		UK5Q_read(s, river.cct, box);
@@ -292,7 +297,9 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 	case 19:		//pd
 		UK5Q_read(s, river.pd, box);
 		UK5Q_recount("dx",river.dx,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy));
-		UK5Q_rewrite("dx");
+		UK5Q_recount("rl",river.rl,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));		
+		UK5Q_recount("rll",river.rll,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn));
+		river.UK5B_init_cut();
 		break;
 	case 20:		//dz
 	case 21:		//dy
@@ -320,11 +327,16 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 		break;
 	case 31:		//vst
 		UK5Q_recount("dt",river.dt,UK5B_river::UK5B_eval_dt(river.vr,river.vst));
-		UK5Q_rewrite("dt");	                         
+		UK5Q_recount("dzz",river.dzz,UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));
+		UK5Q_recount("dz",river.dz,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));						
+		UK5Q_recount("dy",river.dy,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));
+		UK5Q_rewrite("dy");
 		break;
 	case 32:		//dt
 		UK5Q_recount("dzz",river.dzz,UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));
-		UK5Q_rewrite("dzz");					                         
+		UK5Q_recount("dz",river.dz,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));						
+		UK5Q_recount("dy",river.dy,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));
+		UK5Q_rewrite("dy");
 		break;
 	case 33:		//dzz
 		UK5Q_recount("dz",river.dz,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));						
@@ -492,7 +504,7 @@ std::pair<UK5B_varVD, std::vector<int>> UK5Q_form::UK5Q_init(const QString& s, c
 	
 }
 
-void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varD u, const double def) const
+void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varD& u, const double def) const
 {
 	if (!map_box[s]->UK5Q_getMode())
 	{
@@ -503,7 +515,7 @@ void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varD u, const double def) co
 		u.UK5B_setValue2(def);
 }
 
-void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varI u, const int def) const
+void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varI& u, const int def) const
 {
 	if (!map_box[s]->UK5Q_getMode())
 	{
@@ -514,7 +526,7 @@ void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varI u, const int def) const
 		u.UK5B_setValue2(def);
 }
 
-void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varVD u, const std::vector<double> def) const
+void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varVD& u, const std::vector<double> def) const
 {
 	if (!map_box[s]->UK5Q_getMode())
 	{
@@ -525,7 +537,7 @@ void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varVD u, const std::vector<d
 		u.UK5B_setValue2(def);
 }
 
-void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varVI u, const std::vector<int> def) const
+void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varVI& u, const std::vector<int> def) const
 {
 	if (!map_box[s]->UK5Q_getMode())
 	{
@@ -536,7 +548,7 @@ void UK5Q_form::UK5Q_recount(const QString& s, UK5B_varVI u, const std::vector<i
 		u.UK5B_setValue2(def);
 }
 
-void UK5Q_form::UK5Q_recount(const QString& s, std::pair<UK5B_varD, int> u, std::pair<double, int> def) const
+void UK5Q_form::UK5Q_recount(const QString& s, std::pair<UK5B_varD, int>& u, std::pair<double, int> def) const
 {
 	if (!map_box[s]->UK5Q_getMode())
 	{
@@ -549,7 +561,7 @@ void UK5Q_form::UK5Q_recount(const QString& s, std::pair<UK5B_varD, int> u, std:
 	
 }
 
-void UK5Q_form::UK5Q_recount(const QString& s, std::pair<UK5B_varVD, std::vector<int>>	u, std::pair<std::vector<double>, std::vector<int>> def) const
+void UK5Q_form::UK5Q_recount(const QString& s, std::pair<UK5B_varVD, std::vector<int>>& u, std::pair<std::vector<double>, std::vector<int>> def) const
 {
 	if (!map_box[s]->UK5Q_getMode())
 	{
