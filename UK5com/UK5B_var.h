@@ -26,26 +26,41 @@ public:
 	}
 	UK5B_var& operator = (UK5B_var&& u) noexcept = default;
 
-	void UK5B_setName(std::string s) {
-		name = std::move(s);
-	}
-
-	int UK5B_getPlace() const {
-		return place;
-	}
-	
-	void UK5B_setPlace(const int p) {
-		place = (p >= 0 && p <= 3) ? p : 2;
-	}
-	
 	std::string	UK5B_getName() const
 	{
 		return name;
 	}
+
+	void UK5B_setName(std::string s)
+	{
+		name = std::move(s);
+	}
+
+	int UK5B_getPlace() const
+	{
+		return place;
+	}
+	
+	void UK5B_setPlace(const int p)
+	{
+		place = (p >= 0 && p <= 3) ? p : 2;
+	}
+	
+	bool UK5B_isInit() const
+	{
+		return init;
+	}
+
+	void UK5B_setInit(const bool b)
+	{
+		init = b;
+	}
+
 protected:
-	int			place = 2;
-	std::string	name;
-	std::ofstream ferr;
+	int				place = 2;
+	std::string		name;
+	std::ofstream	ferr;
+	bool			init = false;
 	
 };
 
@@ -109,6 +124,11 @@ public:
 		ferr.close();
 	}
 
+	void UK5B_setValue2(const double def)
+	{
+		value2 = def;
+	}
+
 	double UK5B_getValue() const		
 	{
 		return (value);
@@ -117,6 +137,13 @@ public:
 	double UK5B_getValue2() const		
 	{
 		return (value2);
+	}
+
+	void UK5B_swap()
+	{
+		const auto tmp = value2;
+		value2 = value;
+		value = tmp;
 	}
 
 private:
@@ -182,6 +209,11 @@ public:
 		ferr.close();
 	}
 
+	void UK5B_setValue2(const int def)
+	{
+		value2 = def;
+	}
+
 	int UK5B_getValue() const
 	{
 		return (value);
@@ -190,6 +222,13 @@ public:
 	int UK5B_getValue2() const
 	{
 		return (value2);
+	}
+
+	void UK5B_swap()
+	{
+		const auto tmp = value2;
+		value2 = value;
+		value = tmp;
 	}
 
 private:
@@ -283,6 +322,11 @@ public:
 		ferr.close();
 	}
 
+	void UK5B_setValue2(const std::vector<double>& def)
+	{
+		value2 = def;
+	}
+
 	std::vector<double> UK5B_getValue() const
 	{
 		return (value);
@@ -291,6 +335,13 @@ public:
 	std::vector<double> UK5B_getValue2() const
 	{
 		return (value2);
+	}
+
+	void UK5B_swap()
+	{
+		const auto tmp = value2;
+		value2 = value;
+		value = tmp;
 	}
 
 private:
@@ -385,6 +436,11 @@ public:
 		ferr.close();
 	}
 
+	void UK5B_setValue2(const std::vector<int>& def)
+	{
+		value2 = def;
+	}
+
 	std::vector<int> UK5B_getValue() const		
 	{
 		return (value);
@@ -393,6 +449,13 @@ public:
 	std::vector<int> UK5B_getValue2() const		
 	{
 		return (value2);
+	}
+
+	void UK5B_swap()
+	{
+		const auto tmp = value2;
+		value2 = value;
+		value = tmp;
 	}
 
 private:
