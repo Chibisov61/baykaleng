@@ -191,11 +191,11 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 	{
 	case 1:			//vr
 		UK5Q_read(s, river.vr, box);
-		UK5Q_recount("nn", river.nn, UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog));		                       
-		UK5Q_recount("xn", river.xn, UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
 		UK5Q_recount("pd" ,river.pd, UK5B_river::UK5B_eval_pd(river.vr,river.h,river.pc));												                      
-		UK5Q_recount("dt" ,river.dt, UK5B_river::UK5B_eval_dt(river.vr, river.dzz));														                       
-		UK5Q_recount("dzz",river.dzz, UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));								                      			                         
+		UK5Q_recount("dt" ,river.dt, UK5B_river::UK5B_eval_dt(river.vr, river.vst));														                       
+		UK5Q_recount("dzz",river.dzz,UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));								                      			                         
+		UK5Q_recount("nn", river.nn, UK5B_river::UK5B_eval_nn(river.vr, river.vst, river.dt));		                       
+		UK5Q_recount("xn", river.xn, UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
 		UK5Q_recount("dz" ,river.dz, UK5B_river::UK5B_eval_dydz(river.n,river.dzz));						
 		UK5Q_recount("dy" ,river.dy, UK5B_river::UK5B_eval_dydz(river.n,river.dzz));
 		UK5Q_rewrite("dy");
@@ -249,12 +249,12 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 	case 10:		//qst
 		UK5Q_read(s, river.qst, box);
 		UK5Q_recount("dog",river.dog,UK5B_river::UK5B_eval_dog(river.qst));
-		UK5Q_recount("nn",river.nn,UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog));		                         
+		UK5Q_recount("vst",river.vst,UK5B_river::UK5B_eval_vst(river.qst,river.dog));
+		UK5Q_recount("nn",river.nn,UK5B_river::UK5B_eval_nn(river.vr, river.vst, river.dt));		                         
 		UK5Q_recount("xn",river.xn,UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
 		UK5Q_recount("rl",river.rl,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));										
 		UK5Q_recount("rll",river.rll,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn));											                      
-		UK5Q_recount("vst",river.vst,UK5B_river::UK5B_eval_vst(river.qst,river.dog));
-		UK5Q_rewrite("vst");
+		river.UK5B_init_cut();
 		break;
 	case 11:		//cct
 		UK5Q_read(s, river.cct, box);
@@ -269,18 +269,24 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 	case 13:		//psh
 		UK5Q_read(s, river.psh, box);
 		UK5Q_recount("pc",river.pc,UK5B_river::UK5B_eval_pc(river.h,river.psh));
-		UK5Q_rewrite("pc");
+		UK5Q_recount("pd",river.pd,UK5B_river::UK5B_eval_pd(river.vr, river.h, river.pc));
+		UK5Q_recount("dx",river.dx,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy));
+		UK5Q_recount("rl",river.rl,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));		
+		UK5Q_recount("rll",river.rll,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn));
+		river.UK5B_init_cut();
 		break;
 	case 14:		//dog
 		UK5Q_read(s, river.dog, box);
-		UK5Q_recount("nn",river.nn,UK5B_river::UK5B_eval_nn(river.vr, river.qst, river.dog));		                         
-		UK5Q_recount("xn",river.xn,UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
-		UK5Q_recount("rl",river.rl,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));										
-		UK5Q_recount("rll",river.rll,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn));											                      
 		UK5Q_recount("vst",river.vst,UK5B_river::UK5B_eval_vst(river.qst,river.dog));
-		UK5Q_rewrite("vst");
+		UK5Q_recount("dt",river.dt,UK5B_river::UK5B_eval_dt(river.vr,river.vst));
+		UK5Q_recount("dzz",river.dzz,UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));
+		UK5Q_recount("nn",river.nn,UK5B_river::UK5B_eval_nn(river.vr, river.vst, river.dt));		                         
+		UK5Q_recount("xn",river.xn,UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
+		UK5Q_recount("dz",river.dz,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));						
+		UK5Q_recount("dy",river.dy,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));
+		UK5Q_rewrite("dy");
 		break;
-	case 15:
+	case 15:		//nn
 		UK5Q_read(s, river.nn, box);
 		river.UK5B_init_cut();
 		break;
@@ -292,7 +298,10 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 		break;
 	case 18:		//pc
 		UK5Q_recount("pd",river.pd,UK5B_river::UK5B_eval_pd(river.vr, river.h, river.pc));
-		UK5Q_rewrite("pd");
+		UK5Q_recount("dx",river.dx,UK5B_river::UK5B_eval_dx(river.vr,river.pd,river.dy));
+		UK5Q_recount("rl",river.rl,UK5B_river::UK5B_eval_rl(river.nl,river.l,river.dx,river.xn));		
+		UK5Q_recount("rll",river.rll,UK5B_river::UK5B_eval_rll(river.ll,river.dx,river.xn));
+		river.UK5B_init_cut();
 		break;
 	case 19:		//pd
 		UK5Q_read(s, river.pd, box);
@@ -328,12 +337,16 @@ void UK5Q_form::UK5Q_rewrite(const QString& s)
 	case 31:		//vst
 		UK5Q_recount("dt",river.dt,UK5B_river::UK5B_eval_dt(river.vr,river.vst));
 		UK5Q_recount("dzz",river.dzz,UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));
+		UK5Q_recount("nn",river.nn,UK5B_river::UK5B_eval_nn(river.vr, river.vst, river.dt));		                         
+		UK5Q_recount("xn",river.xn,UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
 		UK5Q_recount("dz",river.dz,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));						
 		UK5Q_recount("dy",river.dy,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));
 		UK5Q_rewrite("dy");
 		break;
 	case 32:		//dt
 		UK5Q_recount("dzz",river.dzz,UK5B_river::UK5B_eval_dzz(river.vr,river.qst,river.dt,river.vst));
+		UK5Q_recount("nn",river.nn,UK5B_river::UK5B_eval_nn(river.vr, river.vst, river.dt));		                         
+		UK5Q_recount("xn",river.xn,UK5B_river::UK5B_eval_xn(river.vr, river.vst, river.dzz));		                        
 		UK5Q_recount("dz",river.dz,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));						
 		UK5Q_recount("dy",river.dy,UK5B_river::UK5B_eval_dydz(river.n,river.dzz));
 		UK5Q_rewrite("dy");
