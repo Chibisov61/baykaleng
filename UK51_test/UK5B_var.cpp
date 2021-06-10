@@ -159,7 +159,7 @@ void uk5_b_var::set_value(const std::string& def, double delta, int c)
 
 }
 
-std::string uk5_b_var::get_value(const int c) const
+std::string uk5_b_var::get_string(const int c) const
 {
 	std::string s = not_an_empty_string(c % 4);
 	switch (c)
@@ -196,9 +196,36 @@ std::string uk5_b_var::get_value(const int c) const
 		for (auto &it : vector_d_.second)
 			s.append(std::to_string(it) + ";");
 		break;
-	default: ;
+	default:
+		[[fallthrough]];
 	}
+	
 	return s;
+}
+
+std::variant<double,std::vector<double>,int,std::vector<int>> uk5_b_var::get_value(const int c) const
+{
+	switch(c)
+	{
+	case 0:
+		return value_i_.first;
+	case 1:
+		return value_d_.first;
+	case 2:
+		return vector_i_.first;
+	case 3:
+		return vector_d_.first;
+	case 4:
+		return value_i_.second;
+	case 5:
+		return value_d_.second;
+	case 6:
+		return vector_i_.second;
+	case 7:
+		return vector_d_.second;
+	default: 
+		return -1;
+	}
 }
 
 
