@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<variable>
+		<psh status="primary" place="in" type="quality" state="disabled"/>
+		<vr status="primary" place="in" type="quality" state="enabled"/>
+		<qst status="primary" place="in" type="quality" state="enabled"/>
+		<cct status="primary" place="in" type="quality" state="enabled" options="final"/>
+		<pc status="secondary" place="out" type="quality" state="disabled"/>
+		<dog status="secondary" place="in_out" type="quality" state="enabled"/>
+		<vst status="secondary" place="out" type="quality" state="enabled"/>
+		<dt status="secondary" place="out" type="quality" state="enabled"/>
+		<dzz status="secondary" place="out" type="quality" state="enabled"/>
+		<nn status="secondary" place="in_out" type="quality" state="enabled" options="final"/>
+		<pd status="secondary" place="in_out" type="quality" state="enabled"/>
+		<xn status="secondary" place="in_out" type="quality" state="enabled" options="shift"/>
+		<dz status="secondary" place="out" type="quality" state="enabled" options="delta"/>
+		<dy status="secondary" place="out" type="quality" state="enabled" options="delta"/>
+		<dx status="secondary" place="out" type="quality" state="enabled" options="delta"/>
+		
+		<nog status="primary" place="in" type="quantity" state="enabled"/>
+		<nl status="primary" place="in" type="quantity" state="enabled"/>
+		<n status="primary" place="in" type="quantity" state="enabled"/>
+		
+		<br status="primary" place="in" type="geometry" state="enabled">
+			<rbr status="secondary" place="out" type="geometry" state="enabled"/>
+		</br>
+		<b status="primary" place="in" type="geometry" state="enabled">
+			<rb status="secondary" place="out" type="geometry" state="enabled"/>
+		</b>
+		<bl status="primary" place="in" type="geometry" state="enabled">
+			<rbl status="secondary" place="out" type="geometry" state="enabled"/>
+		</bl>
+		<hog status="primary" place="in" type="geometry" state="enabled">
+			<rhog status="secondary" place="out" type="geometry" state="enabled" options="final"/>
+		</hog>
+		<h status="primary" place="in" type="geometry" state="enabled">
+			<rh status="secondary" place="out" type="geometry" state="enabled" options="final"/>
+		</h>
+		<l status="primary" place="in" type="geometry" state="enabled">
+			<rl status="secondary" place="out" type="geometry" state="enabled" options="final"/>
+		</l>
+		<ll status="primary" place="in" type="geometry" state="enabled">
+			<rll status="secondary" place="out" type="geometry" state="enabled" options="final"/>
+		</ll>
+		<rw status="secondary" place="out" type="geometry" state="enabled" options="final"/>
+		
+		<cut status="secondary" place="final" type="section" state="enabled"/>
+		<max status="secondary" place="final" type="quality" state="enabled"/>
+		<dil status="secondary" place="final" type="quality" state="enabled"/>
+	</variable>
+	<rules>
+		<rule number="1" state="disabled">"psh,pc,pd"</rule>
+		<rule number="2" state="disabled">"vr,pd"</rule>
+		<rule number="3" state="enabled">"vr,dt"</rule>
+		<rule number="4" state="enabled">"qst,dog"</rule>
+		<rule number="5" state="disabled">"qst,vst"</rule>
+		<rule number="6" state="enabled">"dog,vst,dt"</rule>
+		<rule number="7" state="enabled">"dt,nn"</rule>
+		<rule number="8" state="enabled">"dt,dzz"</rule>
+		<rule number="9" state="enabled">"dzz,xn"</rule>
+		<rule number="10" state="enabled">"n,dz"</rule>
+		<rule number="11" state="enabled">"dz,dy"</rule>
+		<rule number="12" state="enabled">"pd,dx"</rule>
+		<rule number="13" state="enabled">"dz,dx"</rule>
+		<rule number="14" state="enabled">"nn,cut"</rule>
+		<rule number="15" state="enabled">"cct,cut"</rule>
+		
+		<rule number="16" state="enabled">"dz,(rbr,rb,rbl,rh,rhog)"</rule>
+		<rule number="17" state="enabled">"dx,(rl,rll)"</rule>
+		<rule number="18" state="enabled">"(rbr,rb,rbl),rw"</rule>
+		
+		<rule number="19" state="enabled">"(rbr,rb,rbl,rw,rh,rhog,rl,rll),cut"</rule>
+	</rules>

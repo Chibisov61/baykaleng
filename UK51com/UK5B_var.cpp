@@ -74,7 +74,7 @@ bool uk5_b_var::is_init() const
 	return init_;
 }
 
-void uk5_b_var::set_value(const std::string& def, double delta, int c)
+void uk5_b_var::set_value(const std::string& def, double delta, double shift, int c)
 {
 	if (c == -1) {
 		c = 0;
@@ -132,23 +132,23 @@ void uk5_b_var::set_value(const std::string& def, double delta, int c)
 					const int cc = (std::stoi(*(++it)) == 0) ? 1 : std::stoi(*(it));
 					const double step = (std::distance(list2.begin(), list2.end()) == 2) ? delta : ((std::stod(*(++it)) == 0.) ? delta : std::stod(*(it)));
 					for (int i = 0; i < cc; i += 1)
-					{
-						double tmp = first + (i * step);
-						((place_ != 1) ? vector_d_.first : vector_d_.second).push_back(tmp);
-						((place_ != 1) ? vector_i_.first : vector_i_.second).push_back(static_cast<int>(std::round(tmp / delta)));
-					}
+						if (double tmp = first + (i * step); tmp >= shift)
+						{
+							((place_ != 1) ? vector_d_.first : vector_d_.second).push_back(tmp);
+							((place_ != 1) ? vector_i_.first : vector_i_.second).push_back(static_cast<int>(std::round((tmp - shift) / delta)));
+						}
 				}
-				else
+				else if (stod(itr) >= shift)
 				{
 					((place_ != 1) ? vector_d_.first : vector_d_.second).push_back(stod(itr));
-					((place_ != 1) ? vector_i_.first : vector_i_.second).push_back(static_cast<int>(std::round(stod(itr) / delta)));
-
+					((place_ != 1) ? vector_i_.first : vector_i_.second).push_back(static_cast<int>(std::round((stod(itr) - shift) / delta)));
 				}
 				end_d = ((place_ != 1) ? vector_d_.first : vector_d_.second).back();
 			}
 			(place_ != 1) ? value_i_.first = static_cast<int>(vector_d_.first.size()) : value_i_.second = static_cast<int>(vector_d_.second.size()); }
 			break; 
 		default: ;
+		[[fallthrough]];
 		}
 	}
 	catch (const std::exception& e)
@@ -159,7 +159,7 @@ void uk5_b_var::set_value(const std::string& def, double delta, int c)
 
 }
 
-std::string uk5_b_var::get_value(const int c) const
+std::string uk5_b_var::get_string(const int c) const
 {
 	std::string s = not_an_empty_string(c % 4);
 	switch (c)
@@ -196,9 +196,44 @@ std::string uk5_b_var::get_value(const int c) const
 		for (auto &it : vector_d_.second)
 			s.append(std::to_string(it) + ";");
 		break;
-	default: ;
+	default:
+		[[fallthrough]];
 	}
+	
 	return s;
+}
+
+std::variant<double,std::vector<double>,int,std::vector<int>> uk5_b_var::get_value(const int c) const
+{
+	switch(c)
+	{
+	case 0:
+		return value_i_.first;
+	case 1:
+		return value_d_.first;
+	case 2:
+		return vector_i_.first;
+	case 3:
+		return vector_d_.first;
+	case 4:
+		return value_i_.second;
+	case 5:
+		return value_d_.second;
+	case 6:
+		return vector_i_.second;
+	case 7:
+		return vector_d_.second;
+	default: 
+		return -1;
+	}
+}
+
+void uk5_b_var::swap_value()
+{
+		std::swap(value_i_.second,value_i_.first);
+		std::swap(value_d_.second,value_d_.first);
+		std::swap(vector_i_.second,vector_i_.first);
+		std::swap(vector_d_.second,vector_d_.first);
 }
 
 
