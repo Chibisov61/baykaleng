@@ -5,21 +5,21 @@ int main()
 {
 	try
 	{
-	const auto test = new uk5_b_var("test_in_out", "quality");
+	const auto test = new uk5_b_var("test_out", "geometry","",-11,0.7,5.);
 
 	const std::string n = test->get_name();
 	const int t = test->get_type();
 
-	test->swap_value();
+//	test->swap_value();
 	
-   	const std::string s0 = test->get_string(0);
-   	const std::string s1 = test->get_string(1);
-   	const std::string s2 = test->get_string(2);
-   	const std::string s3 = test->get_string(3);
-   	const std::string s4 = test->get_string(4);
-   	const std::string s5 = test->get_string(5);
-   	const std::string s6 = test->get_string(6);
-   	const std::string s7 = test->get_string(7);
+	const std::string s0 = test->get_string(0);
+	const std::string s1 = test->get_string(1);
+	const std::string s2 = test->get_string(2);
+	const std::string s3 = test->get_string(3);
+	const std::string s4 = test->get_string(4);
+	const std::string s5 = test->get_string(5);
+	const std::string s6 = test->get_string(6);
+	const std::string s7 = test->get_string(7);
 	
 	std::cout << n << "|" << t << std::endl;
 	std::cout << s0 << std::endl << s1 << std::endl << s2 << std::endl << s3 << std::endl << s4 << std::endl << s5 << std::endl << s6 << std::endl << s7;
