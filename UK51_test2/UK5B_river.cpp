@@ -5,42 +5,43 @@
 
 uk5_b_river::uk5_b_river()
 {
-
 	if (const bool x = boost::filesystem::exists("rules.xml"); x)
 	{
+				int n = 0;
 				read_xml("rules.xml", pt_);
 				for (auto & [fst, snd]: pt_.get_child("variables"))
 				{
-					auto name	= snd.get<std::string>("<xmlattr>.name");
-					auto type	= snd.get<std::string>("<xmlattr>.type");
-					
-					if (name != "cut")
+					for (auto& [p_fst, p_snd] : snd)
 					{
-						river.emplace_back(name,type);
-						river.back().set_place(m_place[snd.get<std::string>("<xmlattr>.place")]);
-						river.back().desc	= snd.get<std::string>("<xmlattr>.description");
-						river.back().state	= (snd.get<std::string>("<xmlattr>.state") == "enable") ? true : false ;
-						
-						river.back().max	= snd.get<int>("<xmlattr>.max",100);
-						river.back().delta	= snd.get<double>("<xmlattr>.delta", 1.);
-						river.back().shift	= snd.get<double>("<xmlattr>.shift",0.);
-						
-					}
+						if (p_fst == "<xmlattr>")
+						{
+							auto name = p_snd.get<std::string>("name");
+							auto type = p_snd.get<std::string>("type");
 
-					if (type == "geometry")
-					{
-						auto& pt2 = snd.get_child("child_variable");
-						auto name2	= pt2.get<std::string>("<xmlattr>.name");
-						auto type2	= pt2.get<std::string>("<xmlattr>.type");
-						river.emplace_back(uk5_b_set(name2,type2));
-						river.back().set_place(m_place[pt2.get<std::string>("<xmlattr>.place")]);
-						river.back().desc	= pt2.get<std::string>("<xmlattr>.description");
-						river.back().state	= (pt2.get<std::string>("<xmlattr>.state") == "enable") ? true : false ;
-						
-						river.back().max	= pt2.get<int>("<xmlattr>.max",100);
-						river.back().delta	= pt2.get<double>("<xmlattr>.delta",1.);
-						river.back().shift	= pt2.get<double>("<xmlattr>.shift",0.);
+							river.emplace_back(name, type);
+							river.back().set_place(m_place[p_snd.get<std::string>("place")]);
+							river.back().desc = p_snd.get<std::string>("description");
+							river.back().state = (p_snd.get<std::string>("state") == "enable") ? true : false;
+
+							river.back().max = p_snd.get<std::string>("max", "");
+							river.back().delta = p_snd.get<std::string>("delta", "");
+							river.back().shift = p_snd.get<std::string>("shift", "");
+
+						}
+						else if(p_fst == "parameter")
+						{
+							auto s = p_snd.get<std::string>("<xmlattr>.name");
+							river.back().param.push_back(s);
+						}
+						else if(p_fst == "child")
+						{
+							river.back().child_place = m_place[p_snd.get<std::string>("<xmlattr>.place")];
+							river.back().child_desc = p_snd.get<std::string>("<xmlattr>.description");
+						}
 					}
+					river.back().number = ++n;
 				}
 	}
 }
+
+

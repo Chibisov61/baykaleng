@@ -41,9 +41,9 @@ uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::stri
 
 	}
 
-	delta_ = delta;
-	shift_ = shift;
-	set_value(s, max,c);
+	delta_	= delta;
+	shift_	= shift;
+	set_value(s, max, c);
 }
 
 std::string uk5_b_var::get_name() const
@@ -317,6 +317,26 @@ std::variant<double,std::vector<double>,int,std::vector<int>> uk5_b_var::get_val
 	default: 
 		return -1;
 	}
+}
+
+void uk5_b_var::set_delta(const double delta)
+{
+	delta_ = delta;
+}
+
+double uk5_b_var::get_delta() const
+{
+	return delta_;
+}
+
+void uk5_b_var::set_shift(const double shift)
+{
+	shift_ = shift;
+}
+
+double uk5_b_var::get_shift() const
+{
+	return shift_;
 }
 
 void uk5_b_var::swap_value()

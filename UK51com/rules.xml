@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2021 (x64) (http://www.altova.com) by  () -->
-<main>
 	<variables>
 		<variable name="psh" place="in" type="quality" state="disabled" description="Коэффициент шероховатости"/>
 		<variable name="vr" place="in" type="quality" state="enabled" description="Скорость реки"/>
@@ -19,29 +17,29 @@
 		</variable>
 		<variable name="dt" place="out" type="quality" state="enabled" description="Относительный диаметр"/>
 		<variable name="dzz" place="out" type="quality" state="enabled" description="Диаметр пятна загрязнения">
-			<parameter>vr</parameter>
+			<parameter name="vr"/>
 		</variable>
 		<variable name="nn" place="in_out" type="quality" state="enabled" description="Начальное разбавление">
-			<parameter>vst</parameter>
+			<parameter name="vst"/>
 		</variable>
 		<variable name="pd" place="in_out" type="quality" state="enabled" description="Коэффициент диффузии">
 			<parameter name="vr"/>
 			<parameter name="h"/>
 			<parameter name="pc"/>
 		</variable>
-		<variable name="xn" place="in_out" type="quality" state="enabled" options="shift" description="Расстояние от створа выпуска">
+		<variable name="xn" place="in_out" type="quality" state="enabled" description="Расстояние от створа выпуска">
 			<parameter name="vr"/>
 			<parameter name="vst"/>
 			<parameter name="dzz"/>
 		</variable>
-		<variable name="dz" place="out" type="quality" state="enabled" options="delta" description="dz">
+		<variable name="dz" place="out" type="quality" state="enabled" description="dz">
 			<parameter name="n"/>
 			<parameter name="dzz"/>
 		</variable>
-		<variable name="dy" place="out" type="quality" state="enabled" options="delta" description="dy">
+		<variable name="dy" place="out" type="quality" state="enabled" description="dy">
 			<parameter name="dz"/>
 		</variable>
-		<variable name="dx" place="out" type="quality" state="enabled" options="delta" description="dx">
+		<variable name="dx" place="out" type="quality" state="enabled" description="dx">
 			<parameter name="vr"/>
 			<parameter name="pd"/>
 			<parameter name="dy"/>
@@ -49,38 +47,45 @@
 		<variable name="nog" place="in" type="quantity" state="enabled" description="Количество оголовков"/>
 		<variable name="nl" place="in" type="quantity" state="enabled" description="Количество промежуточных сечений"/>
 		<variable name="n" place="in" type="quantity" state="enabled" description="Сторона расчетного квадрата (в ячейках)"/>
-		<variable name="br" place="in" type="geometry" state="enabled" description="Расстояние до правого берега">
-			<child_variable name="rbr" place="out" type="geometry" state="enabled" delta="dy" description="Расстояние до правого берега (расч.)"/>
+		
+		<variable name="br" place="in" type="geometry" state="enabled" description="Расстояние до правого берега"  delta="dy">
+			<child place="out" description="Расстояние до правого берега (расч.)"/>
+ 		</variable>
+		<variable name="b" place="in" type="geometry" state="enabled" description="Расстояния между оголовками" max="nog" delta="dy">
+			<child place="out" description="Расстояния между оголовками (расч.)"/>
 		</variable>
-		<variable name="b" place="in" type="geometry" state="enabled" description="Расстояния между оголовками">
-			<child_variable name="rb" place="out" type="geometry" state="enabled" delta="dy" description="Расстояния между оголовками (расч.)"/>
+		<variable name="bl" place="in" type="geometry" state="enabled" description="Расстояние до левого берега" delta="dy">
+			<child place="out" description="Расстояние до левого берега (расч.)"/>
 		</variable>
-		<variable name="bl" place="in" type="geometry" state="enabled" description="Расстояние до левого берега">
-			<child_variable name="rbl" place="out" type="geometry" state="enabled" delta="dy" description="Расстояние до левого берега (расч.)"/>
+		<variable name="hog" place="in" type="geometry" state="enabled" description="Высоты оголовков" max="nog" delta="dy">
+			<child place="out" description="Высоты оголовков (расч.)"/>
 		</variable>
-		<variable name="hog" place="in" type="geometry" state="enabled" description="Высоты оголовков">
-			<child_variable name="rhog" place="out" type="geometry" state="enabled" delta="dy" description="Высоты оголовков (расч.)"/>
+		<variable name="h" place="in" type="geometry" state="enabled" description="Глубина" delta="dy">
+			<child place="out" description="Глубина (расч.)"/>
 		</variable>
-		<variable name="h" place="in" type="geometry" state="enabled" description="Глубина">
-			<child_variable name="rh" place="out" type="geometry" state="enabled" delta="dy" description="Глубина (расч.)"/>
+		<variable name="l" place="in" type="geometry" state="enabled" description="Промежуточные сечения (доп.)" max="nl" delta="dx" shift="xn">
+			<child place="out" description="Промежуточные сечения (расч.)"/>
 		</variable>
-		<variable name="l" place="in" type="geometry" state="enabled" description="Промежуточные сечения (доп.)">
-			<child_variable name="rl" place="out" type="geometry" state="enabled" delta="dx" shift="xn" description="Промежуточные сечения (расч.)"/>
+		<variable name="ll" place="in" type="geometry" state="enabled" description="Протяженность расчетного участка реки" delta="dx" shift="xn">
+			<child place="out" description="Протяженность расчетного участка реки (расч.)"/>
+		</variable>	
+		
+		<variable name="w" place="out" type="geometry" state="enabled" description="Общая ширина (расч.)">
+			<parameter name="br"/>
+			<parameter name="b"/>
+			<parameter name="bl"/>
 		</variable>
-		<variable name="ll" place="in" type="geometry" state="enabled" description="Протяженность расчетного участка реки">
-			<child_variable name="rll" place="out" type="geometry" state="enabled" delta="dx" shift="xn" description="Протяженность расчетного участка реки (расч.)"/>
-		</variable>
-		<variable name="rw" place="out" type="geometry" state="enabled" description="Общая ширина (расч.)"/>
+		
 		<variable name="cut" place="final" type="section" state="enabled" description="Сечение">
 			<parameter name="n"/>
 			<parameter name="nn"/>
 			<parameter name="cct"/>
-			<parameter name="rbr"/>
-			<parameter name="rb"/>
-			<parameter name="rbl"/>
-			<parameter name="rw"/>
-			<parameter name="rh"/>
-			<parameter name="rhog"/>
+			<parameter name="br"/>
+			<parameter name="b"/>
+			<parameter name="bl"/>
+			<parameter name="w"/>
+			<parameter name="h"/>
+			<parameter name="hog"/>
 		</variable>
+		
 	</variables>
-</main>

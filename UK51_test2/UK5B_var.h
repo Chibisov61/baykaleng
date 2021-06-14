@@ -44,10 +44,16 @@ explicit uk5_b_var(const std::string& n, const std::string& t, const std::string
 [[nodiscard]]	std::string	get_string(int) const;
 [[nodiscard]]	std::variant<double,std::vector<double>,int,std::vector<int>>	get_value(int) const;
 
+				void		set_delta(const double);
+[[nodiscard]]	double		get_delta() const;
+	
+				void		set_shift(const double);
+[[nodiscard]]	double		get_shift() const;
+
 				void		swap_value();
 
 				std::map<std::string,int>							m_place = {{"in",0},{"in_out",1},{"out",2},{"final",3}};
-				std::map<std::string,int>							m_type = {{"quantity",0},{"quality",1},{"geometry",2}};
+				std::map<std::string,int>							m_type = {{"quantity",0},{"quality",1},{"geometry",2},{"section",3}};
 
 private:
 				std::string											name_;
@@ -68,11 +74,17 @@ private:
 struct uk5_b_set : uk5_b_var
 {
 	using uk5_b_var::uk5_b_var;
-	int			max		= 100;
-	double		delta	= 1.;
-	double		shift	= 0.;
-	std::string desc;
 	bool		state	= true;
+	int			number	= 0;
+	std::string desc;
+	
+	std::vector<std::string> param = {};
+	std::string	max;
+	std::string	delta;
+	std::string	shift;
+	
+	int			child_place;
+	std::string	child_desc;
 };
 
 
