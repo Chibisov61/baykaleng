@@ -78,6 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\DEV\Boost\boost_1_76_0;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\DEV\Boost\boost_1_76_0\lib64-msvc-14.2;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -116,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,10 +143,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="UK51_test2.cpp" />
-    <ClCompile Include="UK5B_rules.cpp" />
+    <ClCompile Include="UK5B_river.cpp" />
+    <ClCompile Include="UK5B_var.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UK5B_rules.h" />
+    <ClInclude Include="UK5B_river.h" />
+    <ClInclude Include="UK5B_var.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

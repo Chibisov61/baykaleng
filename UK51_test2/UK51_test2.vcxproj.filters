@@ -18,13 +18,19 @@
     <ClCompile Include="UK51_test2.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="UK5B_rules.cpp">
+    <ClCompile Include="UK5B_river.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="UK5B_var.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UK5B_rules.h">
-      <Filter>Исходные файлы</Filter>
+    <ClInclude Include="UK5B_var.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="UK5B_river.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

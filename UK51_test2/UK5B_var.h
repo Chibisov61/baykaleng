@@ -64,3 +64,15 @@ private:
 				double												shift_ = 0.;
 
 };
+
+struct uk5_b_set : uk5_b_var
+{
+	using uk5_b_var::uk5_b_var;
+	int			max		= 100;
+	double		delta	= 1.;
+	double		shift	= 0.;
+	std::string desc;
+	bool		state	= true;
+};
+
+
