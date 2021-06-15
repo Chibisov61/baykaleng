@@ -1,6 +1,4 @@
-// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+//#include <utility>
 #include <string>
 #include <boost/algorithm/string.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -9,7 +7,7 @@
 #include <boost/tokenizer.hpp>
 #include "UK5B_var.h"
 
-uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::string& def, const int max, const double delta, const double shift, const int с)
+uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::string& def, const int max, const double delta, const double shift, const int c)
 {
 	name_ = n;
 	type_ = m_type.at(t);
@@ -25,8 +23,7 @@ uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::stri
 				read_ini("config.ini", pt);
 				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
 				{
-					auto f = pos->second.find(name_);
-					if (f != pos->second.not_found())
+					if (auto f = pos->second.find(name_); f != pos->second.not_found())
 					{
 						place_ = m_place[pos->first];
 						s = (*f).second.get_value<std::string>();
@@ -37,15 +34,16 @@ uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::stri
 			
 		catch (const boost::property_tree::ptree_error &e)
 			{
-				f_err_.open("error.log", std::ios::out);
-				f_err_ << "Ошибка: " << e.what() << std::endl;
+				std::ofstream f_err;
+				f_err.open("error.log", std::ios::out);
+				f_err << "Ошибка: " << e.what() << std::endl;
 			}
 
 	}
 
-	delta_ = delta;
-	shift_ = shift;
-	set_value(s, max,с);
+	delta_	= delta;
+	shift_	= shift;
+	set_value(s, max, c);
 }
 
 std::string uk5_b_var::get_name() const
@@ -90,17 +88,23 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 	{
 		switch (c)
 		{
-		case 0:		// int				счетчик 
-			((place_ != 1) ? value_d_.first : value_d_.second) = stod(s);
+		case 0: {	// int				счетчик  (quantity and geometry:value?)
+			int tmp = stoi(s);
+			((place_ != 1) ? value_i_.first : value_i_.second) = tmp;
+			if (type_ == 2) ((place_ != 1) ? value_d_.first : value_d_.second) = tmp * delta_ + ((max >= 0) ? shift_ : 0.);
+		}
 		break;
-		case 1:		// double			величина
-			((place_ != 1) ? value_i_.first : value_i_.second) = stoi(s);
+		case 1: {	// double			величина (quality and geometry:value)
+			double tmp = stod(s);
+			((place_ != 1) ? value_d_.first : value_d_.second) = tmp;
+			if (type_ == 2) ((place_ != 1) ? value_i_.first : value_i_.second) = static_cast<int>(std::round((tmp - ((max > 0) ? shift_ : 0)) / delta_));
+		}
 		break;
-		case 2: {	// vector<int>		размеры в ячейках
+		case 2: {	// vector<int>		размеры в ячейках (geometry:vector?)
 			std::vector<int> vector_i_tmp1,vector_i_tmp2 = {};
 			std::vector<double> vector_d_tmp1,vector_d_tmp2 = {};
-			boost::char_separator<char> sep(";");
-			boost::tokenizer< boost::char_separator<char> > list(s, sep);
+			boost::char_separator sep(";");
+			boost::tokenizer list(s, sep);
 			int end_i = 1;
 			double end_d = (max >= 0) ? 0. : shift_;
 			for (auto& itr : list)
@@ -109,8 +113,8 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				{
 					if (max < 0) continue;
 					std::string itt = boost::algorithm::trim_copy_if(itr, &is_brackets);
-					boost::char_separator<char> sep2(":");
-					boost::tokenizer< boost::char_separator<char> > list2(itt, sep2);
+					boost::char_separator sep2(":");
+					boost::tokenizer list2(itt, sep2);
 					auto it = list2.begin();
 					const int first = (std::stoi(*it) == 0) ? end_i : std::stoi(*it);
 					if (first < end_i) continue;
@@ -149,7 +153,7 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			else
 			{
 				max = -max;
-				int mz = static_cast<int>(max/sz);
+				int mz = max/sz;
 				while(mz > 0)
 				{
 					vector_i_tmp1.insert(vector_i_tmp1.end(), vector_i_tmp2.begin(),vector_i_tmp2.end());
@@ -168,11 +172,11 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			(place_ != 1) ? value_i_.first : value_i_.second = max;
 		}
 		break;
-		case 3: {	// vector<double>	размеры в метрах
+		case 3: {	// vector<double>	размеры в метрах (geometry:vector)
 			std::vector<int> vector_i_tmp1,vector_i_tmp2 = {};
 			std::vector<double> vector_d_tmp1,vector_d_tmp2 = {};
-			boost::char_separator<char> sep(";");
-			boost::tokenizer< boost::char_separator<char> > list(s, sep);
+			boost::char_separator sep(";");
+			boost::tokenizer list(s, sep);
 			double end_d = 0.;
 			for (auto& itr : list)
 			{
@@ -180,8 +184,8 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				{
 					if (max < 0) continue;
 					std::string itt = boost::algorithm::trim_copy_if(itr, &is_brackets);
-					boost::char_separator<char> sep2(":");
-					boost::tokenizer< boost::char_separator<char> > list2(itt, sep2);
+					boost::char_separator sep2(":");
+					boost::tokenizer list2(itt, sep2);
 					auto it = list2.begin();
 					const double first = (std::stod(*it) == 0.) ? end_d : std::stod(*it);
 					if (first < end_d) continue;
@@ -220,7 +224,7 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			else
 			{
 				max = -max;
-				int mz = static_cast<int>(max/sz);
+				int mz = max/sz;
 				while(mz > 0)
 				{
 					vector_d_tmp1.insert(vector_d_tmp1.end(), vector_d_tmp2.begin(),vector_d_tmp2.end());
@@ -239,12 +243,13 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			(place_ != 1) ? value_i_.first : value_i_.second = max;
 		}
 		break; 
-		default: ;
-		[[fallthrough]];
+		default:
+		break;
 		}
 	}
 	catch (const std::exception& e)
 	{
+		std::ofstream f_err_;
 		f_err_.open("error.log", std::ios::out);
 		f_err_ << "Ошибка: " << e.what() << std::endl;
 	}
@@ -288,8 +293,8 @@ std::string uk5_b_var::get_string(const int c) const
 		for (auto &it : vector_d_.second)
 			s.append(std::to_string(it) + ";");
 		break;
-	default:
-		[[fallthrough]];
+	default: 
+		break;
 	}
 	
 	return s;
@@ -318,6 +323,26 @@ std::variant<double,std::vector<double>,int,std::vector<int>> uk5_b_var::get_val
 	default: 
 		return -1;
 	}
+}
+
+void uk5_b_var::set_delta(const double delta)
+{
+	delta_ = delta;
+}
+
+double uk5_b_var::get_delta() const
+{
+	return delta_;
+}
+
+void uk5_b_var::set_shift(const double shift)
+{
+	shift_ = shift;
+}
+
+double uk5_b_var::get_shift() const
+{
+	return shift_;
 }
 
 void uk5_b_var::swap_value()

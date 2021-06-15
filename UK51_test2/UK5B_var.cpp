@@ -88,17 +88,23 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 	{
 		switch (c)
 		{
-		case 0:		// int				счетчик 
-			((place_ != 1) ? value_d_.first : value_d_.second) = stod(s);
+		case 0: {	// int				счетчик  (quantity and geometry:value?)
+			int tmp = stoi(s);
+			((place_ != 1) ? value_i_.first : value_i_.second) = tmp;
+			if (type_ == 2) ((place_ != 1) ? value_d_.first : value_d_.second) = tmp * delta_ + ((max >= 0) ? shift_ : 0.);
+		}
 		break;
-		case 1:		// double			величина
-			((place_ != 1) ? value_i_.first : value_i_.second) = stoi(s);
+		case 1: {	// double			величина (quality and geometry:value)
+			double tmp = stod(s);
+			((place_ != 1) ? value_d_.first : value_d_.second) = tmp;
+			if (type_ == 2) ((place_ != 1) ? value_i_.first : value_i_.second) = static_cast<int>(std::round((tmp - ((max > 0) ? shift_ : 0)) / delta_));
+		}
 		break;
-		case 2: {	// vector<int>		размеры в ячейках
+		case 2: {	// vector<int>		размеры в ячейках (geometry:vector?)
 			std::vector<int> vector_i_tmp1,vector_i_tmp2 = {};
 			std::vector<double> vector_d_tmp1,vector_d_tmp2 = {};
-			boost::char_separator<char> sep(";");
-			boost::tokenizer< boost::char_separator<char> > list(s, sep);
+			boost::char_separator sep(";");
+			boost::tokenizer list(s, sep);
 			int end_i = 1;
 			double end_d = (max >= 0) ? 0. : shift_;
 			for (auto& itr : list)
@@ -107,8 +113,8 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				{
 					if (max < 0) continue;
 					std::string itt = boost::algorithm::trim_copy_if(itr, &is_brackets);
-					boost::char_separator<char> sep2(":");
-					boost::tokenizer< boost::char_separator<char> > list2(itt, sep2);
+					boost::char_separator sep2(":");
+					boost::tokenizer list2(itt, sep2);
 					auto it = list2.begin();
 					const int first = (std::stoi(*it) == 0) ? end_i : std::stoi(*it);
 					if (first < end_i) continue;
@@ -147,7 +153,7 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			else
 			{
 				max = -max;
-				int mz = static_cast<int>(max/sz);
+				int mz = max/sz;
 				while(mz > 0)
 				{
 					vector_i_tmp1.insert(vector_i_tmp1.end(), vector_i_tmp2.begin(),vector_i_tmp2.end());
@@ -166,11 +172,11 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			(place_ != 1) ? value_i_.first : value_i_.second = max;
 		}
 		break;
-		case 3: {	// vector<double>	размеры в метрах
+		case 3: {	// vector<double>	размеры в метрах (geometry:vector)
 			std::vector<int> vector_i_tmp1,vector_i_tmp2 = {};
 			std::vector<double> vector_d_tmp1,vector_d_tmp2 = {};
-			boost::char_separator<char> sep(";");
-			boost::tokenizer< boost::char_separator<char> > list(s, sep);
+			boost::char_separator sep(";");
+			boost::tokenizer list(s, sep);
 			double end_d = 0.;
 			for (auto& itr : list)
 			{
@@ -178,8 +184,8 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				{
 					if (max < 0) continue;
 					std::string itt = boost::algorithm::trim_copy_if(itr, &is_brackets);
-					boost::char_separator<char> sep2(":");
-					boost::tokenizer< boost::char_separator<char> > list2(itt, sep2);
+					boost::char_separator sep2(":");
+					boost::tokenizer list2(itt, sep2);
 					auto it = list2.begin();
 					const double first = (std::stod(*it) == 0.) ? end_d : std::stod(*it);
 					if (first < end_d) continue;
@@ -218,7 +224,7 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			else
 			{
 				max = -max;
-				int mz = static_cast<int>(max/sz);
+				int mz = max/sz;
 				while(mz > 0)
 				{
 					vector_d_tmp1.insert(vector_d_tmp1.end(), vector_d_tmp2.begin(),vector_d_tmp2.end());
