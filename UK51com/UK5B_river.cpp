@@ -2,6 +2,8 @@
 
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "UK5B_river.h"
+#include <boost/tokenizer.hpp>
+
 
 uk5_b_river::uk5_b_river()
 {
@@ -18,8 +20,10 @@ uk5_b_river::uk5_b_river()
 							auto name = p_snd.get<std::string>("name");
 							auto type = p_snd.get<std::string>("type");
 
+							if (name == "cut") continue;
+
 							river.emplace_back(name, type);
-							river.back().set_place(m_place[p_snd.get<std::string>("place")]);
+//							river.back().set_place(m_place[p_snd.get<std::string>("place")]);
 							river.back().desc = p_snd.get<std::string>("description");
 							river.back().state = (p_snd.get<std::string>("state") == "enable") ? true : false;
 
@@ -40,26 +44,32 @@ uk5_b_river::uk5_b_river()
 						}
 					}
 					river.back().number = ++k;
+					init(river.back());
+					river.back().set_init(true);
 				}
 	}
 }
 
-void uk5_b_river::init(uk5_b_set v, const std::string& def)
+void uk5_b_river::init(uk5_b_set v)
 {
-	int max = 0;
 	const int c = v.get_type();
+	int cc = (c == 2) ? 1 : c;
+	if (v.get_place() == 1) cc += 4;
 	std::vector<std::pair<std::string,std::string>> p = {};
+	const bool y1 = (!v.max.empty()) || (!v.delta.empty()) || (!v.shift.empty());
+	const bool y2 = (!v.param.empty());
 
-	for (int j = 1; j < v.number; j++)
+	for (int j = 0; j < v.number - 1; j++)
 	{
 		if (!river.at(j).is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + river.at(j).get_name() + ")");
 		
 		if (!v.max.empty())
 			if (river.at(j).get_name() == v.max)
 			{
-//				max = std::get<int>(river.at(j).get_value(0));
-				max = std::stoi(river.at(j).get_string(0));
+//				int max = std::get<int>(river.at(j).get_value(0));
+				int max = std::stoi(river.at(j).get_string(0));
 				if (v.max == "dy") max = -max;
+				river.back().set_max(max);
 			}
 
 		if (!v.delta.empty())
@@ -67,7 +77,7 @@ void uk5_b_river::init(uk5_b_set v, const std::string& def)
 			{
 //				const double delta = std::get<double>(river.at(j).get_value(1));
 				const double delta = std::stod(river.at(j).get_string(1));
-				v.set_delta(delta);
+				river.back().set_delta(delta);
 			}
 		
 		if (!v.shift.empty())
@@ -75,21 +85,21 @@ void uk5_b_river::init(uk5_b_set v, const std::string& def)
 			{
 //				const double shift = std::get<double>(river.at(j).get_value(1));
 				const double shift = std::stod(river.at(j).get_string(1));
-				v.set_shift(shift);
+				river.back().set_shift(shift);
 			}
 
 		if (!v.param.empty())
-			if (boost::algorithm::contains(v.param,river.at(j).get_name()))
+			if (auto res = std::find(v.param.begin(), v.param.end(), river.at(j).get_name()); res != v.param.end())
 			{
-				const int cc = river.at(j).get_type();
-				auto r = std::make_pair(river.at(j).get_name(), river.at(j).get_string((cc == 2) ? 1 : cc));
+				int ccc = river.at(j).get_type();
+				if (river.at(j).get_place() == 1) ccc += 4;
+				auto r = std::make_pair(river.at(j).get_name(), river.at(j).get_string((ccc == 2) ? 1 : ccc));
 				p.push_back(r);
 			}
 	}
-	const std::string d = (def == "-") ? eval(v.get_name(), p) : def;
 	
-	v.set_value(d, max, (c == 2) ? 1 : c);
-	v.set_init(true);
+	if (y1) river.back().set_value(v.get_string(cc), cc);
+	if (y2) river.back().set_value(eval(v.get_name(), p), cc);
 }
 
 std::string uk5_b_river::eval(const std::string& name, const std::vector<std::pair<std::string,std::string>>& p)

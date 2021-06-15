@@ -40,10 +40,10 @@ uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::stri
 			}
 
 	}
-
+	max_	= max;
 	delta_	= delta;
 	shift_	= shift;
-	set_value(s, max, c);
+	set_value(s, c);
 }
 
 std::string uk5_b_var::get_name() const
@@ -76,7 +76,7 @@ bool uk5_b_var::is_init() const
 	return init_;
 }
 
-void uk5_b_var::set_value(const std::string& def, int max, int c)
+void uk5_b_var::set_value(const std::string& def, int c)
 {
 	if (c == -1) {
 		c = 0;
@@ -84,20 +84,25 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 		if (boost::algorithm::contains(def, ";")) c += 2;
 	}
 	const auto s = (def.empty()) ? not_an_empty_string(c) : def;
+	
 	try
 	{
 		switch (c)
 		{
 		case 0: {	// int				счетчик  (quantity and geometry:value?)
-			int tmp = stoi(s);
-			((place_ != 1) ? value_i_.first : value_i_.second) = tmp;
-			if (type_ == 2) ((place_ != 1) ? value_d_.first : value_d_.second) = tmp * delta_ + ((max >= 0) ? shift_ : 0.);
+			((place_ != 1) ? value_i_.first : value_i_.second) = std::stoi(s);
+			if (type_ == 2)
+			{
+				((place_ != 1) ? value_d_.first : value_d_.second ) = std::stoi(s) * delta_ + ((max_ >= 0) ? shift_ : 0.);
+			}
 		}
 		break;
 		case 1: {	// double			величина (quality and geometry:value)
-			double tmp = stod(s);
-			((place_ != 1) ? value_d_.first : value_d_.second) = tmp;
-			if (type_ == 2) ((place_ != 1) ? value_i_.first : value_i_.second) = static_cast<int>(std::round((tmp - ((max > 0) ? shift_ : 0)) / delta_));
+			((place_ != 1) ? value_d_.first : value_d_.second) = std::stod(s);
+			if (type_ == 2)
+			{
+				((place_ != 1) ? value_i_.first : value_i_.second ) = static_cast<int>(std::round((stod(s) - ((max_ > 0) ? shift_ : 0)) / delta_));
+			}
 		}
 		break;
 		case 2: {	// vector<int>		размеры в ячейках (geometry:vector?)
@@ -106,12 +111,12 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			boost::char_separator sep(";");
 			boost::tokenizer list(s, sep);
 			int end_i = 1;
-			double end_d = (max >= 0) ? 0. : shift_;
+			double end_d = (max_ >= 0) ? 0. : shift_;
 			for (auto& itr : list)
 			{
 				if (boost::algorithm::contains(itr, ":"))
 				{
-					if (max < 0) continue;
+					if (max_ < 0) continue;
 					std::string itt = boost::algorithm::trim_copy_if(itr, &is_brackets);
 					boost::char_separator sep2(":");
 					boost::tokenizer list2(itt, sep2);
@@ -128,18 +133,18 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				}
 				else
 				{
-					if ((stoi(itr) < end_i) && (max >= 0)) continue;
+					if ((stoi(itr) < end_i) && (max_ >= 0)) continue;
 					vector_i_tmp2.push_back(stoi(itr));
-					vector_d_tmp2.push_back(stoi(itr) * delta_ + ((max >= 0) ? shift_ : end_d));
+					vector_d_tmp2.push_back(stoi(itr) * delta_ + ((max_ >= 0) ? shift_ : end_d));
 				}
 				end_i = vector_i_tmp2.back();
 				end_d = vector_d_tmp2.back();
 			}
-			if (auto sz = static_cast<int>(vector_i_tmp2.size()); max >= 0)
+			if (auto sz = static_cast<int>(vector_i_tmp2.size()); max_ >= 0)
 			{
 				auto min = vector_i_tmp2.front();
-				if( max > sz)
-					for(int i = 1; i <= max - sz; i++)
+				if( max_ > sz)
+					for(int i = 1; i <= max_ - sz; i++)
 					{
 						if (i >= min) break;
 						vector_i_tmp1.push_back(i);
@@ -152,15 +157,14 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			}
 			else
 			{
-				max = -max;
-				int mz = max/sz;
+				int mz = -max_/sz;
 				while(mz > 0)
 				{
 					vector_i_tmp1.insert(vector_i_tmp1.end(), vector_i_tmp2.begin(),vector_i_tmp2.end());
 					vector_d_tmp1.insert(vector_d_tmp1.end(), vector_d_tmp2.begin(),vector_d_tmp2.end());
 					mz--;
 				}
-				if (auto ost = max % sz; ost > 0)
+				if (auto ost = -max_ % sz; ost > 0)
 				{
 					vector_i_tmp1.insert(vector_i_tmp1.end(), vector_i_tmp2.begin(),vector_i_tmp2.begin()+ost);
 					vector_d_tmp1.insert(vector_d_tmp1.end(), vector_d_tmp2.begin(),vector_d_tmp2.begin()+ost);
@@ -169,7 +173,7 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				
 			((place_ != 1) ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
 			((place_ != 1) ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
-			(place_ != 1) ? value_i_.first : value_i_.second = max;
+			(place_ != 1) ? value_i_.first : value_i_.second = max_;
 		}
 		break;
 		case 3: {	// vector<double>	размеры в метрах (geometry:vector)
@@ -182,7 +186,7 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			{
 				if (boost::algorithm::contains(itr, ":"))
 				{
-					if (max < 0) continue;
+					if (max_ < 0) continue;
 					std::string itt = boost::algorithm::trim_copy_if(itr, &is_brackets);
 					boost::char_separator sep2(":");
 					boost::tokenizer list2(itt, sep2);
@@ -200,17 +204,17 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				}
 				else if (stod(itr) >= shift_)
 				{
-					if ((stod(itr) < end_d) && (max >= 0)) continue;
+					if ((stod(itr) < end_d) && (max_ >= 0)) continue;
 					vector_d_tmp2.push_back(stod(itr));
-					vector_i_tmp2.push_back(static_cast<int>(std::round((stod(itr) - ((max > 0) ? shift_ : 0)) / delta_)));	
+					vector_i_tmp2.push_back(static_cast<int>(std::round((stod(itr) - ((max_ > 0) ? shift_ : 0)) / delta_)));	
 				}
 				end_d = vector_d_tmp2.back();
 			}
-			if (auto sz = static_cast<int>(vector_d_tmp2.size()); max >= 0)
+			if (auto sz = static_cast<int>(vector_d_tmp2.size()); max_ >= 0)
 			{
 				auto min = vector_i_tmp2.front();
-				if( max > sz)
-					for(int i = 1; i <= max - sz; i++)
+				if( max_ > sz)
+					for(int i = 1; i <= max_ - sz; i++)
 					{
 						if (i >= min) break;
 						vector_i_tmp1.push_back(i);
@@ -223,15 +227,14 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 			}
 			else
 			{
-				max = -max;
-				int mz = max/sz;
+				int mz = -max_/sz;
 				while(mz > 0)
 				{
 					vector_d_tmp1.insert(vector_d_tmp1.end(), vector_d_tmp2.begin(),vector_d_tmp2.end());
 					vector_i_tmp1.insert(vector_i_tmp1.end(), vector_i_tmp2.begin(),vector_i_tmp2.end());
 					mz--;
 				}
-				if (auto ost = max % sz; ost > 0)
+				if (auto ost = -max_ % sz; ost > 0)
 				{
 					vector_d_tmp1.insert(vector_d_tmp1.end(), vector_d_tmp2.begin(),vector_d_tmp2.begin()+ost);
 					vector_i_tmp1.insert(vector_i_tmp1.end(), vector_i_tmp2.begin(),vector_i_tmp2.begin()+ost);
@@ -240,7 +243,7 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 				
 			((place_ != 1) ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
 			((place_ != 1) ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
-			(place_ != 1) ? value_i_.first : value_i_.second = max;
+			(place_ != 1) ? value_i_.first : value_i_.second = max_;
 		}
 		break; 
 		default:
@@ -253,7 +256,6 @@ void uk5_b_var::set_value(const std::string& def, int max, int c)
 		f_err_.open("error.log", std::ios::out);
 		f_err_ << "Ошибка: " << e.what() << std::endl;
 	}
-
 }
 
 std::string uk5_b_var::get_string(const int c) const
@@ -323,6 +325,16 @@ std::variant<double,std::vector<double>,int,std::vector<int>> uk5_b_var::get_val
 	default: 
 		return -1;
 	}
+}
+
+void uk5_b_var::set_max(const int max)
+{
+	max_ = max;
+}
+
+int uk5_b_var::get_max() const
+{
+	return max_;
 }
 
 void uk5_b_var::set_delta(const double delta)

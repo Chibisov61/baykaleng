@@ -3,8 +3,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/tokenizer.hpp>
 
 struct uk5_b_set : uk5_b_var
 {
@@ -32,7 +30,7 @@ public:
 //		uk5_b_river& operator = (const uk5_b_river&) = default;																				//	оператор копирования
 //		uk5_b_river& operator = (uk5_b_river&&) noexcept = default;																			//	оператор присваивания
 
-		void init(uk5_b_set, const std::string& def = "-");
+		void init(uk5_b_set);
 
 		std::vector<uk5_b_set>				river = {};
 		std::vector<std::vector<double>>	cut = {{}};

@@ -40,14 +40,17 @@ explicit uk5_b_var(const std::string& n, const std::string& t, const std::string
 				void		set_init(bool);
 [[nodiscard]]	bool		is_init() const;
 
-				void		set_value(const std::string& def = "0.", int max = 0, int c = -1);
+				void		set_value(const std::string& def = "0.", int c = -1);
 [[nodiscard]]	std::string	get_string(int) const;
 [[nodiscard]]	std::variant<double,std::vector<double>,int,std::vector<int>>	get_value(int) const;
 
-				void		set_delta(const double);
+				void		set_max(int);
+[[nodiscard]]	int			get_max() const;
+
+				void		set_delta(double);
 [[nodiscard]]	double		get_delta() const;
 	
-				void		set_shift(const double);
+				void		set_shift(double);
 [[nodiscard]]	double		get_shift() const;
 
 				void		swap_value();
@@ -57,16 +60,17 @@ explicit uk5_b_var(const std::string& n, const std::string& t, const std::string
 
 private:
 				std::string											name_;
-				int													type_ = 0;
-				int													place_ = 2;
-				bool												init_ = false;
+				int													type_	= 0;
+				int													place_	= 2;
+				bool												init_	= false;
 	
-				std::pair<double, double>							value_d_ = {};
-				std::pair<std::vector<double>, std::vector<double>>	vector_d_ = {};
-				std::pair<int, int>									value_i_ = {};
-				std::pair<std::vector<int>, std::vector<int>>		vector_i_ = {};
+				std::pair<double, double>							value_d_	= {};
+				std::pair<std::vector<double>, std::vector<double>>	vector_d_	= {};
+				std::pair<int, int>									value_i_	= {};
+				std::pair<std::vector<int>, std::vector<int>>		vector_i_	= {};
 
-				double												delta_ = 1.;
-				double												shift_ = 0.;
+				   int												max_	= 100;
+				double												delta_	= 1.;
+				double												shift_	= 0.;
 
 };

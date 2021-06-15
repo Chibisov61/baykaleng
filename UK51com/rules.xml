@@ -37,7 +37,7 @@
 		<variable name="dz" place="out" type="quality" state="enabled" description="dz">
 			<parameter name="n"/>
 			<parameter name="dzz"/>
-		</variable>
+;		</variable>
 		<variable name="dy" place="out" type="quality" state="enabled" description="dy">
 			<parameter name="dz"/>
 		</variable>

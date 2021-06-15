@@ -11,8 +11,6 @@ int main()  // NOLINT(bugprone-exception-escape)
 //	setvbuf(stdout, nullptr, _IOFBF, 1000);
 	
 	auto r = new uk5_b_river();
-	for(auto& v: r->river)
-		r->init(v);
 	
 	return 0;
 }
