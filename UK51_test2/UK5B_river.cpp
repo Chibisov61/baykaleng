@@ -25,7 +25,7 @@ uk5_b_river::uk5_b_river()
 							river.emplace_back(name, type);
 //							river.back().set_place(m_place[p_snd.get<std::string>("place")]);
 							river.back().desc = p_snd.get<std::string>("description");
-							river.back().state = (p_snd.get<std::string>("state") == "enable") ? true : false;
+							river.back().state = (p_snd.get<std::string>("state") == "enabled") ? true : false;
 
 							river.back().max = p_snd.get<std::string>("max", "");
 							river.back().delta = p_snd.get<std::string>("delta", "");
@@ -53,9 +53,8 @@ uk5_b_river::uk5_b_river()
 void uk5_b_river::init(uk5_b_set v)
 {
 	const int c = v.get_type();
-	int cc = (c == 2) ? 1 : c;
-	if (v.get_place() == 1) cc += 4;
-	std::vector<std::pair<std::string,std::string>> p = {};
+	const int cc = (c == 2) ? 1 : c;
+	std::vector<std::tuple<std::string,std::string,std::string>> p = {};
 	const bool y1 = (!v.max.empty()) || (!v.delta.empty()) || (!v.shift.empty());
 	const bool y2 = (!v.param.empty());
 
@@ -91,59 +90,70 @@ void uk5_b_river::init(uk5_b_set v)
 		if (!v.param.empty())
 			if (auto res = std::find(v.param.begin(), v.param.end(), river.at(j).get_name()); res != v.param.end())
 			{
-				int ccc = river.at(j).get_type();
-				if (river.at(j).get_place() == 1) ccc += 4;
-				auto r = std::make_pair(river.at(j).get_name(), river.at(j).get_string((ccc == 2) ? 1 : ccc));
+				const int cc0 = (river.at(j).get_type() == 2) ? 1 : river.at(j).get_type();
+				const int cc4 = cc0 + 4;
+				auto r = std::make_tuple(river.at(j).get_name(), river.at(j).get_string(cc0), river.at(j).get_string(cc4));
 				p.push_back(r);
 			}
 	}
 	
-	if (y1) river.back().set_value(v.get_string(cc), cc);
-	if (y2) river.back().set_value(eval(v.get_name(), p), cc);
+	if (y1)
+	{
+		river.back().set_value(v.get_string(cc), cc);
+		river.back().set_value(v.get_string(cc+4), cc+4);
+	}
+	if (y2) {
+		if (river.back().state) 
+			river.back().set_value(eval(v.get_name(), p, "first"), cc);
+		else
+			river.back().set_value(eval(v.get_name(), p, "second"), cc);
+		
+		river.back().set_value(eval(v.get_name(), p, "second"), cc+4);
+	}
 }
 
-std::string uk5_b_river::eval(const std::string& name, const std::vector<std::pair<std::string,std::string>>& p)
+std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tuple<std::string,std::string,std::string>>& p, std::string acc)
 {
 	switch(std::map<std::string,int> map_n =	{{"dog",0},{"vst",1},{"dt",2},{"dzz",3},{"nn",4},{"xn",5},{"dz",6},{"dy",7},{"pc",8},{"pd",9},{"dx",10},{"w",11}}; map_n[name])
 	{
 	case 0:	//dog
 		{
 			const double pi		= 3.1415;
-			const double qst	= stod(var("qst",p));
+			const double qst	= std::stod(var("qst",p,acc));
 			
 			return std::to_string(pow(4. * qst / pi / 25., 0.4)); 
 		}
 	case 1:	//vst
 		{
 			const double pi		= 3.1415;
-			const double dog	= std::stod(var("dog",p));
-			const double qst	= std::stod(var("qst",p));
-			
+			const double dog	= std::stod(var("dog",p,acc));
+			const double qst	= std::stod(var("qst",p,acc));
+
 			return std::to_string((4 * qst) / (pi * dog * dog));
 		}
 	case 2:	//dt
 		{
 			const double dvm	= 0.1;
-			const double vr		= std::stod(var("vr",p));
-			const double vst	= std::stod(var("vst",p));
+			const double vr		= std::stod(var("vr",p,acc));
+			const double vst	= std::stod(var("vst",p,acc));
 
 			const auto m = vr / vst;																	
 			return std::to_string(sqrt(8.1 / (((1 - m) * dvm * dvm / 0.92) + (2 * m * dvm / 0.96))));
 		}
 	case 3:	//dzz
 		{
-			const double qst	= std::stod(var("qst",p));
-			const double vr		= std::stod(var("vr",p));
-			const double vst	= std::stod(var("vst",p));
-			const double dt		= std::stod(var("dt",p));
+			const double qst	= std::stod(var("qst",p,acc));
+			const double vr		= std::stod(var("vr",p,acc));
+			const double vst	= std::stod(var("vst",p,acc));
+			const double dt		= std::stod(var("dt",p,acc));
 
 			return std::to_string((((vr / vst) < 0.25) && (vst < 2.)) ? (qst / vr) : (qst * dt * dt / vst));
 		}
 	case 4:	//nn
 		{
-			const double vr		= std::stod(var("vr",p));
-			const double vst	= std::stod(var("vst",p));
-			const double dt		= std::stod(var("dt",p));
+			const double vr		= std::stod(var("vr",p,acc));
+			const double vst	= std::stod(var("vst",p,acc));
+			const double dt		= std::stod(var("dt",p,acc));
 
 //	if (_h / dzz <= 1)
 //	nnr = nnr * f(_h / dzz);	// проверка на влияние дна
@@ -153,32 +163,32 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::pa
 		}
 	case 5:	//xn
 		{
-			const double vr		= std::stod(var("vr",p));
-			const double vst	= std::stod(var("vst",p));
-			const double dzz	= std::stod(var("dzz",p));
+			const double vr		= std::stod(var("vr",p,acc));
+			const double vst	= std::stod(var("vst",p,acc));
+			const double dzz	= std::stod(var("dzz",p,acc));
 
 			const auto m = vr / vst;
 			return std::to_string(((m < 0.25) && (vst < 2.)) ? 0. : (dzz / 0.48 / (1 - 3.12 * m)));
 		}
 	case 6:	//dz
 		{
-			const double n		= std::stod(var("n",p));
-			const double dzz	= std::stod(var("dzz",p));
+			const double n		= std::stod(var("n",p,acc));
+			const double dzz	= std::stod(var("dzz",p,acc));
 
 			const auto on = dzz / static_cast<double>(n) / static_cast<double>(n);
 			return std::to_string(sqrt(on));
 		}
 	case 7:	//dy
 		{
-			const double dz	= std::stod(var("dz",p));
+			const double dz	= std::stod(var("dz",p,acc));
 			
 			return std::to_string(dz);
 		}
 	case 8:	//pc
 		{
 			const double g		= 9.8110;
-			const double h		= std::stod(var("h",p));
-			const double psh	= std::stod(var("psh",p));
+			const double h		= std::stod(var("h",p,acc));
+			const double psh	= std::stod(var("psh",p,acc));
 
 			auto const a1 = 1 / psh - sqrt(g) * (1 - log10(h)) / 0.13;
 			auto const a2 = sqrt(g) * (1 / psh + sqrt(g) * log10(h)) / 0.13;
@@ -187,9 +197,9 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::pa
 	case 9:	//pd
 		{
 			const double g		= 9.8110;
-			const double vr		= std::stod(var("vr",p));
-			const double h		= std::stod(var("h",p));
-			const double pc		= std::stod(var("pc",p));
+			const double vr		= std::stod(var("vr",p,acc));
+			const double h		= std::stod(var("h",p,acc));
+			const double pc		= std::stod(var("pc",p,acc));
 			
 			auto const mm = pc < 60 ? 0.75 * pc + 6 : 48;									
 			
@@ -197,19 +207,19 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::pa
 		}
 	case 10://dx
 		{
-			const double vr		= std::stod(var("vr",p));
-			const double pd		= std::stod(var("pd",p));
-			const double dy		= std::stod(var("dy",p));
+			const double vr		= std::stod(var("vr",p,acc));
+			const double pd		= std::stod(var("pd",p,acc));
+			const double dy		= std::stod(var("dy",p,acc));
 			
 			return std::to_string(vr * dy * dy/ (4. * pd));
 		}
 	case 11://w 
 		{
-			const double br		= std::stod(var("br",p));
-			const double bl		= std::stod(var("bl",p));
+			const double br		= std::stod(var("br",p,acc));
+			const double bl		= std::stod(var("bl",p,acc));
 			
 				  double w		= br + bl;
-			std::string	 b		= var("b", p);
+			std::string	 b		= var("b",p,acc);
 			boost::char_separator sep(";");
 			boost::tokenizer list(b, sep);
 			for (auto& itr : list)
@@ -223,11 +233,20 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::pa
 	
 }
 
-std::string uk5_b_river::var(const std::string& var, const std::vector<std::pair<std::string, std::string>>& val)
+std::string uk5_b_river::var(const std::string& var, const std::vector<std::tuple<std::string, std::string, std::string>>& val, const std::string& acc)
 {
-	for (const auto& [fst, snd] : val)
-		if (fst  == var) return snd;
 	
+	for (auto& v : val)
+		if (std::get<0>(v) == var)
+		{
+			if (acc == "first")
+				return std::get<1>(v);
+			if (acc == "second")
+				return std::get<2>(v);
+			return {};
+		}
+
 	return {};
 }
+
 

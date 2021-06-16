@@ -37,9 +37,11 @@ public:
 	
 		std::map<std::string,int>			m_place = {{"in",0},{"in_out",1},{"out",2},{"final",3}};
 protected:	
-		static std::string eval(const std::string&, const std::vector<std::pair<std::string,std::string>>&);
-		static std::string var(const std::string&, const std::vector<std::pair<std::string,std::string>>&);
+		static std::string eval(const std::string&, const std::vector<std::tuple<std::string,std::string,std::string>>&, const std::string);
+		static std::string var(const std::string&, const std::vector<std::tuple<std::string,std::string,std::string>>&, const std::string
+		                       &);
 		boost::property_tree::ptree			pt_;
+		bool								double_acc_ = true;
 };
 
 

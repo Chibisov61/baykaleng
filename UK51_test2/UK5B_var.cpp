@@ -44,6 +44,7 @@ uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::stri
 	delta_	= delta;
 	shift_	= shift;
 	set_value(s, c);
+	set_value(s, c+4);
 }
 
 std::string uk5_b_var::get_name() const
@@ -83,6 +84,9 @@ void uk5_b_var::set_value(const std::string& def, int c)
 		if (boost::algorithm::contains(def, ".")) c += 1;
 		if (boost::algorithm::contains(def, ";")) c += 2;
 	}
+	bool da = true;
+	if (c > 4) da = false;
+	c = c % 4;
 	const auto s = (def.empty()) ? not_an_empty_string(c) : def;
 	
 	try
@@ -90,18 +94,18 @@ void uk5_b_var::set_value(const std::string& def, int c)
 		switch (c)
 		{
 		case 0: {	// int				счетчик  (quantity and geometry:value?)
-			((place_ != 1) ? value_i_.first : value_i_.second) = std::stoi(s);
+			(da ? value_i_.first : value_i_.second) = std::stoi(s);
 			if (type_ == 2)
 			{
-				((place_ != 1) ? value_d_.first : value_d_.second ) = std::stoi(s) * delta_ + ((max_ >= 0) ? shift_ : 0.);
+				(da ? value_d_.first : value_d_.second ) = std::stoi(s) * delta_ + ((max_ >= 0) ? shift_ : 0.);
 			}
 		}
 		break;
 		case 1: {	// double			величина (quality and geometry:value)
-			((place_ != 1) ? value_d_.first : value_d_.second) = std::stod(s);
+			(da ? value_d_.first : value_d_.second) = std::stod(s);
 			if (type_ == 2)
 			{
-				((place_ != 1) ? value_i_.first : value_i_.second ) = static_cast<int>(std::round((stod(s) - ((max_ > 0) ? shift_ : 0)) / delta_));
+				(da ? value_i_.first : value_i_.second ) = static_cast<int>(std::round((stod(s) - ((max_ > 0) ? shift_ : 0)) / delta_));
 			}
 		}
 		break;
@@ -171,9 +175,9 @@ void uk5_b_var::set_value(const std::string& def, int c)
 				}
 			}	
 				
-			((place_ != 1) ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
-			((place_ != 1) ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
-			(place_ != 1) ? value_i_.first : value_i_.second = max_;
+			(da ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
+			(da ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
+			da ? value_i_.first : value_i_.second = max_;
 		}
 		break;
 		case 3: {	// vector<double>	размеры в метрах (geometry:vector)
@@ -241,9 +245,9 @@ void uk5_b_var::set_value(const std::string& def, int c)
 				}
 			}	
 				
-			((place_ != 1) ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
-			((place_ != 1) ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
-			(place_ != 1) ? value_i_.first : value_i_.second = max_;
+			(da ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
+			(da ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
+			da ? value_i_.first : value_i_.second = max_;
 		}
 		break; 
 		default:
@@ -356,13 +360,3 @@ double uk5_b_var::get_shift() const
 {
 	return shift_;
 }
-
-void uk5_b_var::swap_value()
-{
-		std::swap(value_i_.second,value_i_.first);
-		std::swap(value_d_.second,value_d_.first);
-		std::swap(vector_i_.second,vector_i_.first);
-		std::swap(vector_d_.second,vector_d_.first);
-}
-
-

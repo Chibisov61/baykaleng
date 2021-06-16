@@ -53,8 +53,6 @@ explicit uk5_b_var(const std::string& n, const std::string& t, const std::string
 				void		set_shift(double);
 [[nodiscard]]	double		get_shift() const;
 
-				void		swap_value();
-
 				std::map<std::string,int>							m_place = {{"in",0},{"in_out",1},{"out",2},{"final",3}};
 				std::map<std::string,int>							m_type = {{"quantity",0},{"quality",1},{"geometry:value",2},{"geometry:vector",3},{"section",4}};
 
