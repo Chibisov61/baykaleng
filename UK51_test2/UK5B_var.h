@@ -24,7 +24,7 @@ class uk5_b_var
 
 public:
 //	uk5_b_var() = default;																														//  конструктор по умолчанию
-explicit uk5_b_var(const std::string& n, const std::string& t, const std::string& def="0.", int max = 0, double delta = 1.0, double shift = 0., int c = -1);	//	конструктор (пользовательский) 
+explicit uk5_b_var(const std::string& n, const std::string& t, const std::string& def="0.", int max = 0, double delta = 1.0, double shift = 0., int c = 8);	//	конструктор (пользовательский) 
 //	~uk5_b_var() = default;																														//	деструктор 
 // 	uk5_b_var(const uk5_b_var&) = default;																										//	конструктор копирования
 //	uk5_b_var(uk5_b_var&&)  noexcept = default;																									//	конструктор присваивания
@@ -40,7 +40,7 @@ explicit uk5_b_var(const std::string& n, const std::string& t, const std::string
 				void		set_init(bool);
 [[nodiscard]]	bool		is_init() const;
 
-				void		set_value(const std::string& def = "0.", int c = -1);
+				void		set_value(const std::string& def = "0.", int c = 8);
 [[nodiscard]]	std::string	get_string(int) const;
 [[nodiscard]]	std::variant<double,std::vector<double>,int,std::vector<int>>	get_value(int) const;
 

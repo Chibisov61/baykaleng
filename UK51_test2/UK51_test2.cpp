@@ -5,12 +5,22 @@
 #include <iostream>
 #include <Windows.h>
 
-int main()  // NOLINT(bugprone-exception-escape)
-{
+int main()  {
 //	SetConsoleOutputCP(CP_UTF8);
 //	setvbuf(stdout, nullptr, _IOFBF, 1000);
 	
-	auto r = new uk5_b_river();
+	try
+	{
+		const auto r = new uk5_b_river();
+		delete r;
+
+	}
+	catch (const std::exception& e)
+	{
+		std::ofstream f_err;
+		f_err.open("error.log", std::ios::out);
+		f_err << "Ошибка: " << e.what() << std::endl;
+	}
 	
 	return 0;
 }

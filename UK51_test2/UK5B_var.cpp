@@ -1,3 +1,6 @@
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 //#include <utility>
 #include <string>
 #include <boost/algorithm/string.hpp>
@@ -79,14 +82,21 @@ bool uk5_b_var::is_init() const
 
 void uk5_b_var::set_value(const std::string& def, int c)
 {
-	if (c == -1) {
+	bool da = true;
+
+	if ((c >= 4) && (c < 8) || (c == 12))
+	{
+		da = false;
+		c -= 4;
+	}
+
+	if (c == 8)
+	{
 		c = 0;
 		if (boost::algorithm::contains(def, ".")) c += 1;
 		if (boost::algorithm::contains(def, ";")) c += 2;
 	}
-	bool da = true;
-	if (c > 4) da = false;
-	c = c % 4;
+	
 	const auto s = (def.empty()) ? not_an_empty_string(c) : def;
 	
 	try
@@ -96,17 +106,13 @@ void uk5_b_var::set_value(const std::string& def, int c)
 		case 0: {	// int				счетчик  (quantity and geometry:value?)
 			(da ? value_i_.first : value_i_.second) = std::stoi(s);
 			if (type_ == 2)
-			{
 				(da ? value_d_.first : value_d_.second ) = std::stoi(s) * delta_ + ((max_ >= 0) ? shift_ : 0.);
-			}
 		}
 		break;
 		case 1: {	// double			величина (quality and geometry:value)
 			(da ? value_d_.first : value_d_.second) = std::stod(s);
 			if (type_ == 2)
-			{
 				(da ? value_i_.first : value_i_.second ) = static_cast<int>(std::round((stod(s) - ((max_ > 0) ? shift_ : 0)) / delta_));
-			}
 		}
 		break;
 		case 2: {	// vector<int>		размеры в ячейках (geometry:vector?)
@@ -177,7 +183,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 				
 			(da ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
 			(da ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
-			da ? value_i_.first : value_i_.second = max_;
+			(da ? value_i_.first : value_i_.second) = max_;
 		}
 		break;
 		case 3: {	// vector<double>	размеры в метрах (geometry:vector)
@@ -247,7 +253,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 				
 			(da ? vector_d_.first : vector_d_.second) = vector_d_tmp1;
 			(da ? vector_i_.first : vector_i_.second) = vector_i_tmp1;
-			da ? value_i_.first : value_i_.second = max_;
+			(da ? value_i_.first : value_i_.second) = max_;
 		}
 		break; 
 		default:

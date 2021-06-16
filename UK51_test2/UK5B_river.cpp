@@ -9,44 +9,53 @@ uk5_b_river::uk5_b_river()
 {
 	if (const bool x = boost::filesystem::exists("rules.xml"); x)
 	{
-				int k = 0;
-				read_xml("rules.xml", pt_);
-				for (auto & [fst, snd]: pt_.get_child("variables"))
+		try
+		{
+			int k = 0;
+			read_xml("rules.xml", pt_);
+			for (auto & [fst, snd]: pt_.get_child("variables"))
+			{
+				for (auto& [p_fst, p_snd] : snd)
 				{
-					for (auto& [p_fst, p_snd] : snd)
+					if (p_fst == "<xmlattr>")
 					{
-						if (p_fst == "<xmlattr>")
-						{
-							auto name = p_snd.get<std::string>("name");
-							auto type = p_snd.get<std::string>("type");
+						auto name = p_snd.get<std::string>("name");
+						auto type = p_snd.get<std::string>("type");
 
-							if (name == "cut") continue;
+						if (name == "cut") continue;
 
-							river.emplace_back(name, type);
+						river.emplace_back(name, type);
 //							river.back().set_place(m_place[p_snd.get<std::string>("place")]);
-							river.back().desc = p_snd.get<std::string>("description");
-							river.back().state = (p_snd.get<std::string>("state") == "enabled") ? true : false;
+						river.back().desc = p_snd.get<std::string>("description");
+						river.back().state = (p_snd.get<std::string>("state") == "enabled") ? true : false;
 
-							river.back().max = p_snd.get<std::string>("max", "");
-							river.back().delta = p_snd.get<std::string>("delta", "");
-							river.back().shift = p_snd.get<std::string>("shift", "");
+						river.back().max = p_snd.get<std::string>("max", "");
+						river.back().delta = p_snd.get<std::string>("delta", "");
+						river.back().shift = p_snd.get<std::string>("shift", "");
 
-						}
-						else if(p_fst == "parameter")
-						{
-							auto s = p_snd.get<std::string>("<xmlattr>.name");
-							river.back().param.push_back(s);
-						}
-						else if(p_fst == "child")
-						{
-							river.back().child_place = m_place[p_snd.get<std::string>("<xmlattr>.place")];
-							river.back().child_desc = p_snd.get<std::string>("<xmlattr>.description");
-						}
 					}
-					river.back().number = ++k;
-					init(river.back());
-					river.back().set_init(true);
+					else if(p_fst == "parameter")
+					{
+						auto s = p_snd.get<std::string>("<xmlattr>.name");
+						river.back().param.push_back(s);
+					}
+					else if(p_fst == "child")
+					{
+						river.back().child_place = m_place[p_snd.get<std::string>("<xmlattr>.place")];
+						river.back().child_desc = p_snd.get<std::string>("<xmlattr>.description");
+					}
 				}
+				river.back().number = ++k;
+				init(river.back());
+				river.back().set_init(true);
+			}
+		}
+		catch (boost::property_tree::ptree_error &e)
+		{
+			std::ofstream f_err;
+			f_err.open("error.log", std::ios::out);
+			f_err << "Ошибка: " << e.what() << std::endl;
+		}
 	}
 }
 
@@ -60,55 +69,75 @@ void uk5_b_river::init(uk5_b_set v)
 
 	for (int j = 0; j < v.number - 1; j++)
 	{
-		if (!river.at(j).is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + river.at(j).get_name() + ")");
-		
-		if (!v.max.empty())
-			if (river.at(j).get_name() == v.max)
-			{
-//				int max = std::get<int>(river.at(j).get_value(0));
-				int max = std::stoi(river.at(j).get_string(0));
-				if (v.max == "dy") max = -max;
-				river.back().set_max(max);
-			}
+		try
+		{
+			if (!river.at(j).is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + river.at(j).get_name() + ")");
 
-		if (!v.delta.empty())
-			if (river.at(j).get_name() == v.delta)
-			{
-//				const double delta = std::get<double>(river.at(j).get_value(1));
-				const double delta = std::stod(river.at(j).get_string(1));
-				river.back().set_delta(delta);
-			}
-		
-		if (!v.shift.empty())
-			if (river.at(j).get_name() == v.shift)
-			{
-//				const double shift = std::get<double>(river.at(j).get_value(1));
-				const double shift = std::stod(river.at(j).get_string(1));
-				river.back().set_shift(shift);
-			}
+			if (!v.delta.empty())
+				if (river.at(j).get_name() == v.delta)
+				{
+					//				const double delta = std::get<double>(river.at(j).get_value(1));
+					const double delta = std::stod(river.at(j).get_string(1));
+					river.back().set_delta(delta);
+				}
 
-		if (!v.param.empty())
-			if (auto res = std::find(v.param.begin(), v.param.end(), river.at(j).get_name()); res != v.param.end())
-			{
-				const int cc0 = (river.at(j).get_type() == 2) ? 1 : river.at(j).get_type();
-				const int cc4 = cc0 + 4;
-				auto r = std::make_tuple(river.at(j).get_name(), river.at(j).get_string(cc0), river.at(j).get_string(cc4));
-				p.push_back(r);
-			}
+			if (!v.shift.empty())
+				if (river.at(j).get_name() == v.shift)
+				{
+					//				const double shift = std::get<double>(river.at(j).get_value(1));
+					const double shift = std::stod(river.at(j).get_string(1));
+					river.back().set_shift(shift);
+				}
+
+			if (!v.max.empty())
+				if (river.at(j).get_name() == v.max)
+				{
+					//				int max = std::get<int>(river.at(j).get_value(0));
+					int max = std::stoi(river.at(j).get_string(0));
+					if (v.delta == "dy") max = -max;
+					river.back().set_max(max);
+				}
+
+			if (!v.param.empty())
+				if (auto res = std::find(v.param.begin(), v.param.end(), river.at(j).get_name()); res != v.param.end())
+				{
+					const int cc0 = (river.at(j).get_type() == 2) ? 1 : river.at(j).get_type();
+					const int cc4 = cc0 + 4;
+					auto r = std::make_tuple(river.at(j).get_name(), river.at(j).get_string(cc0), river.at(j).get_string(cc4));
+					p.push_back(r);
+				}
+		}
+		catch (const std::exception& e)
+		{
+			std::ofstream f_err;
+			f_err.open("error.log", std::ios::out);
+			f_err << "Ошибка: " << e.what() << std::endl;
+		}
 	}
 	
-	if (y1)
+	try
 	{
-		river.back().set_value(v.get_string(cc), cc);
-		river.back().set_value(v.get_string(cc+4), cc+4);
-	}
-	if (y2) {
-		if (river.back().state) 
-			river.back().set_value(eval(v.get_name(), p, "first"), cc);
-		else
-			river.back().set_value(eval(v.get_name(), p, "second"), cc);
+		if (y1)
+		{
+			river.back().set_value(v.get_string(cc), cc);
+			river.back().set_value(v.get_string(cc + 4), cc + 4);
+		}
 		
-		river.back().set_value(eval(v.get_name(), p, "second"), cc+4);
+		if (y2) {
+			if (river.back().get_place() != 1)
+				if (river.back().state)
+					river.back().set_value(eval(v.get_name(), p, "first"), cc);
+				else
+					river.back().set_value(eval(v.get_name(), p, "second"), cc);
+
+			river.back().set_value(eval(v.get_name(), p, "second"), cc + 4);
+		}
+	}
+	catch (const std::exception& e)
+	{
+		std::ofstream f_err;
+		f_err.open("error.log", std::ios::out);
+		f_err << "Ошибка: " << e.what() << std::endl;
 	}
 }
 
