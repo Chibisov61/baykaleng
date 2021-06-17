@@ -41,7 +41,7 @@
 		<variable name="dy" place="out" type="quality" state="enabled" description="dy">
 			<parameter name="dz"/>
 		</variable>
-		<variable name="br" place="in" type="geometry:value" state="enabled" description="Расстояние до правого берега"  delta="dy">
+		<variable name="br" place="in" type="geometry:value" state="enabled" description="Расстояние до правого берега" delta="dy">
 			<child place="out" description="Расстояние до правого берега (расч.)"/>
  		</variable>
 		<variable name="b" place="in" type="geometry:vector" state="enabled" description="Расстояния между оголовками" max="nog" delta="dy">
@@ -49,6 +49,11 @@
 		</variable>
 		<variable name="bl" place="in" type="geometry:value" state="enabled" description="Расстояние до левого берега" delta="dy">
 			<child place="out" description="Расстояние до левого берега (расч.)"/>
+		</variable>
+		<variable name="w" place="out" type="geometry:value" state="enabled" description="Общая ширина (расч.)" delta="dy">
+			<parameter name="br"/>
+			<parameter name="b"/>
+			<parameter name="bl"/>
 		</variable>
 		<variable name="hog" place="in" type="geometry:vector" state="enabled" description="Высоты оголовков" max="nog" delta="dy">
 			<child place="out" description="Высоты оголовков (расч.)"/>
@@ -76,11 +81,6 @@
 		<variable name="ll" place="in" type="geometry:value" state="enabled" description="Протяженность расчетного участка реки" delta="dx" shift="xn">
 			<child place="out" description="Протяженность расчетного участка реки (расч.)"/>
 		</variable>	
-		<variable name="w" place="out" type="geometry:value" state="enabled" description="Общая ширина (расч.)">
-			<parameter name="br"/>
-			<parameter name="b"/>
-			<parameter name="bl"/>
-		</variable>
 		<variable name="cut" place="final" type="section" state="enabled" description="Сечение">
 			<parameter name="cct"/>
 			<parameter name="n"/>

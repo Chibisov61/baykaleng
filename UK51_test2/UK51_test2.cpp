@@ -12,8 +12,8 @@ int main()  {
 	try
 	{
 		const auto r = new uk5_b_river();
+//тело программы
 		delete r;
-
 	}
 	catch (const std::exception& e)
 	{
