@@ -55,8 +55,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>D:\DEV\Qt\5.15.2\msvc2019_64\include;D:\DEV\Boost\boost_1_76_0;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\DEV\Boost\boost_1_76_0\lib64-msvc-14.2;D:\DEV\Qt\5.15.2\msvc2019_64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>F:\DEV\boost_1_76_0;F:\DEV\Qt\5.15.2\msvc2019_64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>F:\DEV\Qt\5.15.2\msvc2019_64\lib;F:\DEV\boost_1_76_0\lib64-msvc-14.2;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
@@ -92,12 +92,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="UK5B_out.cpp" />
+    <ClCompile Include="UK5B_river.cpp" />
     <ClCompile Include="UK5B_var.cpp" />
+    <ClCompile Include="UK5Q_box.cpp" />
+    <ClCompile Include="UK5Q_form.cpp" />
     <QtRcc Include="UK51com.qrc" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UK5B_out.h" />
+    <ClInclude Include="UK5B_river.h" />
     <ClInclude Include="UK5B_var.h" />
+    <QtMoc Include="UK5Q_form.h" />
+    <QtMoc Include="UK5Q_box.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="UK5Q_box.ui" />
+    <QtUic Include="UK5Q_form.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

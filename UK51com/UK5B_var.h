@@ -24,7 +24,7 @@ class uk5_b_var
 
 public:
 //	uk5_b_var() = default;																																														//  конструктор по умолчанию
-explicit uk5_b_var(const std::string& n, const std::string& t, const std::string& def="0.", int max = 0, std::pair<double, double> delta = { 1.,1. }, std::pair<double, double> shift = { 0.,0. }, int c = 8);	//	конструктор (пользовательский) 
+explicit uk5_b_var(std::string n, const std::string& t, const std::string& def="0.", int max = 0, std::pair<double, double> delta = { 1.,1. }, std::pair<double, double> shift = { 0.,0. }, int c = 8);	//	конструктор (пользовательский) 
 //	~uk5_b_var() = default;																																														//	деструктор
 // 	uk5_b_var(const uk5_b_var&) = default;																																										//	конструктор копирования
 //	uk5_b_var(uk5_b_var&&)  noexcept = default;																																									//	конструктор присваивания

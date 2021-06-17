@@ -13,7 +13,7 @@ class UK5Q_form : public QMainWindow
 	Q_OBJECT
 
 public:
-	UK5B_river					river;
+//	UK5B_river					river;
 	std::array<QSize, 4>		p;
 	QMap<QString, UK5Q_box*>	map_box;
 	QMap<int, QVBoxLayout*>		map;
@@ -59,26 +59,7 @@ public:
 								explicit	UK5Q_form(QWidget* parent = Q_NULLPTR);
 	
 									void	viewCharts(QChartView*, std::vector<double>, double, double, int, int) const;
-									void	UK5Q_rewrite(const QString&);
-	
 	UK5B_varD								UK5Q_init(const QString&, bool, double);
-	UK5B_varI								UK5Q_init(const QString&, bool, int);
-	UK5B_varVD								UK5Q_init(const QString&, bool, std::vector<double>);
-	UK5B_varVI								UK5Q_init(const QString&, bool, std::vector<int>);
-	std::pair<UK5B_varD,int>				UK5Q_init(const QString&, bool, std::pair<double,int>);
-	std::pair<UK5B_varVD,std::vector<int>>	UK5Q_init(const QString&, bool, std::pair<std::vector<double>,std::vector<int>>);
-	
-	void	UK5Q_recount(const QString&, UK5B_varD&,							 double) const;
-	void	UK5Q_recount(const QString&, UK5B_varI&,							 int) const;
-	void	UK5Q_recount(const QString&, UK5B_varVD&,							 std::vector<double>) const;
-	void	UK5Q_recount(const QString&, UK5B_varVI&,							 std::vector<int>) const;
-	void	UK5Q_recount(const QString&, std::pair<UK5B_varD,int>&,				 std::pair<double,int>) const;
-	void	UK5Q_recount(const QString&, std::pair<UK5B_varVD,std::vector<int>>&,std::pair<std::vector<double>,std::vector<int>>) const;
-
-	static void	UK5Q_read(const QString&,	UK5B_varD&,	UK5Q_box*);
-	static void	UK5Q_read(const QString&,	UK5B_varI&,	UK5Q_box*);
-	static void	UK5Q_read(const QString&,	UK5B_varVD&,UK5Q_box*);
-	static void	UK5Q_read(const QString&,	UK5B_varVI&,UK5Q_box*);
 
 public slots:
 	void UK5Q_newtext(QString);

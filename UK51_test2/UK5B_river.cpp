@@ -3,8 +3,8 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "UK5B_river.h"
 #include <boost/tokenizer.hpp>
-
-
+#include <boost/math/constants/constants.hpp>
+	
 uk5_b_river::uk5_b_river()
 {
 	if (const bool x = boost::filesystem::exists("rules.xml"); x)
@@ -70,22 +70,23 @@ void uk5_b_river::init()
 	{
 		try
 		{
-			auto j_name = river.at(j).get_name();
+			auto rj = river.at(j);
+			auto j_name = rj.get_name();
 			
-			if (!river.at(j).is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + j_name + ")");
+			if (!rj.is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + j_name + ")");
 
 			if (!v.delta.empty())
 				if (j_name == v.delta)
-					river.back().set_delta(std::make_pair(std::stod(river.at(j).get_string(1)),std::stod(river.at(j).get_string(5))));
+					river.back().set_delta(std::make_pair(std::stod(rj.get_string(1)),std::stod(rj.get_string(5))));
 
 			if (!v.shift.empty())
 				if (j_name == v.shift)
-					river.back().set_shift(std::make_pair(std::stod(river.at(j).get_string(1)),std::stod(river.at(j).get_string(5))));
+					river.back().set_shift(std::make_pair(std::stod(rj.get_string(1)),std::stod(rj.get_string(5))));
 
 			if (!v.max.empty())
 				if (j_name == v.max)
 				{
-					int max = std::stoi(river.at(j).get_string(0));
+					int max = std::stoi(rj.get_string(0));
 					if (v.delta == "dy") max = -max;
 					river.back().set_max(max);
 				}
@@ -93,15 +94,15 @@ void uk5_b_river::init()
 			if (!v.param.empty())
 				if (auto res = std::find(v.param.begin(), v.param.end(), j_name); res != v.param.end())
 				{
-					auto tt = river.at(j).get_type();
+					auto tt = rj.get_type();
 					const int cc0 = ( tt == 2) ? 1 : river.at(j).get_type();
-					const int cc4 = cc0 + 4;
- 					if (((name == "w") || (name == "cut")) && (tt >= 2))
- 					{
-						p.emplace_back("i"+ j_name, river.at(j).get_string(cc0-1), river.at(j).get_string(cc4-1));
- 					}
+					const int cc4 = cc0 + 4; //-V112
+					if (((name == "w") || (name == "cut")) && (tt >= 2))
+					{
+						p.emplace_back("i"+ j_name, rj.get_string(cc0-1), rj.get_string(cc4-1));
+					}
 					
-					p.emplace_back(j_name, river.at(j).get_string(cc0), river.at(j).get_string(cc4));
+					p.emplace_back(j_name, rj.get_string(cc0), rj.get_string(cc4));
 				}
 		}
 		catch (const std::exception& e)
@@ -117,7 +118,7 @@ void uk5_b_river::init()
 		if (y1)
 		{
 			river.back().set_value(v.get_string(c), c);
-			river.back().set_value(v.get_string(c + 4), c + 4);
+			river.back().set_value(v.get_string(c + 4), c + 4); //-V112
 		}
 		
 		if (y2) {
@@ -133,7 +134,7 @@ void uk5_b_river::init()
 						river.back().set_value(eval(name, p, "second"), c);
 				}
 				
-				river.back().set_value(eval(name, p, "second"), c + 4);
+				river.back().set_value(eval(name, p, "second"), c + 4); //-V112
 
 				if (name == "w")
 					river.back().set_value(eval("iw", p, "first"), 0);
@@ -154,14 +155,14 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 	{
 	case 0:	//dog
 		{
-			const double pi		= 3.1415;
+			auto pi				= boost::math::constants::pi<double>();
 			const double qst	= std::stod(var("qst",p,acc));
 			
 			return std::to_string(pow(4. * qst / pi / 25., 0.4)); 
 		}
 	case 1:	//vst
 		{
-			const double pi		= 3.1415;
+			auto pi				= boost::math::constants::pi<double>();
 			const double dog	= std::stod(var("dog",p,acc));
 			const double qst	= std::stod(var("qst",p,acc));
 
@@ -268,7 +269,7 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 			const    int br		= std::stoi(var("ibr",p,acc));
 			const    int bl		= std::stoi(var("ibl",p,acc));
 			
-				     int w		= br + bl;
+					 int w		= br + bl;
 			std::string	 b		= var("ib",p,acc);
 			boost::char_separator sep(";");
 			boost::tokenizer list(b, sep);
@@ -285,53 +286,53 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 
 void uk5_b_river::init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>& p)
 {
-	const int		h	= std::stoi(var("ih",p,"first"));		//
-	const int		w	= std::stoi(var("iw",p,"first"));		//
+	const int		h	= std::stoi(var("ih",p,"first"));		  
+	const int		w	= std::stoi(var("iw",p,"first"));		  
 	const int		n	= std::stoi(var("n",p,"first"));
 	const double	t	= std::stod(var("cct",p,"first"));
-	const int		br	= std::stoi(var("ibr",p,"first"));		//
-	const int		bl	= std::stoi(var("ibl",p,"first"));		//
+	const int		br	= std::stoi(var("ibr",p,"first"));		  
+	const int		bl	= std::stoi(var("ibl",p,"first"));		  
 	const double	nn	= std::stod(var("nn",p,"first"));
 
 	boost::char_separator	sep(";");
 	std::vector<int>		b	= {};
-	std::string				sb	= var("ib",p,"first");						//
+	std::string				sb	= var("ib",p,"first");						  
 	boost::tokenizer		list_b(sb, sep);
 	for (auto& itr : list_b)
 		b.push_back(std::stoi(itr));
 
 	std::vector<int>		ho	= {};
-	std::string				sho	= var("ihog", p, "first");					//
+	std::string				sho	= var("ihog", p, "first");					  
 	boost::tokenizer		list_ho(sho, sep);
 	for (auto& itr : list_ho)
-		b.push_back(std::stoi(itr));
+		ho.push_back(std::stoi(itr));
 	
 	const int no = static_cast<int>(ho.size()) - 1;
 	const double tt = t / nn;
 
 	cut = {};
 		
-	std::vector<int> _wo = {};
+	std::vector<int> wo = {};
 	int bb = bl;
-	_wo.push_back(bb);
-	for (int k = 0; k < no; ++k) _wo.push_back(bb += b.at(k));
-	_wo.push_back(bb += br);
+	wo.push_back(bb);
+	for (int k = 0; k < no; ++k) wo.push_back(bb += b.at(k));
+	wo.push_back(bb += br);
 	
-	std::vector<std::pair<int, int>> _o = {};
-	_o.reserve(no);
-	for (int k = 0; k < no; ++k) _o.emplace_back(ho.at(k), _wo.at(k));
+	std::vector<std::pair<int, int>> o = {};
+	o.reserve(no);
+	for (int k = 0; k < no; ++k) o.emplace_back(ho.at(k), wo.at(k));
 
-	for (int i = 1; i < h + 1; ++i)
+	for (int i = 1; i < (h + 1); ++i)
 	{
 		std::vector<double> cut_inner;
-		for (int j = 0; j < w + 2; ++j)
+		for (int j = 0; j < (w + 2); ++j)
 		{
 			bool e = false;
 			for (int k = 0; k < no; ++k)
-				if ((2 * i > 2 * _o.at(k).first - n)  && 
-					(2 * i < 2 * _o.at(k).first + n + 2)  && 
-					(2 * j > 2 * _o.at(k).second - n) && 
-					(2 * j < 2 * _o.at(k).second + n + 2)) 
+				if ((2 * i > 2 * o.at(k).first - n)  && 
+					(2 * i < 2 * o.at(k).first + n + 2)  && 
+					(2 * j > 2 * o.at(k).second - n) && 
+					(2 * j < 2 * o.at(k).second + n + 2)) 
 				{
 					e = true;
 					break;

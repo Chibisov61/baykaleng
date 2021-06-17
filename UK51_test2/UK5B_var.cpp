@@ -8,14 +8,15 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/tokenizer.hpp>
+#include <utility>
 #include "UK5B_var.h"
 
-uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::string& def, const int max, const std::pair<double, double> delta, const std::pair<double, double> shift, const int c)
+uk5_b_var::uk5_b_var(std::string n, const std::string& t, const std::string& def, const int max, const std::pair<double, double> delta, const std::pair<double, double> shift,
+	const int c) : name_(std::move(n)),delta_(delta),shift_(shift)
 {
-	name_ = n;
-	type_ = m_type.at(t);
-	
-	place_ = 2;
+	type_	= m_type.at(t);
+	place_	= 2;
+	max_	= max;
 	std::string s = def;
 
 	if (const bool x = boost::filesystem::exists("config.ini"); x)
@@ -43,11 +44,8 @@ uk5_b_var::uk5_b_var(const std::string& n, const std::string& t, const std::stri
 			}
 
 	}
-	max_	= max;
-	delta_	= delta;
-	shift_	= shift;
 	set_value(s, c);
-	set_value(s, c+4);
+	set_value(s, c+4); //-V112
 }
 
 std::string uk5_b_var::get_name() const
@@ -84,10 +82,10 @@ void uk5_b_var::set_value(const std::string& def, int c)
 {
 	bool da = true;
 
-	if ((c >= 4) && (c < 8) || (c == 12))
+	if ((c >= 4) && (c < 8) || (c == 12)) //-V112
 	{
 		da = false;
-		c -= 4;
+		c -= 4;	//-V112
 	}
 
 	if (c == 8)
@@ -204,10 +202,10 @@ void uk5_b_var::set_value(const std::string& def, int c)
 					boost::char_separator sep2(":");
 					boost::tokenizer list2(itt, sep2);
 					auto it = list2.begin();
-					const double first = (std::stod(*it) == 0.) ? end_d : std::stod(*it);
+					const double first = (fabs(std::stod(*it) - 0.) < DBL_EPSILON) ? end_d : std::stod(*it);
 					if (first < end_d) continue;
-					const int cc = (std::stoi(*(++it)) == 0) ? 1 : std::stoi(*(it));
-					const double step = (std::distance(list2.begin(), list2.end()) == 2) ? delta : ((std::stod(*(++it)) == 0.) ? delta : std::stod(*(it)));
+					const int cc = (fabs(std::stoi(*(++it)) - 0.) < DBL_EPSILON) ? 1 : std::stoi(*(it));
+					const double step = (std::distance(list2.begin(), list2.end()) == 2) ? delta : (fabs(std::stod(*(++it)) - 0.) < DBL_EPSILON) ? delta : std::stod(*(it));	
 					for (int i = 0; i < cc; i += 1)
 						if (double tmp = first + (i * step); tmp >= shift)
 						{
@@ -273,7 +271,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 
 std::string uk5_b_var::get_string(const int c) const
 {
-	std::string s = not_an_empty_string(c % 4);
+	std::string s = not_an_empty_string(c % 4);	//-V112
 	switch (c)
 	{
 	case 0:
@@ -283,12 +281,12 @@ std::string uk5_b_var::get_string(const int c) const
 		s = std::to_string(value_d_.first);
 		break;
 	case 2:
-		s = "";
+		s.clear();
 		for (auto &it : vector_i_.first)
 			s.append(std::to_string(it) + ";");
 		break;
 	case 3:
-		s = "";
+		s.clear();
 		for (auto &it : vector_d_.first)
 			s.append(std::to_string(it) + ";");
 		break;
@@ -299,12 +297,12 @@ std::string uk5_b_var::get_string(const int c) const
 		s = std::to_string(value_d_.second);
 		break;
 	case 6:
-		s = "";
+		s.clear();
 		for (auto &it : vector_i_.second)
 			s.append(std::to_string(it) + ";");
 		break;
 	case 7:
-		s = "";
+		s.clear();
 		for (auto &it : vector_d_.second)
 			s.append(std::to_string(it) + ";");
 		break;

@@ -3,8 +3,8 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "UK5B_river.h"
 #include <boost/tokenizer.hpp>
-
-
+#include <boost/math/constants/constants.hpp>
+	
 uk5_b_river::uk5_b_river()
 {
 	if (const bool x = boost::filesystem::exists("rules.xml"); x)
@@ -21,14 +21,10 @@ uk5_b_river::uk5_b_river()
 					{
 						auto name = p_snd.get<std::string>("name");
 						auto type = p_snd.get<std::string>("type");
-
-						if (name == "cut") continue;
-
+						
 						river.emplace_back(name, type);
-//							river.back().set_place(m_place[p_snd.get<std::string>("place")]);
 						river.back().desc = p_snd.get<std::string>("description");
 						river.back().state = (p_snd.get<std::string>("state") == "enabled") ? true : false;
-
 						river.back().max = p_snd.get<std::string>("max", "");
 						river.back().delta = p_snd.get<std::string>("delta", "");
 						river.back().shift = p_snd.get<std::string>("shift", "");
@@ -46,8 +42,8 @@ uk5_b_river::uk5_b_river()
 					}
 				}
 				river.back().number = ++k;
-				init(river.back());
-					river.back().set_init(true);
+				init();
+				river.back().set_init(true);
 			}
 		}
 		catch (boost::property_tree::ptree_error &e)
@@ -59,10 +55,13 @@ uk5_b_river::uk5_b_river()
 	}
 }
 
-void uk5_b_river::init(uk5_b_set v)
+void uk5_b_river::init()
 {
-	const int c = v.get_type();
-	const int cc = (c == 2) ? 1 : c;
+	auto v = river.back();
+	auto t = v.get_type();
+	auto c = (t == 2) ? 1 : t;
+	auto name = v.get_name();
+	
 	std::vector<std::tuple<std::string,std::string,std::string>> p = {};
 	const bool y1 = (!v.max.empty()) || (!v.delta.empty()) || (!v.shift.empty());
 	const bool y2 = (!v.param.empty());
@@ -71,31 +70,39 @@ void uk5_b_river::init(uk5_b_set v)
 	{
 		try
 		{
-			if (!river.at(j).is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + river.at(j).get_name() + ")");
+			auto rj = river.at(j);
+			auto j_name = rj.get_name();
+			
+			if (!rj.is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + j_name + ")");
 
 			if (!v.delta.empty())
-				if (river.at(j).get_name() == v.delta)
-					river.back().set_delta(std::make_pair(std::stod(river.at(j).get_string(1)),std::stod(river.at(j).get_string(5))));
+				if (j_name == v.delta)
+					river.back().set_delta(std::make_pair(std::stod(rj.get_string(1)),std::stod(rj.get_string(5))));
 
 			if (!v.shift.empty())
-				if (river.at(j).get_name() == v.shift)
-					river.back().set_shift(std::make_pair(std::stod(river.at(j).get_string(1)),std::stod(river.at(j).get_string(5))));
+				if (j_name == v.shift)
+					river.back().set_shift(std::make_pair(std::stod(rj.get_string(1)),std::stod(rj.get_string(5))));
 
 			if (!v.max.empty())
-				if (river.at(j).get_name() == v.max)
+				if (j_name == v.max)
 				{
-					int max = std::stoi(river.at(j).get_string(0));
+					int max = std::stoi(rj.get_string(0));
 					if (v.delta == "dy") max = -max;
 					river.back().set_max(max);
 				}
 
 			if (!v.param.empty())
-				if (auto res = std::find(v.param.begin(), v.param.end(), river.at(j).get_name()); res != v.param.end())
+				if (auto res = std::find(v.param.begin(), v.param.end(), j_name); res != v.param.end())
 				{
-					const int cc0 = (river.at(j).get_type() == 2) ? 1 : river.at(j).get_type();
-					const int cc4 = cc0 + 4;
-					auto r = std::make_tuple(river.at(j).get_name(), river.at(j).get_string(cc0), river.at(j).get_string(cc4));
-					p.push_back(r);
+					auto tt = rj.get_type();
+					const int cc0 = ( tt == 2) ? 1 : river.at(j).get_type();
+					const int cc4 = cc0 + 4; //-V112
+					if (((name == "w") || (name == "cut")) && (tt >= 2))
+					{
+						p.emplace_back("i"+ j_name, rj.get_string(cc0-1), rj.get_string(cc4-1));
+					}
+					
+					p.emplace_back(j_name, rj.get_string(cc0), rj.get_string(cc4));
 				}
 		}
 		catch (const std::exception& e)
@@ -110,19 +117,28 @@ void uk5_b_river::init(uk5_b_set v)
 	{
 		if (y1)
 		{
-			river.back().set_value(v.get_string(cc), cc);
-			river.back().set_value(v.get_string(cc + 4), cc + 4);
+			river.back().set_value(v.get_string(c), c);
+			river.back().set_value(v.get_string(c + 4), c + 4); //-V112
 		}
 		
 		if (y2) {
-			if (river.back().get_place() != 1) 
+			if (name == "cut")
+				init_cut(p);
+			else
 			{
-				if (river.back().state)
-					river.back().set_value(eval(v.get_name(), p, "first"), cc);
-				else
-					river.back().set_value(eval(v.get_name(), p, "second"), cc);
-			}
-			river.back().set_value(eval(v.get_name(), p, "second"), cc + 4);
+				if (river.back().get_place() != 1) 
+				{
+					if (river.back().state)
+						river.back().set_value(eval(name, p, "first"), c);
+					else
+						river.back().set_value(eval(name, p, "second"), c);
+				}
+				
+				river.back().set_value(eval(name, p, "second"), c + 4); //-V112
+
+				if (name == "w")
+					river.back().set_value(eval("iw", p, "first"), 0);
+			}			
 		}
 	}
 	catch (const std::exception& e)
@@ -135,18 +151,18 @@ void uk5_b_river::init(uk5_b_set v)
 
 std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tuple<std::string,std::string,std::string>>& p, const std::string& acc)
 {
-	switch(std::map<std::string,int> map_n =	{{"dog",0},{"vst",1},{"dt",2},{"dzz",3},{"nn",4},{"xn",5},{"dz",6},{"dy",7},{"pc",8},{"pd",9},{"dx",10},{"w",11}}; map_n[name])
+	switch(std::map<std::string,int> map_n =	{{"dog",0},{"vst",1},{"dt",2},{"dzz",3},{"nn",4},{"xn",5},{"dz",6},{"dy",7},{"pc",8},{"pd",9},{"dx",10},{"w",11},{"iw",12}}; map_n[name])
 	{
 	case 0:	//dog
 		{
-			const double pi		= 3.1415;
+			auto pi				= boost::math::constants::pi<double>();
 			const double qst	= std::stod(var("qst",p,acc));
 			
 			return std::to_string(pow(4. * qst / pi / 25., 0.4)); 
 		}
 	case 1:	//vst
 		{
-			const double pi		= 3.1415;
+			auto pi				= boost::math::constants::pi<double>();
 			const double dog	= std::stod(var("dog",p,acc));
 			const double qst	= std::stod(var("qst",p,acc));
 
@@ -248,10 +264,89 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 			
 			return std::to_string(w);
 		}
+	case 12://iw 
+		{
+			const    int br		= std::stoi(var("ibr",p,acc));
+			const    int bl		= std::stoi(var("ibl",p,acc));
+			
+					 int w		= br + bl;
+			std::string	 b		= var("ib",p,acc);
+			boost::char_separator sep(";");
+			boost::tokenizer list(b, sep);
+			for (auto& itr : list)
+				w += std::stoi(itr);
+			
+			return std::to_string(w);
+		}
 	default: 
 			return std::to_string(0);
 	}
 	
+}
+
+void uk5_b_river::init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>& p)
+{
+	const int		h	= std::stoi(var("ih",p,"first"));		  
+	const int		w	= std::stoi(var("iw",p,"first"));		  
+	const int		n	= std::stoi(var("n",p,"first"));
+	const double	t	= std::stod(var("cct",p,"first"));
+	const int		br	= std::stoi(var("ibr",p,"first"));		  
+	const int		bl	= std::stoi(var("ibl",p,"first"));		  
+	const double	nn	= std::stod(var("nn",p,"first"));
+
+	boost::char_separator	sep(";");
+	std::vector<int>		b	= {};
+	std::string				sb	= var("ib",p,"first");						  
+	boost::tokenizer		list_b(sb, sep);
+	for (auto& itr : list_b)
+		b.push_back(std::stoi(itr));
+
+	std::vector<int>		ho	= {};
+	std::string				sho	= var("ihog", p, "first");					  
+	boost::tokenizer		list_ho(sho, sep);
+	for (auto& itr : list_ho)
+		ho.push_back(std::stoi(itr));
+	
+	const int no = static_cast<int>(ho.size()) - 1;
+	const double tt = t / nn;
+
+	cut = {};
+		
+	std::vector<int> wo = {};
+	int bb = bl;
+	wo.push_back(bb);
+	for (int k = 0; k < no; ++k) wo.push_back(bb += b.at(k));
+	wo.push_back(bb += br);
+	
+	std::vector<std::pair<int, int>> o = {};
+	o.reserve(no);
+	for (int k = 0; k < no; ++k) o.emplace_back(ho.at(k), wo.at(k));
+
+	for (int i = 1; i < (h + 1); ++i)
+	{
+		std::vector<double> cut_inner;
+		for (int j = 0; j < (w + 2); ++j)
+		{
+			bool e = false;
+			for (int k = 0; k < no; ++k)
+				if ((2 * i > 2 * o.at(k).first - n)  && 
+					(2 * i < 2 * o.at(k).first + n + 2)  && 
+					(2 * j > 2 * o.at(k).second - n) && 
+					(2 * j < 2 * o.at(k).second + n + 2)) 
+				{
+					e = true;
+					break;
+				}
+			cut_inner.push_back(e ? tt : 0);
+		}
+		cut.push_back(cut_inner);
+		if (i == 1) cut.push_back(cut_inner);
+		cut_inner = {};
+	}
+	
+	cut.push_back(cut.back());
+
+	max_r = tt;
 }
 
 std::string uk5_b_river::var(const std::string& var, const std::vector<std::tuple<std::string, std::string, std::string>>& val, const std::string& acc)

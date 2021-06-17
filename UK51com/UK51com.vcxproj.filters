@@ -34,10 +34,44 @@
     <ClCompile Include="UK5B_var.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UK5B_out.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UK5B_river.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UK5Q_box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UK5Q_form.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UK5B_var.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UK5B_out.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UK5B_river.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="UK5Q_box.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UK5Q_form.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="UK5Q_box.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="UK5Q_form.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>
