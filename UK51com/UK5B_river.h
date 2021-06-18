@@ -30,7 +30,8 @@ public:
 //		uk5_b_river& operator = (const uk5_b_river&) = default;																				//	оператор копирования
 //		uk5_b_river& operator = (uk5_b_river&&) noexcept = default;																			//	оператор присваивания
 
-		void init();
+		void								init();
+		uk5_b_set							search(const std::string&);
 
 		std::vector<uk5_b_set>				river = {};
 		std::vector<std::vector<double>>	cut = {{}};
@@ -38,9 +39,9 @@ public:
 	
 		std::map<std::string,int>			m_place = {{"in",0},{"in_out",1},{"out",2},{"final",3}};
 protected:	
-		static std::string eval(const std::string&, const std::vector<std::tuple<std::string,std::string,std::string>>&, const std::string&);
-		void init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>&);
-		static std::string var(const std::string&, const std::vector<std::tuple<std::string,std::string,std::string>>&, const std::string&);
+		static std::string					eval(const std::string&, const std::vector<std::tuple<std::string,std::string,std::string>>&, const std::string&);
+		void								init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>&);
+		static std::string					var(const std::string&, const std::vector<std::tuple<std::string,std::string,std::string>>&, const std::string&);
 		boost::property_tree::ptree			pt_;
 };
 

@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <variant>
 
 inline std::string not_an_empty_string(const int c)
 {
@@ -41,8 +40,7 @@ explicit uk5_b_var(std::string n, const std::string& t, const std::string& def="
 [[nodiscard]]	bool															is_init() const;
 
 				void															set_value(const std::string& def = "0.", int c = 8);
-[[nodiscard]]	std::string														get_string(int) const;
-[[nodiscard]]	std::variant<double,std::vector<double>,int,std::vector<int>>	get_value(int) const;
+[[nodiscard]]	std::string														get_value(int) const;
 
 				void															set_max(int);
 [[nodiscard]]	int																get_max() const;
@@ -54,7 +52,7 @@ explicit uk5_b_var(std::string n, const std::string& t, const std::string& def="
 [[nodiscard]]	std::pair<double, double>										get_shift() const;
 
 				std::map<std::string,int>										m_place = {{"in",0},{"in_out",1},{"out",2},{"final",3}};
-				std::map<std::string,int>										m_type = {{"quantity",0},{"quality",1},{"geometry:value",2},{"geometry:vector",3},{"section",4}};
+				std::map<std::string,int>										m_type = {{"quantity",0},{"quality",1},{"geometry:value",2},{"geometry:vector",3},{"section",4},{"dummy",5}};
 
 private:
 				std::string														name_;

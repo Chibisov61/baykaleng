@@ -18,6 +18,7 @@ uk5_b_var::uk5_b_var(std::string n, const std::string& t, const std::string& def
 	place_	= 2;
 	max_	= max;
 	std::string s = def;
+	if (type_ == 5) return;
 
 	if (const bool x = boost::filesystem::exists("config.ini"); x)
 	{
@@ -269,7 +270,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 	}
 }
 
-std::string uk5_b_var::get_string(const int c) const
+std::string uk5_b_var::get_value(const int c) const
 {
 	std::string s = not_an_empty_string(c % 4);	//-V112
 	switch (c)
@@ -311,31 +312,6 @@ std::string uk5_b_var::get_string(const int c) const
 	}
 	
 	return s;
-}
-
-std::variant<double,std::vector<double>,int,std::vector<int>> uk5_b_var::get_value(const int c) const
-{
-	switch(c)
-	{
-	case 0:
-		return value_i_.first;
-	case 1:
-		return value_d_.first;
-	case 2:
-		return vector_i_.first;
-	case 3:
-		return vector_d_.first;
-	case 4:
-		return value_i_.second;
-	case 5:
-		return value_d_.second;
-	case 6:
-		return vector_i_.second;
-	case 7:
-		return vector_d_.second;
-	default: 
-		return -1;
-	}
 }
 
 void uk5_b_var::set_max(const int max)

@@ -77,16 +77,16 @@ void uk5_b_river::init()
 
 			if (!v.delta.empty())
 				if (j_name == v.delta)
-					river.back().set_delta(std::make_pair(std::stod(rj.get_string(1)),std::stod(rj.get_string(5))));
+					river.back().set_delta(std::make_pair(std::stod(rj.get_value(1)),std::stod(rj.get_value(5))));
 
 			if (!v.shift.empty())
 				if (j_name == v.shift)
-					river.back().set_shift(std::make_pair(std::stod(rj.get_string(1)),std::stod(rj.get_string(5))));
+					river.back().set_shift(std::make_pair(std::stod(rj.get_value(1)),std::stod(rj.get_value(5))));
 
 			if (!v.max.empty())
 				if (j_name == v.max)
 				{
-					int max = std::stoi(rj.get_string(0));
+					int max = std::stoi(rj.get_value(0));
 					if (v.delta == "dy") max = -max;
 					river.back().set_max(max);
 				}
@@ -99,10 +99,10 @@ void uk5_b_river::init()
 					const int cc4 = cc0 + 4; //-V112
 					if (((name == "w") || (name == "cut")) && (tt >= 2))
 					{
-						p.emplace_back("i"+ j_name, rj.get_string(cc0-1), rj.get_string(cc4-1));
+						p.emplace_back("i"+ j_name, rj.get_value(cc0-1), rj.get_value(cc4-1));
 					}
 					
-					p.emplace_back(j_name, rj.get_string(cc0), rj.get_string(cc4));
+					p.emplace_back(j_name, rj.get_value(cc0), rj.get_value(cc4));
 				}
 		}
 		catch (const std::exception& e)
@@ -117,8 +117,8 @@ void uk5_b_river::init()
 	{
 		if (y1)
 		{
-			river.back().set_value(v.get_string(c), c);
-			river.back().set_value(v.get_string(c + 4), c + 4); //-V112
+			river.back().set_value(v.get_value(c), c);
+			river.back().set_value(v.get_value(c + 4), c + 4); //-V112
 		}
 		
 		if (y2) {
@@ -147,6 +147,15 @@ void uk5_b_river::init()
 		f_err.open("error.log", std::ios::out);
 		f_err << "Ошибка: " << e.what() << std::endl;
 	}
+}
+
+uk5_b_set uk5_b_river::search(const std::string& s)
+{
+	for (auto& itr : river)
+		if (itr.get_name() == s) return itr;
+	
+	uk5_b_set u("dummy", "dummy");
+	return u;
 }
 
 std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tuple<std::string,std::string,std::string>>& p, const std::string& acc)

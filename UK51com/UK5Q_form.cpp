@@ -7,95 +7,96 @@
 #include "UK5B_out.h"
 #include <QWidget>
 
-UK5Q_form::UK5Q_form(QWidget *parent)
+uk5_q_form::uk5_q_form(QWidget *parent)
 	: QMainWindow(parent)
 {
+	ui_ = new Ui::MainWindow();
+	ui_->setupUi(this);
 
-	ui = new Ui::MainWindow();
-	ui->setupUi(this);
-
-	ui->UK5Q_progressBar->setValue(0);
+	ui_->UK5Q_progressBar->setValue(0);
 	
-	map.insert(0, ui->UK5Q_scrollLayout_IN);
-	map.insert(1, ui->UK5Q_scrollLayout_IN_OUT);
-	map.insert(2, ui->UK5Q_scrollLayout_OUT);
-	map.insert(3, ui->UK5Q_verticalLayout_CHART);
+	map.insert(0, ui_->UK5Q_scrollLayout_IN);
+	map.insert(1, ui_->UK5Q_scrollLayout_IN_OUT);
+	map.insert(2, ui_->UK5Q_scrollLayout_OUT);
+	map.insert(3, ui_->UK5Q_verticalLayout_CHART);
 
-	p[0] = { ui->groupBox_IN->width(),0};
-	p[1] = { ui->groupBox_IN_OUT->width(),0};
-	p[2] = { ui->groupBox_OUT->width(),0};
-	p[3] = { ui->groupBox_CHART->width(),0 };
+	p[0] = { ui_->groupBox_IN->width(),0};
+	p[1] = { ui_->groupBox_IN_OUT->width(),0};
+	p[2] = { ui_->groupBox_OUT->width(),0};
+	p[3] = { ui_->groupBox_CHART->width(),0 };
 
-//	river.mx	=	UK5Q_init("mx"  ,x	,0.001);
-//	river.mm	=	UK5Q_init("mm"  ,x	,0.);
+	for (auto& itr : r.river)
+		init(itr);
 
-	ui->verticalLayoutWidget->setGeometry({ QPoint(0,0),p[0] });
-	ui->scrollAreaWidgetContents_IN->setGeometry({ QPoint(0,0),p[0] });
-	ui->UK5Q_scrollArea_IN->resize(ui->groupBox_IN->size());
-	ui->UK5Q_scrollArea_IN->setWidgetResizable(false);
+	ui_->verticalLayoutWidget->setGeometry({ QPoint(0,0),p[0] });
+	ui_->scrollAreaWidgetContents_IN->setGeometry({ QPoint(0,0),p[0] });
+	ui_->UK5Q_scrollArea_IN->resize(ui_->groupBox_IN->size());
+	ui_->UK5Q_scrollArea_IN->setWidgetResizable(false);
 
-	ui->verticalLayoutWidget_2->setGeometry({ QPoint(0,0),p[1] });
-	ui->scrollAreaWidgetContents_IN_OUT->setGeometry({ QPoint(0,0),p[1] });
-	ui->UK5Q_scrollArea_IN_OUT->resize(ui->groupBox_IN_OUT->size());
-	ui->UK5Q_scrollArea_IN_OUT->setWidgetResizable(false);
+	ui_->verticalLayoutWidget_2->setGeometry({ QPoint(0,0),p[1] });
+	ui_->scrollAreaWidgetContents_IN_OUT->setGeometry({ QPoint(0,0),p[1] });
+	ui_->UK5Q_scrollArea_IN_OUT->resize(ui_->groupBox_IN_OUT->size());
+	ui_->UK5Q_scrollArea_IN_OUT->setWidgetResizable(false);
 	
-	ui->verticalLayoutWidget_3->setGeometry({ QPoint(0,0),p[2] });
-	ui->scrollAreaWidgetContents_OUT->setGeometry({ QPoint(0,0),p[2] });
-	ui->UK5Q_scrollArea_OUT->resize(ui->groupBox_OUT->size());
-	ui->UK5Q_scrollArea_OUT->setWidgetResizable(false);
+	ui_->verticalLayoutWidget_3->setGeometry({ QPoint(0,0),p[2] });
+	ui_->scrollAreaWidgetContents_OUT->setGeometry({ QPoint(0,0),p[2] });
+	ui_->UK5Q_scrollArea_OUT->resize(ui_->groupBox_OUT->size());
+	ui_->UK5Q_scrollArea_OUT->setWidgetResizable(false);
 
-	ui->UK5Q_verticalLayout_CHART->setGeometry({ QPoint(0,0),p[3] });
+	ui_->UK5Q_verticalLayout_CHART->setGeometry({ QPoint(0,0),p[3] });
 
-	connect(ui->UK5Q_Exit, SIGNAL(clicked()), this, SLOT(UK5Q_exit()));
-	connect(ui->UK5Q_Eval, SIGNAL(clicked()), this, SLOT(UK5Q_eval()));
+	connect(ui_->UK5Q_Exit, SIGNAL(clicked()), this, SLOT(exit()));
+	connect(ui_->UK5Q_Eval, SIGNAL(clicked()), this, SLOT(eval()));
 
 }
 
-void UK5Q_form::UK5Q_exit()
+void uk5_q_form::exit()
 {
 	QApplication::quit();
 }
 
-void UK5Q_form::UK5Q_eval()
+void uk5_q_form::eval()
 {
 	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
 	UK5B_out print(f.toStdString());
 
-	std::vector<double> m = { river.max };
+	std::vector m = { r.max_r };
 
 // вывод заголовка и нулевого среза	
-	print.UK5B_header_print(river);
-	print.UK5B_body_print(0, river);
+//	print.UK5B_header_print(river);
+//	print.UK5B_body_print(0, river);
 
 // расчет по караушеву с выводом промежуточных и конечного срезов
-	ui->UK5Q_progressBar->setValue(0);
-	const int lll = river.rll.second;
+	ui_->UK5Q_progressBar->setValue(0);
+	const int lll = std::stoi(r.search("ll").get_value(0));
 	for(int i = 1; i < lll + 1; ++i)
 	{
-		river.cut = river.UK5B_karaush(river.cut);
-		m.push_back(river.max);
-		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
-			print.UK5B_body_print(i,river);
+		r.cut = r.karaush(r.cut);
+		m.push_back(r.max_r);
+//		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
+//			print.UK5B_body_print(i,river);
 		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
-		ui->UK5Q_progressBar->setValue(static_cast<int>(ii));
+		ui_->UK5Q_progressBar->setValue(static_cast<int>(ii));
 	}
 
 // вывод графика, максимального загрязнения на 500 м. и конечного разбавления
-	viewCharts(ui->UK5_chart, m, 0., river.ll.UK5B_getValue(), 11, 5);
-	UK5Q_recount("mx",river.mx, m.back());
-	UK5Q_recount("mm", river.mm,river.cct.UK5B_getValue()/m.back());
+	view_charts(ui_->UK5_chart, m, 0., std::stod(r.search("ll").get_value(1)), 11, 5);
+	
+	recount("mx",r.max_r, m.back());
+	recount("mm", r.mm, (std::stoi(r.search("cct").get_value(1)) / m.back()));
+	
 // обнуление рабочего поля для следующего расчета
-	river.UK5B_init_cut();
+	r.init_cut();
 }
 
-void UK5Q_form::viewCharts(QChartView* chw, std::vector<double> r, const double tmin, const double tmax, const int tx, const int ty) const
+void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const double t_min, const double t_max, const int tx, const int ty)
 {
-	const auto res = minmax_element(r.begin(), r.end());
+	const auto [fst, snd] = minmax_element(m_r.begin(), m_r.end());
 
-	auto low = *res.first;
-	auto high = *res.second;
+	auto low = *fst;
+	auto high = *snd;
 
-	const auto cct = river.cct.UK5B_getValue();
+	const auto cct = std::stod(r.search("cct").get_value(1));
 
 	low = static_cast<int>(cct / low / 10.) * 10.;
 	high = static_cast<int>((cct / high / 10.) + 1) * 10.;
@@ -108,8 +109,8 @@ void UK5Q_form::viewCharts(QChartView* chw, std::vector<double> r, const double 
 	chw->setRenderHint(QPainter::Antialiasing);
 	chw->setChart(ch);
 
-	const auto cit = r.size();
-	const auto step = (tmax - tmin) / static_cast<double>(cit - 1);
+	const auto cit = m_r.size();
+	const auto step = (t_max - t_min) / static_cast<double>(cit - 1);
 
 	QPen pen;
 	pen.setStyle(Qt::SolidLine);
@@ -117,12 +118,12 @@ void UK5Q_form::viewCharts(QChartView* chw, std::vector<double> r, const double 
 	pen.setColor(Qt::red);
 	auto* series = new QLineSeries();
 	for (size_t j = 1; j < cit; j++)
-		series->append(step * static_cast<double>(j - 1) + tmin, cct / r[j]);
+		series->append(step * static_cast<double>(j - 1) + t_min, cct / m_r[j]);
 	series->setPen(pen);
 
 	// ось Х
 	auto* axisX = new QValueAxis;
-	axisX->setRange(tmin, tmax);		// диапазон значений на оси X
+	axisX->setRange(t_min, t_max);		// диапазон значений на оси X
 	axisX->setTickCount(tx);				// число линий сетки
 	axisX->setLabelFormat("%g");			// формат отображения чисел на оси X
 	axisX->setGridLineVisible(true);
@@ -141,57 +142,70 @@ void UK5Q_form::viewCharts(QChartView* chw, std::vector<double> r, const double 
 	series->attachAxis(axisY);
 }
 
-UK5B_varD UK5Q_form::UK5Q_init(const QString& s, const bool x, const double def)
+void uk5_q_form::init(const uk5_b_set& u)
 {
-	UK5B_varD u;
-	u.UK5B_setName(s.toStdString());
-	u.UK5B_setValue(x, def);
-	u.UK5B_setInit(true);
-	const int place = u.UK5B_getPlace();
+	const QString	 name	= u.get_name().c_str();
+	if (name == "cut") return;
+	const int		place	= u.get_place();
+	const int		 type	= u.get_type();
+	const QString	label	= QString::fromUtf8(u.desc.c_str());
 
-	auto box = new UK5Q_box(nullptr);
+	const auto c = (type == 2) ? 1 : type;
+
+	auto box = new uk5_q_box(nullptr);
 	map[place]->addWidget(box);		
-	box->setObjectName("UK5Q_BOX_"+s);
+	box->setObjectName("UK5Q_BOX_"+name);
 	p[place] += {0, box->height()+2};
-	map_box.insert(s,box);
-	connect(box, SIGNAL(UK5Q_edit(QString)), this, SLOT(UK5Q_newtext(QString)));
-	connect(box, SIGNAL(UK5Q_check(QString)), this, SLOT(UK5Q_chck(QString)));
-	box->UK5Q_setLabel(lmap[s]);
-	box->UK5Q_setValue(u.UK5B_getValue());
-	box->UK5Q_setMode((place !=1 ) ? false : true);
-	box->UK5Q_state((place >= 2) ? 0 : 2);
+	map_box.insert(name,box);
+	connect(box, SIGNAL(edit_signal(QString)), this, SLOT(new_text_slot(QString)));
+	connect(box, SIGNAL(check_signal(QString)), this, SLOT(check_slot(QString)));
+	box->uk5_q_set_label(label);
+	box->uk5_q_set_value(u.get_value(c).c_str());
+	box->uk5_q_set_mode((place !=1 ) ? false : true);
+	box->uk5_q_state((place >= 2) ? 0 : 2);
 	if 	(place == 1)
 	{
-		auto box2 = new UK5Q_box(nullptr);
-		map[2]->addWidget(box2);		
-		box2->setObjectName("UK5Q_BOX_"+s+"_eval");
-		p[2] += {0, box->height()+2};
-		map_box.insert(s+"_eval",box2);
-		box2->UK5Q_setLabel(lmap[s]+QStringLiteral(u" (расч.)"));
-		box2->UK5Q_setValue(u.UK5B_getValue2());
-		box2->UK5Q_setMode(false);
-		box2->UK5Q_state(0);
+		auto box_second = new uk5_q_box(nullptr);
+		map[2]->addWidget(box_second);		
+		box_second->setObjectName("UK5Q_BOX_"+name+"_eval");
+		p[2] += {0, box_second->height()+2};
+		map_box.insert(name+"_eval",box_second);
+		box_second->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
+		box_second->uk5_q_set_value(u.get_value(c+4).c_str());
+		box_second->uk5_q_set_mode(false);
+		box_second->uk5_q_state(0);
 	}  
-	return u;
+	if 	(type > 1)
+	{
+		auto box_geometry = new uk5_q_box(nullptr);
+		map[2]->addWidget(box_geometry);		
+		box_geometry->setObjectName("UK5Q_BOX_"+name+"_geometry");
+		p[2] += {0, box_geometry->height()+2};
+		map_box.insert(name+"_geometry",box_geometry);
+		box_geometry->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
+		box_geometry->uk5_q_set_value(u.get_value(c-1).c_str());
+		box_geometry->uk5_q_set_mode(false);
+		box_geometry->uk5_q_state(0);
+	}  
 }
 
-void UK5Q_form::UK5Q_newtext(QString s)
+void uk5_q_form::new_text_slot(QString s)
 {
-	UK5Q_rewrite(s.remove(0,9));
+	rewrite(s.remove(0,9));
 }
 
-void UK5Q_form::UK5Q_chck(QString s)
+void uk5_q_form::check_slot(QString s)
 {
 	const QString ss = s.remove(0, 9);
 	const auto box = map_box[ss];
-	switch(bmap[s])
+	switch(b_map[s])
 	{
 	case 14:
 		if (river.dog.UK5B_isInit())
 		{
 
 			river.dog.UK5B_swap();
-			box->UK5Q_setValue(river.dog.UK5B_getValue());
+			box->uk5_q_set_value(river.dog.UK5B_getValue());
 			UK5Q_rewrite("dog");
 		}
 		break;
@@ -199,7 +213,7 @@ void UK5Q_form::UK5Q_chck(QString s)
 		if (river.nn.UK5B_isInit())
 		{
 			river.nn.UK5B_swap();
-			box->UK5Q_setValue(river.nn.UK5B_getValue());
+			box->uk5_q_set_value(river.nn.UK5B_getValue());
 			UK5Q_rewrite("nn");
 		}
 		break;
@@ -207,7 +221,7 @@ void UK5Q_form::UK5Q_chck(QString s)
 		if (river.xn.UK5B_isInit())
 		{
 			river.xn.UK5B_swap();
-			box->UK5Q_setValue(river.xn.UK5B_getValue());
+			box->uk5_q_set_value(river.xn.UK5B_getValue());
 			UK5Q_rewrite("xn");
 		}
 		break;
@@ -215,7 +229,7 @@ void UK5Q_form::UK5Q_chck(QString s)
 		if (river.pd.UK5B_isInit())
 		{
 			river.pd.UK5B_swap();
-			box->UK5Q_setValue(river.pd.UK5B_getValue());
+			box->uk5_q_set_value(river.pd.UK5B_getValue());
 			UK5Q_rewrite("pd");
 		}
 		break;

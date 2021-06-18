@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    UK5Q_form w;
+    uk5_q_form w;
     w.show();
     return QApplication::exec();
 }

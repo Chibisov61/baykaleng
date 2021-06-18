@@ -3,37 +3,28 @@
 #include "ui_UK5Q_box.h"
 #include <vector>
 
-class UK5Q_box final : public QWidget
+class uk5_q_box final : public QWidget
 {
 	Q_OBJECT
 
 public:
-	explicit UK5Q_box(QWidget* parent);
+				explicit				uk5_q_box(QWidget* parent);
 	
-	void				UK5Q_setLabel(const QString&) const;
-	void				UK5Q_setMode(bool) const;
-	int					UK5Q_getMode() const;
-
-	double				UK5Q_getValue() const;
-	int					UK5Q_getValueI() const;
-	std::vector<double>	UK5Q_getVector() const;
-	std::vector<int>	UK5Q_getVectorI() const;
-
-	QVBoxLayout*		UK5Q_getPlace() const;
-	
-	void				UK5Q_setValue(double) const;
-	void				UK5Q_setValueI(int) const;
-	void				UK5Q_setVector(const std::vector<double>&) const;
-	void				UK5Q_setVectorI(const std::vector<int>&) const;
+					void				uk5_q_set_label(const QString&) const;
+					void				uk5_q_set_mode(bool) const;
+	[[nodiscard]]	int					uk5_q_get_mode() const;
+					void				uk5_q_set_value(const QString&) const;
+	[[nodiscard]]	const QString&		uk5_q_get_value() const;
+	[[nodiscard]]	QVBoxLayout*		uk5_q_get_place() const;
 
 public slots:	
-	void UK5Q_state(int);
-	void UK5Q_slot();
+					void				uk5_q_state(int);
+					void				uk5_q_slot();
 
 private:
-	Ui::UK5Q_box *ui;
+			Ui::UK5Q_box				*ui_;
 
 signals:
-	void UK5Q_check(QString);
-	void UK5Q_edit(QString);
+					void				uk5_q_check(QString);
+					void				uk5_q_edit(QString);
 };
