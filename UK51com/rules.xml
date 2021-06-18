@@ -92,4 +92,11 @@
 			<parameter name="h"/>
 			<parameter name="w"/>
 		</variable>
+		<variable name="mx" place="final" type="quality" state="enabled" description="Максимальная концентрация">
+			<parameter name="cut"/>
+		</variable>
+		<variable name="mm" place="final" type="quality" state="enabled" description="Кратное разбавление">
+			<parameter name="mx"/>
+			<parameter name="cct"/>
+		</variable>
 	</variables>

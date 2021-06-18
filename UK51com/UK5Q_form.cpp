@@ -4,7 +4,7 @@
 #include "UK5Q_form.h"
 #include "UK5Q_box.h"
 #include "UK5B_river.h"
-#include "UK5B_out.h"
+//#include "UK5B_out.h"
 #include <QWidget>
 
 uk5_q_form::uk5_q_form(QWidget *parent)
@@ -24,7 +24,7 @@ uk5_q_form::uk5_q_form(QWidget *parent)
 	p[1] = { ui_->groupBox_IN_OUT->width(),0};
 	p[2] = { ui_->groupBox_OUT->width(),0};
 	p[3] = { ui_->groupBox_CHART->width(),0 };
-
+	
 	for (auto& itr : r.river)
 		init(itr);
 
@@ -57,22 +57,18 @@ void uk5_q_form::exit()
 
 void uk5_q_form::eval()
 {
-	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
-	UK5B_out print(f.toStdString());
-
-	std::vector m = { r.max_r };
-
+//	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
+//	UK5B_out print(f.toStdString());
 // вывод заголовка и нулевого среза	
 //	print.UK5B_header_print(river);
 //	print.UK5B_body_print(0, river);
 
 // расчет по караушеву с выводом промежуточных и конечного срезов
 	ui_->UK5Q_progressBar->setValue(0);
-	const int lll = std::stoi(r.search("ll").get_value(0));
+	const int lll = std::stoi(r.search_by_name("ll").get_value(0));
 	for(int i = 1; i < lll + 1; ++i)
 	{
 		r.cut = r.karaush(r.cut);
-		m.push_back(r.max_r);
 //		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
 //			print.UK5B_body_print(i,river);
 		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
@@ -80,13 +76,20 @@ void uk5_q_form::eval()
 	}
 
 // вывод графика, максимального загрязнения на 500 м. и конечного разбавления
-	view_charts(ui_->UK5_chart, m, 0., std::stod(r.search("ll").get_value(1)), 11, 5);
-	
-	recount("mx",r.max_r, m.back());
-	recount("mm", r.mm, (std::stoi(r.search("cct").get_value(1)) / m.back()));
-	
+	const auto m = dis(r.search_by_name("cut").get_value(3).c_str());
+	view_charts(ui_->UK5_chart, m, 0., std::stod(r.search_by_name("ll").get_value(1)), 11, 5);
+
+	rewrite("cut");
+
 // обнуление рабочего поля для следующего расчета
-	r.init_cut();
+
+	auto cut = r.search_by_name("cut");
+	r.init(cut);
+}
+
+void uk5_q_form::rewrite(QString)
+{
+	
 }
 
 void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const double t_min, const double t_max, const int tx, const int ty)
@@ -96,7 +99,7 @@ void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const dou
 	auto low = *fst;
 	auto high = *snd;
 
-	const auto cct = std::stod(r.search("cct").get_value(1));
+	const auto cct = std::stod(r.search_by_name("cct").get_value(1));
 
 	low = static_cast<int>(cct / low / 10.) * 10.;
 	high = static_cast<int>((cct / high / 10.) + 1) * 10.;
@@ -122,24 +125,24 @@ void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const dou
 	series->setPen(pen);
 
 	// ось Х
-	auto* axisX = new QValueAxis;
-	axisX->setRange(t_min, t_max);		// диапазон значений на оси X
-	axisX->setTickCount(tx);				// число линий сетки
-	axisX->setLabelFormat("%g");			// формат отображения чисел на оси X
-	axisX->setGridLineVisible(true);
+	auto* axis_x = new QValueAxis;
+	axis_x->setRange(t_min, t_max);		// диапазон значений на оси X
+	axis_x->setTickCount(tx);				// число линий сетки
+	axis_x->setLabelFormat("%g");			// формат отображения чисел на оси X
+	axis_x->setGridLineVisible(true);
 
 	// ось Y
-	auto* axisY = new QValueAxis;
-	axisY->setRange(low, high);		// диапазон значений на оси Y
-	axisY->setTickCount(ty);				// число линий сетки
-	axisY->setLabelFormat("%g");			// формат отображения чисел на оси Y
-	axisY->setGridLineVisible(true);
+	auto* axis_y = new QValueAxis;
+	axis_y->setRange(low, high);		// диапазон значений на оси Y
+	axis_y->setTickCount(ty);				// число линий сетки
+	axis_y->setLabelFormat("%g");			// формат отображения чисел на оси Y
+	axis_y->setGridLineVisible(true);
 
 	ch->addSeries(series);
-	ch->addAxis(axisX, Qt::AlignBottom);
-	series->attachAxis(axisX);
-	ch->addAxis(axisY, Qt::AlignLeft);
-	series->attachAxis(axisY);
+	ch->addAxis(axis_x, Qt::AlignBottom);
+	series->attachAxis(axis_x);
+	ch->addAxis(axis_y, Qt::AlignLeft);
+	series->attachAxis(axis_y);
 }
 
 void uk5_q_form::init(const uk5_b_set& u)
@@ -196,43 +199,20 @@ void uk5_q_form::new_text_slot(QString s)
 
 void uk5_q_form::check_slot(QString s)
 {
-	const QString ss = s.remove(0, 9);
-	const auto box = map_box[ss];
-	switch(b_map[s])
-	{
-	case 14:
-		if (river.dog.UK5B_isInit())
-		{
+	
+}
 
-			river.dog.UK5B_swap();
-			box->uk5_q_set_value(river.dog.UK5B_getValue());
-			UK5Q_rewrite("dog");
-		}
-		break;
-	case 15:
-		if (river.nn.UK5B_isInit())
-		{
-			river.nn.UK5B_swap();
-			box->uk5_q_set_value(river.nn.UK5B_getValue());
-			UK5Q_rewrite("nn");
-		}
-		break;
-	case 16:
-		if (river.xn.UK5B_isInit())
-		{
-			river.xn.UK5B_swap();
-			box->uk5_q_set_value(river.xn.UK5B_getValue());
-			UK5Q_rewrite("xn");
-		}
-		break;
-	case 19:
-		if (river.pd.UK5B_isInit())
-		{
-			river.pd.UK5B_swap();
-			box->uk5_q_set_value(river.pd.UK5B_getValue());
-			UK5Q_rewrite("pd");
-		}
-		break;
-	default: ;
+std::vector<double> uk5_q_form::dis(QString str)
+{
+
+	std::vector<double> ret = {};
+	bool ok;
+	if (str.back() == ";") str.truncate(str.size() - 1);
+	const QStringList list = str.split(";");
+	for (QStringList::const_iterator itr = list.constBegin(); itr != list.constEnd(); ++itr)
+	{
+		ret.push_back((*itr).toDouble(&ok));
+		if (!ok) return { -1. };
 	}
+	return ret;
 }

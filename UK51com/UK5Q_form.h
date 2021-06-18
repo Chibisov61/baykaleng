@@ -21,6 +21,7 @@ public:
 	
 	void						view_charts(QChartView*, std::vector<double>, double, double, int, int);
 	void						init(const uk5_b_set& );
+	static std::vector<double>			dis(QString);
 
 public slots:
 	void new_text_slot(QString);
@@ -30,9 +31,11 @@ private:
 private slots:
 	static void exit();
 	void eval();
+	void rewrite(QString);
 signals:
 	void check_signal(QString);
 	void edit_signal(QString);
 
 };
+
 
