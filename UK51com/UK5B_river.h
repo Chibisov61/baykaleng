@@ -31,8 +31,9 @@ public:
 //		uk5_b_river& operator = (uk5_b_river&&) noexcept = default;																			//	оператор присваивания
 
 		void								init(uk5_b_set&);
-		uk5_b_set							search_by_name(const std::string&);
+		int									search(const std::string&);
 		void								init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>&);
+		std::vector<std::vector<double>>	karaushev(std::vector<std::vector<double>>);
 
 		std::vector<uk5_b_set>				river = {};
 		std::vector<std::vector<double>>	cut = {{}};

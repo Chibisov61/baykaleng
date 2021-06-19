@@ -63,12 +63,16 @@ void uk5_q_form::eval()
 //	print.UK5B_header_print(river);
 //	print.UK5B_body_print(0, river);
 
+// обнуление рабочего поля перед расчетом
+
+	r.init(r.river.at(r.search("cut")));
+		
 // расчет по караушеву с выводом промежуточных и конечного срезов
 	ui_->UK5Q_progressBar->setValue(0);
-	const int lll = std::stoi(r.search_by_name("ll").get_value(0));
+	const int lll = std::stoi(r.river.at(r.search("ll")).get_value(0));
 	for(int i = 1; i < lll + 1; ++i)
 	{
-		r.cut = r.karaush(r.cut);
+		r.cut = r.karaushev(r.cut);
 //		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
 //			print.UK5B_body_print(i,river);
 		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
@@ -76,15 +80,10 @@ void uk5_q_form::eval()
 	}
 
 // вывод графика, максимального загрязнения на 500 м. и конечного разбавления
-	const auto m = dis(r.search_by_name("cut").get_value(3).c_str());
-	view_charts(ui_->UK5_chart, m, 0., std::stod(r.search_by_name("ll").get_value(1)), 11, 5);
+	const auto m = dis(r.river.at(r.search("cut")).get_value(3).c_str());
+	view_charts(ui_->UK5_chart, m, 0., std::stod(r.river.at(r.search("ll")).get_value(1)), 11, 5);
 
 	rewrite("cut");
-
-// обнуление рабочего поля для следующего расчета
-
-	auto cut = r.search_by_name("cut");
-	r.init(cut);
 }
 
 void uk5_q_form::rewrite(QString)
@@ -99,7 +98,7 @@ void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const dou
 	auto low = *fst;
 	auto high = *snd;
 
-	const auto cct = std::stod(r.search_by_name("cct").get_value(1));
+	const auto cct = std::stod(r.river.at(r.search("cct")).get_value(1));
 
 	low = static_cast<int>(cct / low / 10.) * 10.;
 	high = static_cast<int>((cct / high / 10.) + 1) * 10.;

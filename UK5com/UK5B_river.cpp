@@ -22,7 +22,7 @@ std::vector<std::vector<double>> UK5B_river::UK5B_karaush(std::vector<std::vecto
 		r.at(i).at(w - 1) = r.at(i).at(w - 2);		// поверхность
 	}
 
-	for(int j = 0; j < w; ++j)
+	for(int j = 0; j < w; ++j
 	{
 		r.at(0).at(j) = r.at(1).at(j);				// море
 		r.at(hh - 1).at(j) = r.at(hh - 2).at(j);	// берег

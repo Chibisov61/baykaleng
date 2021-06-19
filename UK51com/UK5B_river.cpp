@@ -148,13 +148,12 @@ void uk5_b_river::init(uk5_b_set& v)
 	}
 }
 
-uk5_b_set uk5_b_river::search_by_name(const std::string& s)
+int uk5_b_river::search(const std::string& s)
 {
 	for (auto& itr : river)
-		if (itr.get_name() == s) return itr;
+		if (itr.get_name() == s) return itr.number;
 	
-	uk5_b_set u("dummy", "dummy");
-	return u;
+	return -1;
 }
 
 std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tuple<std::string,std::string,std::string>>& p, const std::string& acc)
@@ -373,8 +372,46 @@ void uk5_b_river::init_cut(const std::vector<std::tuple<std::string,std::string,
 	
 	cut.push_back(cut.back());
 	
-	search_by_name("cut").set_value(std::to_string(tt) + ";", 3);
+	river.at(search("cut")).set_value(std::to_string(tt) + ";", 3);
 }
+
+std::vector<std::vector<double>> uk5_b_river::karaushev(std::vector<std::vector<double>> p)
+{
+	std::vector<std::vector<double>> r = p;
+
+	const int hh = static_cast<int>(p.size());
+	const int w = static_cast<int>(p.front().size());
+
+	for (int i = 1; i < hh - 1; ++i)
+		for (int j = 1; j < w - 1; ++j)
+			r.at(i).at(j) = (p.at(i).at(j + 1) + p.at(i + 1).at(j) + p.at(i).at(j - 1) + p.at(i - 1).at(j)) / 4;
+
+	for(int i = 0; i < hh; ++i)
+	{
+		r.at(i).at(0) = r.at(i).at(1);				// дно 
+		r.at(i).at(w - 1) = r.at(i).at(w - 2);		// поверхность
+	}
+
+	for(int j = 0; j < w; ++j)
+	{
+		r.at(0).at(j) = r.at(1).at(j);				// море
+		r.at(hh - 1).at(j) = r.at(hh - 2).at(j);	// берег
+	}
+
+	std::vector<double> rr;
+	rr.reserve(hh);
+	for (int i = 0; i < hh; ++i)
+		rr.push_back(*(std::max_element(r.at(i).begin(), r.at(i).end())));
+
+	auto mx = river.at(search("cut")).get_value(3);
+	const auto m = *(std::max_element(rr.begin(), rr.end()));
+	mx = mx + std::to_string(m) + ";";
+	river.at(search("cut")).set_value(mx, 3);
+	
+	
+	return r;
+}
+
 
 std::string uk5_b_river::var(const std::string& var, const std::vector<std::tuple<std::string, std::string, std::string>>& val, const std::string& acc)
 {
