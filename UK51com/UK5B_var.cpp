@@ -11,8 +11,8 @@
 #include <utility>
 #include "UK5B_var.h"
 
-uk5_b_var::uk5_b_var(std::string n, const std::string& t, const std::string& def, const int max, const std::pair<double, double> delta, const std::pair<double, double> shift,
-	const int c) : name_(std::move(n)),delta_(delta),shift_(shift)
+uk5_b_var::uk5_b_var(std::string n, const std::string& t, const std::string& def, const int c, const int max, const std::pair<double, double> delta
+					,const std::pair<double, double> shift) : name_(std::move(n)),delta_(delta),shift_(shift)
 {
 	type_	= m_type.at(t);
 	place_	= 2;
@@ -24,9 +24,8 @@ uk5_b_var::uk5_b_var(std::string n, const std::string& t, const std::string& def
 	{
 		try
 			{
-				boost::property_tree::ptree pt;
-				read_ini("config.ini", pt);
-				for (boost::property_tree::ptree::iterator pos = pt.begin(); pos != pt.end(); ++pos)
+				read_ini("config.ini", ipt_);
+				for (boost::property_tree::ptree::iterator pos = ipt_.begin(); pos != ipt_.end(); ++pos)
 				{
 					if (auto f = pos->second.find(name_); f != pos->second.not_found())
 					{
@@ -96,7 +95,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 		if (boost::algorithm::contains(def, ";")) c += 2;
 	}
 	
-	const auto s = (def.empty()) ? not_an_empty_string(c) : def;
+	const std::string s = (def.empty()) ? not_an_empty_string(c) : def;
 
 	auto delta = (da) ? delta_.first : delta_.second;
 	auto shift = (da) ? shift_.first : shift_.second;

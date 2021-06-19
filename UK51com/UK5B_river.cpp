@@ -42,7 +42,7 @@ uk5_b_river::uk5_b_river()
 					}
 				}
 				river.back().number = k++;
-				init(river.back());
+				recount(river.back());
 				river.back().set_init(true);
 			}
 		}
@@ -55,7 +55,7 @@ uk5_b_river::uk5_b_river()
 	}
 }
 
-void uk5_b_river::init(uk5_b_set& v)
+void uk5_b_river::recount(uk5_b_set& v)
 {
 	auto t = v.get_type();
 	auto c = (t == 2) ? 1 : t;
@@ -146,6 +146,16 @@ void uk5_b_river::init(uk5_b_set& v)
 		f_err.open("error.log", std::ios::out);
 		f_err << "Ошибка: " << e.what() << std::endl;
 	}
+}
+
+void uk5_b_river::re_init(uk5_b_set& v)
+{
+	const auto name = v.get_name();
+	const auto type = v.get_type();
+	const auto c = (type == 2) ? 1 : type;
+	const auto o = uk5_b_var(name,m_type[type]);
+	v.set_value(o.get_value(c), c);
+	delete &o;
 }
 
 int uk5_b_river::search(const std::string& s)

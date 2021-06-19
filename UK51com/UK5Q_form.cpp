@@ -50,47 +50,6 @@ uk5_q_form::uk5_q_form(QWidget *parent)
 
 }
 
-void uk5_q_form::exit()
-{
-	QApplication::quit();
-}
-
-void uk5_q_form::eval()
-{
-//	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
-//	UK5B_out print(f.toStdString());
-// вывод заголовка и нулевого среза	
-//	print.UK5B_header_print(river);
-//	print.UK5B_body_print(0, river);
-
-// обнуление рабочего поля перед расчетом
-
-	r.init(r.river.at(r.search("cut")));
-		
-// расчет по караушеву с выводом промежуточных и конечного срезов
-	ui_->UK5Q_progressBar->setValue(0);
-	const int lll = std::stoi(r.river.at(r.search("ll")).get_value(0));
-	for(int i = 1; i < lll + 1; ++i)
-	{
-		r.cut = r.karaushev(r.cut);
-//		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
-//			print.UK5B_body_print(i,river);
-		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
-		ui_->UK5Q_progressBar->setValue(static_cast<int>(ii));
-	}
-
-// вывод графика, максимального загрязнения на 500 м. и конечного разбавления
-	const auto m = dis(r.river.at(r.search("cut")).get_value(3).c_str());
-	view_charts(ui_->UK5_chart, m, 0., std::stod(r.river.at(r.search("ll")).get_value(1)), 11, 5);
-
-	rewrite("cut");
-}
-
-void uk5_q_form::rewrite(QString)
-{
-	
-}
-
 void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const double t_min, const double t_max, const int tx, const int ty)
 {
 	const auto [fst, snd] = minmax_element(m_r.begin(), m_r.end());
@@ -164,7 +123,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 	box->uk5_q_set_label(label);
 	box->uk5_q_set_value(u.get_value(c).c_str());
 	box->uk5_q_set_mode((place !=1 ) ? false : true);
-	box->uk5_q_state((place >= 2) ? 0 : 2);
+	box->uk5_q_set_state((place >= 2) ? 0 : 2);
 	if 	(place == 1)
 	{
 		auto box_second = new uk5_q_box(nullptr);
@@ -175,7 +134,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 		box_second->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
 		box_second->uk5_q_set_value(u.get_value(c+4).c_str());
 		box_second->uk5_q_set_mode(false);
-		box_second->uk5_q_state(0);
+		box_second->uk5_q_set_state(0);
 	}  
 	if 	(type > 1)
 	{
@@ -187,18 +146,57 @@ void uk5_q_form::init(const uk5_b_set& u)
 		box_geometry->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
 		box_geometry->uk5_q_set_value(u.get_value(c-1).c_str());
 		box_geometry->uk5_q_set_mode(false);
-		box_geometry->uk5_q_state(0);
+		box_geometry->uk5_q_set_state(0);
 	}  
 }
 
-void uk5_q_form::new_text_slot(QString s)
+void uk5_q_form::read(const QString& s)
 {
-	rewrite(s.remove(0,9));
+	const auto box = map_box[s];
+	const QString val = box->uk5_q_get_value();
+	const auto num = r.search(s.toStdString());
+	const auto type = r.river.at(num).get_type();
+	const auto c = (type == 2) ? 1 : type;
+	r.river.at(num).set_value(val.toStdString(), c);
+
+	rewrite(s);
 }
 
-void uk5_q_form::check_slot(QString s)
+void uk5_q_form::rewrite(const QString& s)
 {
+	const auto n = r.search(s.toStdString());
+
+	if (const auto cut = r.search("cut"); n != cut)
+	{
+		for (int i = n + 1; i < cut; i++)
+			r.recount(r.river.at(i));
+	}
+	else
+	{
+		r.recount(r.river.at(cut+1));
+		r.recount(r.river.at(cut+2));
+	}
+}
+
+void uk5_q_form::edit_slot(QString s)
+{
+	read(s.remove(0,9));
+}
+
+// ReSharper disable once CppParameterMayBeConst
+void uk5_q_form::check_slot(QString s)  // NOLINT(performance-unnecessary-value-param)
+{
+	const auto box = map_box[s];
+	const auto num = r.search(s.toStdString());
 	
+	if (const auto state = box->uk5_q_get_state(); !state)
+		r.recount(r.river.at(num));
+	else
+	{
+		r.re_init(r.river.at(num));
+	}
+
+	rewrite(s);
 }
 
 std::vector<double> uk5_q_form::dis(QString str)
@@ -215,3 +213,40 @@ std::vector<double> uk5_q_form::dis(QString str)
 	}
 	return ret;
 }
+
+void uk5_q_form::exit()
+{
+	QApplication::quit();
+}
+
+void uk5_q_form::eval()
+{
+//	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
+//	UK5B_out print(f.toStdString());
+// вывод заголовка и нулевого среза	
+//	print.UK5B_header_print(river);
+//	print.UK5B_body_print(0, river);
+
+// обнуление рабочего поля перед расчетом
+
+	r.recount(r.river.at(r.search("cut")));
+		
+// расчет по караушеву с выводом промежуточных и конечного срезов
+	ui_->UK5Q_progressBar->setValue(0);
+	const int lll = std::stoi(r.river.at(r.search("ll")).get_value(0));
+	for(int i = 1; i < lll + 1; ++i)
+	{
+		r.cut = r.karaushev(r.cut);
+//		if ((std::binary_search(river.rl.second.begin(), river.rl.second.end(), i)) || (i == lll))
+//			print.UK5B_body_print(i,river);
+		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
+		ui_->UK5Q_progressBar->setValue(static_cast<int>(ii));
+	}
+
+// вывод графика, максимального загрязнения на 500 м. и конечного разбавления
+	const auto m = dis(r.river.at(r.search("cut")).get_value(3).c_str());
+	view_charts(ui_->UK5_chart, m, 0., std::stod(r.river.at(r.search("ll")).get_value(1)), 11, 5);
+
+	rewrite("cut");
+}
+

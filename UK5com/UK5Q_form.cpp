@@ -615,7 +615,7 @@ void UK5Q_form::UK5Q_chck(QString s)
 {
 	const QString ss = s.remove(0, 9);
 	const auto box = map_box[ss];
-	switch(bmap[s])
+	switch(bmap[s])	
 	{
 	case 14:
 		if (river.dog.UK5B_isInit())
