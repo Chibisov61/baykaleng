@@ -2,98 +2,79 @@
 
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "UK5B_out.h"
+#include <boost/tokenizer.hpp>
 
-UK5B_out::UK5B_out()
-{
-	fout.open("error.log", std::ios::out);
-}
+
+//UK5B_out::UK5B_out()
+//{
+//	f_out_.open("error.log", std::ios::out);
+//}
 
 UK5B_out::UK5B_out(const std::string& f)
 {
-	fout.open(f, std::ios::out);
+	f_out_.open(f, std::ios::out);
 }
 
-void UK5B_out::UK5B_header_print(const UK5B_river& river)
+void UK5B_out::uk5_b_header_print(uk5_b_river& r)
 {
-	const std::string t = ";;;;;;;;;;;;;;";
-	fout << lmap["vr"]  << ":" << river.vr.UK5B_getValue()  << t;
-	fout <<	lmap["vst"] << ":" << river.vst.UK5B_getValue() << std::endl;
-	fout << lmap["qst"] << ":" << river.qst.UK5B_getValue() << t;
-	fout <<	lmap["dt"]  << ":" << river.dt.UK5B_getValue()  << std::endl;
-	fout << lmap["dog"] << ":" << river.dog.UK5B_getValue() << t;
-	fout <<	lmap["dzz"] << ":" << river.dzz.UK5B_getValue() << std::endl;
 
-	fout << lmap["b"]   << ":";
-	for (auto& i : river.b.UK5B_getValue()) 	fout << i << " ";
-	fout << t << lmap["rb"] << ":";
-	for (auto& i : river.rb.first.UK5B_getValue())  fout << i << " ";
-	fout << std::endl;
-	
-	fout << lmap["bl"]  << ":" << river.bl.UK5B_getValue() << t;
-	fout << lmap["rbl"] << ":" << river.rbl.first.UK5B_getValue() << std::endl;
-	
-	fout << lmap["br"]  << ":" << river.br.UK5B_getValue() << t;
-	fout << lmap["rbr"] << ":" << river.rbr.first.UK5B_getValue() << std::endl;
-	
-	fout << ":" << t;
-	fout << lmap["rw"]  << ":" << river.rw.first.UK5B_getValue() << std::endl;
-	
-	fout << lmap["h"]   << ":" << river.h.UK5B_getValue() << t;
-	fout << lmap["rh"]  << ":" << river.rh.first.UK5B_getValue() << std::endl;
+	for (int j=0; j < 16; j++)
+	{
+		const uk5_b_set rsl = r.river.at(r.search(left_[j]));
+		std::string desc = rsl.desc;
+		if (const auto type	=	rsl.get_type(); type < 2)
+		{
+			auto val = rsl.get_value(type);
+			const uk5_b_set rsr = r.river.at(r.search(right_[j]));
+			std::string desc_right = rsr.desc;
+			const auto type_right = rsr.get_type();
+			auto val_right = rsr.get_value(type_right);
 
-	fout << lmap["l"]   << ":";
-	for (auto& i : river.l.UK5B_getValue()) fout << i << " ";
-	fout << t << lmap["rl"] << ":";
-	for (auto& i : river.rl.first.UK5B_getValue()) fout << i << " ";
-	fout << std::endl;
-	
-	fout << lmap["ll"]  << ":" << river.ll.UK5B_getValue() << t;
-	fout << lmap["rll"] << ":" << river.rll.first.UK5B_getValue() << std::endl;
+			f_out_ << desc << ":" << val << t_ << desc_right << ":" << val_right << std::endl;
+		}
+		else
+		{
+			const auto type_right = (type == 2) ? 0 : 2;
+			auto val = rsl.get_value(type);
+			std::string desc_right = desc + " (в ячейках)";
+			auto val_right = rsl.get_value(type_right);
+			
+			f_out_ << desc << ":" << val << t_ << desc_right << ":" << val_right << std::endl;
+		}
+		
+	}
 
-	fout << lmap["hog"] << ":";
-	for (auto& i : river.hog.UK5B_getValue())  fout << i << " ";
-	fout << t << lmap["rhog"] << ":";
-	for (auto& i : river.rhog.first.UK5B_getValue()) fout << i << " ";
-	fout << std::endl;
-	
-	fout << lmap["nn"]  << ":" << river.nn.UK5B_getValue()  << t;
-	fout << lmap["dx"]  << ":" << river.dx.UK5B_getValue() << std::endl;
-	
-	fout << lmap["xn"]  << ":" << river.xn.UK5B_getValue()  << t;
-	fout << lmap["dy"]  << ":" << river.dy.UK5B_getValue()  << std::endl;
-	
-	fout << lmap["cct"] << ":" << river.cct.UK5B_getValue() << t;
-	fout << lmap["dz"]  << ":" << river.dz.UK5B_getValue() << std::endl;
-	
-	fout << lmap["n"]   << ":" << river.n.UK5B_getValue()   << t;
-	fout << lmap["pd"]  << ":" << river.pd.UK5B_getValue()   << std::endl;
-	
-	fout << lmap["nog"] << ":" << river.nog.UK5B_getValue() << t;
-	fout << lmap["pc"]  << ":" << river.pc.UK5B_getValue() << std::endl;
-	
 	
 }
-void UK5B_out::UK5B_body_print(const int lvl,  const UK5B_river& river)
+void UK5B_out::uk5_b_body_print(const int lvl, uk5_b_river& r)
 {
-	std::vector<std::vector<double>> cut = river.cut;
-	const double max = river.max;
-	const double tt = river.cct.UK5B_getValue();
+	std::vector<std::vector<double>>	cut = r.cut;
+	std::vector<double>					m = {};
+	const std::string					mx_cut = r.river.at(r.search("cut")).get_value(3);
+	const boost::char_separator			sep(";");
+	boost::tokenizer list(mx_cut, sep);
+	for (auto& itr : list)
+		m.push_back(std::stod(itr));
 
-	const int h = river.rh.second + 2;
-	const int w = river.rw.second + 2;
+	const double mx = m.back();
+	const double tt = std::stod(r.river.at(r.search("cct")).get_value(1));
+	const double dx = std::stod(r.river.at(r.search("dx")).get_value(1));
+	const double xn = std::stod(r.river.at(r.search("xn")).get_value(1));
 
-	fout << std::endl;
+	const int h = static_cast<int>(cut.size());
+	const int w = static_cast<int>(cut.front().size());
+	
+
+	f_out_ << std::endl;
 
 	for(int i = 0; i <  h - 1; ++i)
 	{
 		for (int j = 0; j < w - 1; j++)
-			fout << cut.at(h - i - 1).at(j) << ";";
-		fout << std::endl;
+			f_out_ << cut.at(h - i - 1).at(j) << ";";
+		f_out_ << std::endl;
 	}
-
 	
-	
-	fout << std::endl;
-	fout << lvl * river.dx.UK5B_getValue() + river.xn.UK5B_getValue() << "(" << lvl << ")" << ";" << tt / max << ";" << max << std::endl;
+	f_out_ << std::endl;
+	f_out_ << (lvl * dx + xn) << "(" << lvl << ")" << ";" << tt / mx << ";" << mx << std::endl;
 	
 }

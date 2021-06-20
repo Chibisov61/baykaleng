@@ -214,7 +214,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 				}
 				else if (stod(itr) >= shift)
 				{
-					if ((stod(itr) < end_d) && (max_ >= 0)) continue;
+					if ((stod(itr) < end_d) && (max_ > 0)) continue;
 					vector_d_tmp2.push_back(stod(itr));
 					vector_i_tmp2.push_back(static_cast<int>(std::round((stod(itr) - ((max_ > 0) ? shift : 0)) / delta)));	
 				}

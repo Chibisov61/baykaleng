@@ -94,7 +94,7 @@ int uk5_b_river::recount(uk5_b_set& v)
 				if (auto res = std::find(v.param.begin(), v.param.end(), j_name); res != v.param.end())
 				{
 					auto tt = rj.get_type();
-					const int cc0 = ( tt == 2) ? 1 : river.at(j).get_type();
+					const int cc0 = (tt == 2 || tt == 4) ? tt - 1 : tt;
 					const int cc4 = cc0 + 4; //-V112
 					if (((name == "w") || (name == "cut")) && (tt >= 2))
 					{
@@ -132,8 +132,9 @@ int uk5_b_river::recount(uk5_b_set& v)
 					else
 						v.set_value(eval(name, p, "second"), c);
 				}
-				
-				v.set_value(eval(name, p, "second"), c + 4); //-V112
+
+				if (v.get_place() != 3)
+					v.set_value(eval(name, p, "second"), c + 4); //-V112
 
 				if (name == "w")
 					v.set_value(eval("iw", p, "first"), 0);
@@ -156,7 +157,8 @@ int uk5_b_river::re_init(uk5_b_set& v)
 	const auto type = v.get_type();
 	const auto c = (type == 2) ? 1 : type;
 	const auto o = uk5_b_var(name,m_type[type]);
-	v.set_value(o.get_value(c), c);
+	const auto def = o.get_value(c);
+	v.set_value(def,c);
 
 	return c;
 }
@@ -307,12 +309,12 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 			for (auto& itr : list)
 				m.push_back(std::stod(itr));
 
-			double mx = *std::max_element(m.begin(), m.end());
+			double mx = m.back();
 			return std::to_string(mx);
 		}
 	case 14://mm
 		{
-			const double cct		= std::stod(var("cct",p,acc));
+			const double cct	= std::stod(var("cct",p,acc));
 			const double mx		= std::stod(var("mx",p,acc));
 			
 			return std::to_string(cct / mx);
@@ -398,11 +400,7 @@ std::vector<std::vector<double>> uk5_b_river::karaushev(std::vector<std::vector<
 	for (int i = 1; i < hh - 1; i++)
 		for (int j = 1; j < w - 1; j++)
 		{
-			const auto c1 = old_cut.at(i).at(j + 1);
-			const auto c2 = old_cut.at(i + 1).at(j);
-			const auto c3 = old_cut.at(i).at(j - 1);
-			const auto c4 = old_cut.at(i - 1).at(j);
-			new_cut.at(i).at(j) = ( c1 + c2 + c3 + c4) / 4.;
+			new_cut.at(i).at(j) = ( old_cut.at(i).at(j + 1) + old_cut.at(i + 1).at(j) + old_cut.at(i).at(j - 1) + old_cut.at(i - 1).at(j)) / 4.;
 		}
 
 	for(int i = 0; i < hh; ++i)

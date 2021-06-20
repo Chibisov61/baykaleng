@@ -27,9 +27,9 @@ public:
 explicit uk5_b_var(std::string n, const std::string& t, const std::string& def="0.", int c = 8, int max = 0, std::pair<double, double> delta = { 1.,1. }, std::pair<double,
 	double> shift = { 0.,0. });																												//	конструктор (пользовательский) 
 	~uk5_b_var() = default;																													//	деструктор
-   	uk5_b_var(const uk5_b_var&) = default;																									//	конструктор копирования
+	uk5_b_var(const uk5_b_var&) = default;																									//	конструктор копирования
 	uk5_b_var(uk5_b_var&&)  noexcept = default;																								//	конструктор присваивания
-  	uk5_b_var& operator = (const uk5_b_var&) = default;																						//	оператор копирования
+	uk5_b_var& operator = (const uk5_b_var&) = default;																						//	оператор копирования
 	uk5_b_var& operator = (uk5_b_var&&) noexcept = default;																					//	оператор присваивания
 
 [[nodiscard]]	std::string														get_name() const;

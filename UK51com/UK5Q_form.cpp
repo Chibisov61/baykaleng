@@ -84,7 +84,7 @@ void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const dou
 
 	// ось Х
 	auto* axis_x = new QValueAxis;
-	axis_x->setRange(t_min, t_max);		// диапазон значений на оси X
+	axis_x->setRange(t_min, t_max);			// диапазон значений на оси X
 	axis_x->setTickCount(tx);				// число линий сетки
 	axis_x->setLabelFormat("%g");			// формат отображения чисел на оси X
 	axis_x->setGridLineVisible(true);
@@ -144,7 +144,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 		p[2] += {0, box_geometry->height()+2};
 		map_box.insert(name+"_geometry",box_geometry);
 		box_geometry->uk5_q_set_mode(false);
-		box_geometry->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
+		box_geometry->uk5_q_set_label(label+QStringLiteral(u" (в ячейках)"));
 		box_geometry->uk5_q_set_value(QString::fromStdString(u.get_value(c-1)));
 		box_geometry->uk5_q_set_state(0);
 	}  
@@ -208,10 +208,14 @@ void uk5_q_form::check_slot(QString s)  // NOLINT(performance-unnecessary-value-
 
 	if (!r.river.at(num).is_init()) return;
 	if (const auto state = box->uk5_q_get_state(); !state)
-		r.re_init(r.river.at(num));
+	{
+		const auto с = r.re_init(r.river.at(num));
+		const auto def = QString::fromStdString(r.river.at(num).get_value(с));
+		box->uk5_q_set_value(def);
+	}
 	else
 		r.recount(r.river.at(num));
-
+	
 	rewrite(s);
 }
 

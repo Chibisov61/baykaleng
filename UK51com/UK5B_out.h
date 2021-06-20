@@ -4,55 +4,21 @@
 class UK5B_out
 {
 public:
-				UK5B_out();
+//				UK5B_out();
 	explicit	UK5B_out(const std::string&);
-				~UK5B_out() = default;
-				UK5B_out(const UK5B_out&) = delete;
-				UK5B_out(UK5B_out&&) = default;
-				UK5B_out& operator = (const UK5B_out&) = delete;
-				UK5B_out& operator = (UK5B_out&&) = default;
-	
+//				~UK5B_out() = default;
+//				UK5B_out(const UK5B_out&) = delete;
+//				UK5B_out(UK5B_out&&) = default;
+//				UK5B_out& operator = (const UK5B_out&) = delete;
+//				UK5B_out& operator = (UK5B_out&&) = default;
 
-	void UK5B_header_print(const UK5B_river&);
-	void UK5B_body_print(int,const UK5B_river&);
-
+				void uk5_b_header_print(uk5_b_river&);
+				void uk5_b_body_print(int,uk5_b_river&);
 
 protected:
-	std::ofstream fout;
-	std::map<std::string, std::string>  lmap{
-												{"vr","Скорость реки"},
-												{"br","Расстояние до правого берега"},
-												{"bl","Расстояние до левого берега"},
-											   {"nog","Количество оголовков"},				
-												 {"b","Расстояния между оголовками"},
-												 {"h","Глубина"},
-											   {"hog","Высоты оголовков"},
-												{"nl","Количество промежуточных сечений"},
-											     {"l","Промежуточные сечения (доп.)"},
-											   {"qst","Расход сточных вод на оголовок"},
-											   {"cct","Величина загрязняющего вещества"},		
-											     {"n","Сторона расчетного квадрата"},
-											   {"psh","Коэффициент шероховатости"},
-											   {"dog","Диаметр оголовка"},
-											   {"vst","Скорость сточных вод (на оголовок)"},
-												{"dt","Относительный диаметр"},
-											   {"dzz","Диаметр пятна загрязнения"},
-												{"nn","Начальное разбавление"},
-												{"xn","Расстояние от створа выпуска"},
-												{"ll","Расчетный участок реки"},
-												{"pc","Коэффициент Шези"},
-												{"pd","Коэффициент диффузии"},
-												{"dz","dz"},
-												{"dy","dy"},							
-												{"dx","dx"},							
-											   {"rbr","Расстояние до правого берега (расч.)"},
-											   {"rbl","Расстояние до левого берега (расч.)"},
-												{"rb","Расстояния между оголовками (расч.)"},
-												{"rw","Общая ширина (расч.)"},
-										      {"rhog","Высоты оголовков (расч.)"},
-												{"rh","Глубина (расч.)"},
-												{"rl","Помежуточные сечения (расч.)"},
-											   {"rll","Участок реки (расч.)"}
-											};
-	
+				const std::string			t_		= ";;;;;;;;;;;;;;";
+				std::vector<std::string>	left_	= { "vr","qst","dog","bl","b","br","w","h","l","ll","hog","nn","xn","cct","n","nog"};
+				std::vector<std::string>	right_	= { "vst","dt","dzz","bl","b","br","w","h","l","ll","hog","dx","dy","dz","pd","pc"};
+
+				std::ofstream				f_out_;
 };	
