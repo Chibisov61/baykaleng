@@ -46,7 +46,7 @@ uk5_q_form::uk5_q_form(QWidget *parent)
 	ui_->UK5Q_verticalLayout_CHART->setGeometry({ QPoint(0,0),p[3] });
 
 	connect(ui_->UK5Q_Exit, SIGNAL(clicked()), this, SLOT(exit()));
-	connect(ui_->UK5Q_Eval, SIGNAL(clicked()), this, SLOT(eval()));
+	connect(ui_->UK5Q_Eval, SIGNAL(clicked()), this, SLOT(eval_cut()));
 
 }
 
@@ -105,7 +105,7 @@ void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const dou
 
 void uk5_q_form::init(const uk5_b_set& u)
 {
-	const QString	 name	= u.get_name().c_str();
+	const QString	 name	= QString::fromStdString(u.get_name());
 	if (name == "cut") return;
 	const int		place	= u.get_place();
 	const int		 type	= u.get_type();
@@ -118,12 +118,12 @@ void uk5_q_form::init(const uk5_b_set& u)
 	box->setObjectName("UK5Q_BOX_"+name);
 	p[place] += {0, box->height()+2};
 	map_box.insert(name,box);
-	connect(box, SIGNAL(edit_signal(QString)), this, SLOT(new_text_slot(QString)));
-	connect(box, SIGNAL(check_signal(QString)), this, SLOT(check_slot(QString)));
-	box->uk5_q_set_label(label);
-	box->uk5_q_set_value(u.get_value(c).c_str());
 	box->uk5_q_set_mode((place !=1 ) ? false : true);
+	box->uk5_q_set_label(label);
+	box->uk5_q_set_value(QString::fromStdString(u.get_value(c)));
 	box->uk5_q_set_state((place >= 2) ? 0 : 2);
+	connect(box, SIGNAL(edit_signal(QString)), this, SLOT(edit_slot(QString)));
+	connect(box, SIGNAL(check_signal(QString)), this, SLOT(check_slot(QString)));
 	if 	(place == 1)
 	{
 		auto box_second = new uk5_q_box(nullptr);
@@ -131,9 +131,9 @@ void uk5_q_form::init(const uk5_b_set& u)
 		box_second->setObjectName("UK5Q_BOX_"+name+"_eval");
 		p[2] += {0, box_second->height()+2};
 		map_box.insert(name+"_eval",box_second);
-		box_second->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
-		box_second->uk5_q_set_value(u.get_value(c+4).c_str());
 		box_second->uk5_q_set_mode(false);
+		box_second->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
+		box_second->uk5_q_set_value(QString::fromStdString(u.get_value(c+4)));
 		box_second->uk5_q_set_state(0);
 	}  
 	if 	(type > 1)
@@ -143,9 +143,9 @@ void uk5_q_form::init(const uk5_b_set& u)
 		box_geometry->setObjectName("UK5Q_BOX_"+name+"_geometry");
 		p[2] += {0, box_geometry->height()+2};
 		map_box.insert(name+"_geometry",box_geometry);
-		box_geometry->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
-		box_geometry->uk5_q_set_value(u.get_value(c-1).c_str());
 		box_geometry->uk5_q_set_mode(false);
+		box_geometry->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
+		box_geometry->uk5_q_set_value(QString::fromStdString(u.get_value(c-1)));
 		box_geometry->uk5_q_set_state(0);
 	}  
 }
@@ -165,17 +165,33 @@ void uk5_q_form::read(const QString& s)
 void uk5_q_form::rewrite(const QString& s)
 {
 	const auto n = r.search(s.toStdString());
+	int begin, end;
 
 	if (const auto cut = r.search("cut"); n != cut)
 	{
-		for (int i = n + 1; i < cut; i++)
-			r.recount(r.river.at(i));
+		begin = n + 1;
+		end   = cut;
 	}
 	else
 	{
-		r.recount(r.river.at(cut+1));
-		r.recount(r.river.at(cut+2));
+		begin = cut + 1;
+		end   = cut + 3;
 	}
+
+	for (int i = begin; i < end; i++)
+	{
+		const int		с				= r.recount(r.river.at(i));
+		const QString	name	= QString::fromStdString(r.river.at(i).get_name());
+		const int		place			= r.river.at(i).get_place();
+		const int		type			= r.river.at(i).get_type();
+		auto ss = QString::fromStdString(r.river.at(i).get_value(с));
+		map_box[name]->uk5_q_set_value(ss);
+		if 	(place == 1)
+			map_box[name+"_eval"]->uk5_q_set_value(QString::fromStdString(r.river.at(i).get_value(с+4)));
+		if (type > 1)
+			map_box[name+"_geometry"]->uk5_q_set_value(QString::fromStdString(r.river.at(i).get_value(с-1)));
+	}
+			
 }
 
 void uk5_q_form::edit_slot(QString s)
@@ -186,20 +202,20 @@ void uk5_q_form::edit_slot(QString s)
 // ReSharper disable once CppParameterMayBeConst
 void uk5_q_form::check_slot(QString s)  // NOLINT(performance-unnecessary-value-param)
 {
-	const auto box = map_box[s];
-	const auto num = r.search(s.toStdString());
-	
+	const QString ss = s.remove(0, 9);
+	const auto box = map_box[ss];
+	const auto num = r.search(ss.toStdString());
+
+	if (!r.river.at(num).is_init()) return;
 	if (const auto state = box->uk5_q_get_state(); !state)
-		r.recount(r.river.at(num));
-	else
-	{
 		r.re_init(r.river.at(num));
-	}
+	else
+		r.recount(r.river.at(num));
 
 	rewrite(s);
 }
 
-std::vector<double> uk5_q_form::dis(QString str)
+std::vector<double> uk5_q_form::disassemble(QString str)
 {
 
 	std::vector<double> ret = {};
@@ -219,7 +235,7 @@ void uk5_q_form::exit()
 	QApplication::quit();
 }
 
-void uk5_q_form::eval()
+void uk5_q_form::eval_cut()
 {
 //	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
 //	UK5B_out print(f.toStdString());
@@ -244,7 +260,7 @@ void uk5_q_form::eval()
 	}
 
 // вывод графика, максимального загрязнения на 500 м. и конечного разбавления
-	const auto m = dis(r.river.at(r.search("cut")).get_value(3).c_str());
+	const auto m = disassemble(QString::fromStdString(r.river.at(r.search("cut")).get_value(3)));
 	view_charts(ui_->UK5_chart, m, 0., std::stod(r.river.at(r.search("ll")).get_value(1)), 11, 5);
 
 	rewrite("cut");

@@ -29,10 +29,10 @@ public slots:
 	void check_slot(QString);
 private:
 	Ui::MainWindow* ui_;
-	static std::vector<double>	dis(QString);
+	static std::vector<double>	disassemble(QString);
 private slots:
 	static void exit();
-	void eval();
+	void eval_cut();
 signals:
 	void edit_signal(QString);
 	void check_signal(QString);

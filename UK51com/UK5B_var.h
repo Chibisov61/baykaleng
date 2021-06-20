@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <boost/property_tree/ptree.hpp>
 
 inline std::string not_an_empty_string(const int c)
 {

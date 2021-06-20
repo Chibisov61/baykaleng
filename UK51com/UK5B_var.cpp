@@ -11,8 +11,7 @@
 #include <utility>
 #include "UK5B_var.h"
 
-uk5_b_var::uk5_b_var(std::string n, const std::string& t, const std::string& def, const int c, const int max, const std::pair<double, double> delta
-					,const std::pair<double, double> shift) : name_(std::move(n)),delta_(delta),shift_(shift)
+uk5_b_var::uk5_b_var(std::string n, const std::string& t, const std::string& def, const int c, const int max, const std::pair<double, double> delta, const std::pair<double, double> shift) : name_(std::move(n)),delta_(delta),shift_(shift)
 {
 	type_	= m_type.at(t);
 	place_	= 2;

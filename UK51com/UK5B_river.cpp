@@ -55,11 +55,11 @@ uk5_b_river::uk5_b_river()
 	}
 }
 
-void uk5_b_river::recount(uk5_b_set& v)
+int uk5_b_river::recount(uk5_b_set& v)
 {
-	auto t = v.get_type();
-	auto c = (t == 2) ? 1 : t;
-	auto name = v.get_name();
+	const auto t = v.get_type();
+	const auto c = (t == 2) ? 1 : t;
+	const auto name = v.get_name();
 	
 	std::vector<std::tuple<std::string,std::string,std::string>> p = {};
 	const bool y1 = (!v.max.empty()) || (!v.delta.empty()) || (!v.shift.empty());
@@ -146,16 +146,19 @@ void uk5_b_river::recount(uk5_b_set& v)
 		f_err.open("error.log", std::ios::out);
 		f_err << "Ошибка: " << e.what() << std::endl;
 	}
+
+	return c;
 }
 
-void uk5_b_river::re_init(uk5_b_set& v)
+int uk5_b_river::re_init(uk5_b_set& v)
 {
 	const auto name = v.get_name();
 	const auto type = v.get_type();
 	const auto c = (type == 2) ? 1 : type;
 	const auto o = uk5_b_var(name,m_type[type]);
 	v.set_value(o.get_value(c), c);
-	delete &o;
+
+	return c;
 }
 
 int uk5_b_river::search(const std::string& s)
@@ -385,33 +388,39 @@ void uk5_b_river::init_cut(const std::vector<std::tuple<std::string,std::string,
 	river.at(search("cut")).set_value(std::to_string(tt) + ";", 3);
 }
 
-std::vector<std::vector<double>> uk5_b_river::karaushev(std::vector<std::vector<double>> p)
+std::vector<std::vector<double>> uk5_b_river::karaushev(std::vector<std::vector<double>> old_cut)
 {
-	std::vector<std::vector<double>> r = p;
+	std::vector<std::vector<double>> new_cut = old_cut;
 
-	const int hh = static_cast<int>(p.size());
-	const int w = static_cast<int>(p.front().size());
+	const int hh = static_cast<int>(old_cut.size());
+	const int w = static_cast<int>(old_cut.front().size());
 
-	for (int i = 1; i < hh - 1; ++i)
-		for (int j = 1; j < w - 1; ++j)
-			r.at(i).at(j) = (p.at(i).at(j + 1) + p.at(i + 1).at(j) + p.at(i).at(j - 1) + p.at(i - 1).at(j)) / 4;
+	for (int i = 1; i < hh - 1; i++)
+		for (int j = 1; j < w - 1; j++)
+		{
+			const auto c1 = old_cut.at(i).at(j + 1);
+			const auto c2 = old_cut.at(i + 1).at(j);
+			const auto c3 = old_cut.at(i).at(j - 1);
+			const auto c4 = old_cut.at(i - 1).at(j);
+			new_cut.at(i).at(j) = ( c1 + c2 + c3 + c4) / 4.;
+		}
 
 	for(int i = 0; i < hh; ++i)
 	{
-		r.at(i).at(0) = r.at(i).at(1);				// дно 
-		r.at(i).at(w - 1) = r.at(i).at(w - 2);		// поверхность
+		new_cut.at(i).at(0) = new_cut.at(i).at(1);				// дно 
+		new_cut.at(i).at(w - 1) = new_cut.at(i).at(w - 2);		// поверхность
 	}
 
 	for(int j = 0; j < w; ++j)
 	{
-		r.at(0).at(j) = r.at(1).at(j);				// море
-		r.at(hh - 1).at(j) = r.at(hh - 2).at(j);	// берег
+		new_cut.at(0).at(j) = new_cut.at(1).at(j);				// море
+		new_cut.at(hh - 1).at(j) = new_cut.at(hh - 2).at(j);	// берег
 	}
 
 	std::vector<double> rr;
 	rr.reserve(hh);
 	for (int i = 0; i < hh; ++i)
-		rr.push_back(*(std::max_element(r.at(i).begin(), r.at(i).end())));
+		rr.push_back(*(std::max_element(new_cut.at(i).begin(), new_cut.at(i).end())));
 
 	auto mx = river.at(search("cut")).get_value(3);
 	const auto m = *(std::max_element(rr.begin(), rr.end()));
@@ -419,7 +428,7 @@ std::vector<std::vector<double>> uk5_b_river::karaushev(std::vector<std::vector<
 	river.at(search("cut")).set_value(mx, 3);
 	
 	
-	return r;
+	return new_cut;
 }
 
 

@@ -30,8 +30,8 @@ public:
 //		uk5_b_river& operator = (const uk5_b_river&) = default;																				//	оператор копирования
 //		uk5_b_river& operator = (uk5_b_river&&) noexcept = default;																			//	оператор присваивания
 
-		void								recount(uk5_b_set&);
-		void								re_init(uk5_b_set&);
+		int									recount(uk5_b_set&);
+		int									re_init(uk5_b_set&);
 		int									search(const std::string&);
 		void								init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>&);
 		std::vector<std::vector<double>>	karaushev(std::vector<std::vector<double>>);

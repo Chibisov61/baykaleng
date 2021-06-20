@@ -14,9 +14,6 @@ uk5_q_box::uk5_q_box(QWidget* parent = nullptr) : QWidget(parent)
 
 		this->setEnabled(true);
 
-		uk5_q_set_mode(false);
-		uk5_q_state(0);
-
 		connect(ui_->UK5Q_check, SIGNAL(stateChanged(int)), this, SLOT(uk5_q_state(int)));
 		connect(ui_->UK5Q_input, SIGNAL(editingFinished()), this, SLOT(uk5_q_slot()));
 }

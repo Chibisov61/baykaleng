@@ -34,9 +34,6 @@
     <ClCompile Include="UK5B_var.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UK5B_out.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UK5B_river.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,9 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UK5B_var.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UK5B_out.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UK5B_river.h">
