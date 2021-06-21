@@ -106,7 +106,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 		case 0: {	// int				счетчик  (quantity and geometry:value?)
 			(da ? value_i_.first : value_i_.second) = std::stoi(s);
 			if (type_ == 2)
-				(da ? value_d_.first : value_d_.second ) = std::stoi(s) * shift + ((max_ >= 0) ? shift : 0.);
+				(da ? value_d_.first : value_d_.second ) = std::stoi(s) * delta + ((max_ > 0) ? shift : 0.);
 		}
 		break;
 		case 1: {	// double			величина (quality and geometry:value)
@@ -145,14 +145,14 @@ void uk5_b_var::set_value(const std::string& def, int c)
 				{
 					if ((stoi(itr) < end_i) && (max_ >= 0)) continue;
 					vector_i_tmp2.push_back(stoi(itr));
-					vector_d_tmp2.push_back(stoi(itr) * delta + ((max_ >= 0) ? shift : end_d));
+					vector_d_tmp2.push_back(stoi(itr) * delta + ((max_ > 0) ? shift : end_d));
 				}
-				end_i = vector_i_tmp2.back();
-				end_d = vector_d_tmp2.back();
+				end_i = (vector_i_tmp2.empty()) ? 0 : vector_i_tmp2.back();
+				end_d = (vector_d_tmp2.empty()) ? 0 : vector_d_tmp2.back();
 			}
-			if (auto sz = static_cast<int>(vector_i_tmp2.size()); max_ >= 0)
+			if (auto sz = static_cast<int>(vector_i_tmp2.size()); max_ > 0)
 			{
-				auto min = vector_i_tmp2.front();
+				auto min = (vector_i_tmp2.empty()) ? 0 : vector_i_tmp2.front();
 				if( max_ > sz)
 					for(int i = 1; i <= max_ - sz; i++)
 					{
@@ -218,11 +218,11 @@ void uk5_b_var::set_value(const std::string& def, int c)
 					vector_d_tmp2.push_back(stod(itr));
 					vector_i_tmp2.push_back(static_cast<int>(std::round((stod(itr) - ((max_ > 0) ? shift : 0)) / delta)));	
 				}
-				end_d = vector_d_tmp2.back();
+				end_d = (vector_d_tmp2.empty()) ? 0 : vector_d_tmp2.back();
 			}
-			if (auto sz = static_cast<int>(vector_d_tmp2.size()); max_ >= 0)
+			if (auto sz = static_cast<int>(vector_d_tmp2.size()); max_ > 0)
 			{
-				auto min = vector_i_tmp2.front();
+				auto min = (vector_i_tmp2.empty()) ? 0 : vector_i_tmp2.front();
 				if( max_ > sz)
 					for(int i = 1; i <= max_ - sz; i++)
 					{
@@ -237,7 +237,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 			}
 			else
 			{
-				int mz = -max_/sz;
+				int mz = (max_ == 0) ? 1 : -max_/sz;
 				while(mz > 0)
 				{
 					vector_d_tmp1.insert(vector_d_tmp1.end(), vector_d_tmp2.begin(),vector_d_tmp2.end());

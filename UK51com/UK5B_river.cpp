@@ -1,4 +1,4 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "UK5B_river.h"
@@ -83,12 +83,19 @@ int uk5_b_river::recount(uk5_b_set& v)
 					v.set_shift(std::make_pair(std::stod(rj.get_value(1)),std::stod(rj.get_value(5))));
 
 			if (!v.max.empty())
+			{
 				if (j_name == v.max)
 				{
 					int max = std::stoi(rj.get_value(0));
 					if (v.delta == "dy") max = -max;
 					v.set_max(max);
 				}
+			} 
+//			else
+//			{
+//				if (t > 1)
+//				v.set_max(1);
+//			}
 
 			if (!v.param.empty())
 				if (auto res = std::find(v.param.begin(), v.param.end(), j_name); res != v.param.end())
@@ -151,13 +158,22 @@ int uk5_b_river::recount(uk5_b_set& v)
 	return c;
 }
 
-int uk5_b_river::re_init(uk5_b_set& v)
+int uk5_b_river::re_init(uk5_b_set& v, bool b)
 {
-	const auto name = v.get_name();
 	const auto type = v.get_type();
 	const auto c = (type == 2) ? 1 : type;
-	const auto o = uk5_b_var(name,m_type[type]);
-	const auto def = o.get_value(c);
+	std::string def;
+	
+	if (!b)
+	{
+		def = v.get_value(c+4);
+	}
+	else
+	{
+		const auto name = v.get_name();
+		const auto o = uk5_b_var(name,m_type[type]);
+		def = o.get_value(c);
+	}
 	v.set_value(def,c);
 
 	return c;
@@ -245,7 +261,7 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 		}
 	case 8:	//pc
 		{
-			const double g		= 9.8110;
+			const double g		= 9.811;
 			const double h		= std::stod(var("h",p,acc));
 			const double psh	= std::stod(var("psh",p,acc));
 
@@ -255,7 +271,7 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 		}
 	case 9:	//pd
 		{
-			const double g		= 9.8110;
+			const double g		= 9.811;
 			const double vr		= std::stod(var("vr",p,acc));
 			const double h		= std::stod(var("h",p,acc));
 			const double pc		= std::stod(var("pc",p,acc));
@@ -309,7 +325,7 @@ std::string uk5_b_river::eval(const std::string& name, const std::vector<std::tu
 			for (auto& itr : list)
 				m.push_back(std::stod(itr));
 
-			double mx = m.back();
+			double mx = m.empty() ? 0 : m.back();
 			return std::to_string(mx);
 		}
 	case 14://mm

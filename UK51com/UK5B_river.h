@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "UK5B_var.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -31,7 +31,7 @@ public:
 //		uk5_b_river& operator = (uk5_b_river&&) noexcept = default;																			//	оператор присваивания
 
 		int									recount(uk5_b_set&);
-		int									re_init(uk5_b_set&);
+		int									re_init(uk5_b_set&, bool);
 		int									search(const std::string&);
 		void								init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>&);
 		std::vector<std::vector<double>>	karaushev(std::vector<std::vector<double>>);

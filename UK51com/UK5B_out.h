@@ -1,11 +1,11 @@
-﻿#pragma once
+#pragma once
 #include "UK5B_river.h"
 
-class UK5B_out
+class uk5_b_out
 {
 public:
 //				UK5B_out();
-	explicit	UK5B_out(const std::string&);
+	explicit	uk5_b_out(const std::string&);
 //				~UK5B_out() = default;
 //				UK5B_out(const UK5B_out&) = delete;
 //				UK5B_out(UK5B_out&&) = default;

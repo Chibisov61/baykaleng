@@ -30,6 +30,7 @@ public slots:
 private:
 	Ui::MainWindow* ui_;
 	static std::vector<double>	disassemble(QString);
+	static std::vector<int>	disassemble_int(QString);
 private slots:
 	static void exit();
 	void eval_cut();
