@@ -14,6 +14,7 @@ uk5_q_form::uk5_q_form(QWidget *parent)
 	ui_->setupUi(this);
 
 	ui_->UK5Q_progressBar->setValue(0);
+	ui_->UK5Q_comboBox_XLS->addItems(xls_list_);
 	
 	map.insert(0, ui_->UK5Q_scrollLayout_IN);
 	map.insert(1, ui_->UK5Q_scrollLayout_IN_OUT);
@@ -47,6 +48,7 @@ uk5_q_form::uk5_q_form(QWidget *parent)
 
 	connect(ui_->UK5Q_Exit, SIGNAL(clicked()), this, SLOT(exit()));
 	connect(ui_->UK5Q_Eval, SIGNAL(clicked()), this, SLOT(eval_cut()));
+	connect(ui_->UK5Q_comboBox_XLS, SIGNAL(currentIndexChanged(int)), this, SLOT(xls_out_check(int)));
 
 }
 
@@ -82,18 +84,18 @@ void uk5_q_form::view_charts(QChartView* chw, std::vector<double> m_r, const dou
 		series->append(step * static_cast<double>(j - 1) + t_min, cct / m_r[j]);
 	series->setPen(pen);
 
-	// ось Х
+	// РѕСЃСЊ РҐ
 	auto* axis_x = new QValueAxis;
-	axis_x->setRange(t_min, t_max);			// диапазон значений на оси X
-	axis_x->setTickCount(tx);				// число линий сетки
-	axis_x->setLabelFormat("%g");			// формат отображения чисел на оси X
+	axis_x->setRange(t_min, t_max);			// РґРёР°РїР°Р·РѕРЅ Р·РЅР°С‡РµРЅРёР№ РЅР° РѕСЃРё X
+	axis_x->setTickCount(tx);				// С‡РёСЃР»Рѕ Р»РёРЅРёР№ СЃРµС‚РєРё
+	axis_x->setLabelFormat("%g");			// С„РѕСЂРјР°С‚ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ С‡РёСЃРµР» РЅР° РѕСЃРё X
 	axis_x->setGridLineVisible(true);
 
-	// ось Y
+	// РѕСЃСЊ Y
 	auto* axis_y = new QValueAxis;
-	axis_y->setRange(low, high);		// диапазон значений на оси Y
-	axis_y->setTickCount(ty);				// число линий сетки
-	axis_y->setLabelFormat("%g");			// формат отображения чисел на оси Y
+	axis_y->setRange(low, high);		// РґРёР°РїР°Р·РѕРЅ Р·РЅР°С‡РµРЅРёР№ РЅР° РѕСЃРё Y
+	axis_y->setTickCount(ty);				// С‡РёСЃР»Рѕ Р»РёРЅРёР№ СЃРµС‚РєРё
+	axis_y->setLabelFormat("%g");			// С„РѕСЂРјР°С‚ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ С‡РёСЃРµР» РЅР° РѕСЃРё Y
 	axis_y->setGridLineVisible(true);
 
 	ch->addSeries(series);
@@ -132,7 +134,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 		p[2] += {0, box_second->height()+2};
 		map_box.insert(name+"_eval",box_second);
 		box_second->uk5_q_set_mode(false);
-		box_second->uk5_q_set_label(label+QStringLiteral(u" (расч.)"));
+		box_second->uk5_q_set_label(label+QStringLiteral(" (СЂР°СЃС‡.)"));
 		box_second->uk5_q_set_value(QString::fromStdString(u.get_value(c+4)));
 		box_second->uk5_q_set_state(0);
 	}  
@@ -144,7 +146,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 		p[2] += {0, box_geometry->height()+2};
 		map_box.insert(name+"_geometry",box_geometry);
 		box_geometry->uk5_q_set_mode(false);
-		box_geometry->uk5_q_set_label(label+QStringLiteral(u" (в ячейках)"));
+		box_geometry->uk5_q_set_label(label+QStringLiteral(" (РІ СЏС‡РµР№РєР°С…)"));
 		box_geometry->uk5_q_set_value(QString::fromStdString(u.get_value(c-1)));
 		box_geometry->uk5_q_set_state(0);
 	}  
@@ -213,8 +215,8 @@ void uk5_q_form::check_slot(QString s)  // NOLINT(performance-unnecessary-value-
 
 	if (!r.river.at(num).is_init()) return;
 	const auto state = box->uk5_q_get_state();
-	const auto с = r.re_init(r.river.at(num),state);
-	const auto def = QString::fromStdString(r.river.at(num).get_value(с));
+	const auto СЃ = r.re_init(r.river.at(num),state);
+	const auto def = QString::fromStdString(r.river.at(num).get_value(СЃ));
 	box->uk5_q_set_value(def);
 
 	r.recount(r.river.at(num));
@@ -259,17 +261,19 @@ void uk5_q_form::exit()
 
 void uk5_q_form::eval_cut()
 {
-  	const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
-  	uk5_b_out print(f.toStdString());
-// вывод заголовка и нулевого среза	
-  	print.uk5_b_header_print(r);
-  	print.uk5_b_body_print(0, r);
+// РІС‹РІРѕРґ Р·Р°РіРѕР»РѕРІРєР° Рё РЅСѓР»РµРІРѕРіРѕ СЃСЂРµР·Р°	
+	if (xls_check) {
+		const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
+		uk5_b_out print(f.toStdString());
+		print.uk5_b_header_print(r);
+		print.uk5_b_body_print(0, r);
+	}
 
-// обнуление рабочего поля перед расчетом
+// РѕР±РЅСѓР»РµРЅРёРµ СЂР°Р±РѕС‡РµРіРѕ РїРѕР»СЏ РїРµСЂРµРґ СЂР°СЃС‡РµС‚РѕРј
 
 	r.recount(r.river.at(r.search("cut")));
 		
-// расчет по караушеву с выводом промежуточных и конечного срезов
+// СЂР°СЃС‡РµС‚ РїРѕ РєР°СЂР°СѓС€РµРІСѓ СЃ РІС‹РІРѕРґРѕРј РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹С… Рё РєРѕРЅРµС‡РЅРѕРіРѕ СЃСЂРµР·РѕРІ
 	ui_->UK5Q_progressBar->setValue(0);
 	const int lll = std::stoi(r.river.at(r.search("ll")).get_value(0));
 	for(int i = 1; i < lll + 1; ++i)
@@ -277,15 +281,20 @@ void uk5_q_form::eval_cut()
 		r.cut = r.karaushev(r.cut);
 		const auto l_s = r.river.at(r.search("l")).get_value(2);
 		if (const auto l_d = disassemble_int(QString::fromStdString(l_s)); (std::binary_search(l_d.begin(), l_d.end(), i)) || (i == lll))
-			print.uk5_b_body_print(i,r);
+			if (xls_check) print.uk5_b_body_print(i,r);
 		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
 		ui_->UK5Q_progressBar->setValue(static_cast<int>(ii));
 	}
 
-// вывод графика, максимального загрязнения на 500 м. и конечного разбавления
+// РІС‹РІРѕРґ РіСЂР°С„РёРєР°, РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ Р·Р°РіСЂСЏР·РЅРµРЅРёСЏ РЅР° 500 Рј. Рё РєРѕРЅРµС‡РЅРѕРіРѕ СЂР°Р·Р±Р°РІР»РµРЅРёСЏ
 	const auto m = disassemble(QString::fromStdString(r.river.at(r.search("cut")).get_value(3)));
 	view_charts(ui_->UK5_chart, m, 0., std::stod(r.river.at(r.search("ll")).get_value(1)), 11, 5);
 
 	rewrite("cut");
+}
+
+void uk5_q_form::xls_out_check(const int e)
+{
+	xls_check = (e == 1) ? true : false;
 }
 

@@ -167,7 +167,7 @@ void uk5_b_var::set_value(const std::string& def, int c)
 			}
 			else
 			{
-				int mz = -max_/sz;
+				int mz = (max_ == 0) ? 1 : -max_/sz;
 				while(mz > 0)
 				{
 					vector_i_tmp1.insert(vector_i_tmp1.end(), vector_i_tmp2.begin(),vector_i_tmp2.end());

@@ -18,6 +18,7 @@ public:
 	std::array<QSize, 4>		p;
 	QMap<QString, uk5_q_box*>	map_box;
 	QMap<int, QVBoxLayout*>		map;
+	bool						xls_check = false;
 	
 	void						view_charts(QChartView*, std::vector<double>, double, double, int, int);
 	void						init(const uk5_b_set& );
@@ -31,9 +32,11 @@ private:
 	Ui::MainWindow* ui_;
 	static std::vector<double>	disassemble(QString);
 	static std::vector<int>	disassemble_int(QString);
+	QStringList xls_list_ = { "Без вывода","С выводом в csv"};
 private slots:
 	static void exit();
 	void eval_cut();
+	void xls_out_check(int);
 signals:
 	void edit_signal(QString);
 	void check_signal(QString);

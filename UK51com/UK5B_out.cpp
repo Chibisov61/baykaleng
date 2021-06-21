@@ -77,7 +77,7 @@ void uk5_b_out::uk5_b_body_print(const int lvl, uk5_b_river& r)
 	for(int i = 0; i <  h - 1; ++i)
 	{
 		for (int j = 0; j < w - 1; j++)
-			f_out_ << cut.at(h - i - 1).at(j) << ";";
+			f_out_ << round(cut.at(h - i - 1).at(j)*10000)/10000 << ";";
 		f_out_ << std::endl;
 	}
 	
