@@ -7,7 +7,7 @@
 struct uk5_b_set : uk5_b_var
 {
 	using uk5_b_var::uk5_b_var;
-	bool		state	= true;
+	int			state	= 2;
 	int			number	= 0;
 	std::string desc;
 	
@@ -31,7 +31,7 @@ public:
 //		uk5_b_river& operator = (uk5_b_river&&) noexcept = default;																			//	оператор присваивания
 
 		int									recount(uk5_b_set&);
-		int									re_init(uk5_b_set&, bool);
+		int									re_init(uk5_b_set&, int);
 		int									search(const std::string&);
 		void								init_cut(const std::vector<std::tuple<std::string,std::string,std::string>>&);
 		std::vector<std::vector<double>>	karaushev(std::vector<std::vector<double>>);

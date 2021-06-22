@@ -24,7 +24,7 @@ uk5_b_river::uk5_b_river()
 						
 						river.emplace_back(name, type);
 						river.back().desc = p_snd.get<std::string>("description");
-						river.back().state = (p_snd.get<std::string>("state") == "enabled") ? true : false;
+						river.back().state = (p_snd.get<std::string>("state") == "enabled") ? 2 : 0;
 						river.back().max = p_snd.get<std::string>("max", "");
 						river.back().delta = p_snd.get<std::string>("delta", "");
 						river.back().shift = p_snd.get<std::string>("shift", "");
@@ -60,6 +60,7 @@ int uk5_b_river::recount(uk5_b_set& v)
 	const auto t = v.get_type();
 	const auto c = (t == 2) ? 1 : t;
 	const auto name = v.get_name();
+	const int  state = v.state;
 	
 	std::vector<std::tuple<std::string,std::string,std::string>> p = {};
 	const bool y1 = (!v.max.empty()) || (!v.delta.empty()) || (!v.shift.empty());
@@ -69,7 +70,7 @@ int uk5_b_river::recount(uk5_b_set& v)
 	{
 		try
 		{
-			auto rj = river.at(j);
+			uk5_b_set rj = river.at(j);
 			auto j_name = rj.get_name();
 			
 			if (!rj.is_init()) throw std::runtime_error("Обнаружена не инициализированная переменная (" + j_name + ")");
@@ -91,24 +92,23 @@ int uk5_b_river::recount(uk5_b_set& v)
 					v.set_max(max);
 				}
 			} 
-//			else
-//			{
-//				if (t > 1)
-//				v.set_max(1);
-//			}
 
 			if (!v.param.empty())
 				if (auto res = std::find(v.param.begin(), v.param.end(), j_name); res != v.param.end())
 				{
-					auto tt = rj.get_type();
-					const int cc0 = (tt == 2 || tt == 4) ? tt - 1 : tt;
-					const int cc4 = cc0 + 4; //-V112
+					auto tt		= rj.get_type();
+					auto st		= rj.state;
+					const int cc0	= (tt == 2 || tt == 4) ? tt - 1 : tt;
+					const int cc4	= cc0 + 4; //-V112
 					if (((name == "w") || (name == "cut")) && (tt >= 2))
 					{
 						p.emplace_back("i"+ j_name, rj.get_value(cc0-1), rj.get_value(cc4-1));
 					}
 					
 					p.emplace_back(j_name, rj.get_value(cc0), rj.get_value(cc4));
+
+					if (state == 1)
+						if (st == 0) river.at(j).state = 2;
 				}
 		}
 		catch (const std::exception& e)
@@ -132,7 +132,7 @@ int uk5_b_river::recount(uk5_b_set& v)
 				init_cut(p);
 			else
 			{
-				if (v.get_place() != 1) 
+				if (v.get_place() != 1 || v.state == 1 )
 				{
 					if (v.state)
 						v.set_value(eval(name, p, "first"), c);
@@ -158,13 +158,13 @@ int uk5_b_river::recount(uk5_b_set& v)
 	return c;
 }
 
-int uk5_b_river::re_init(uk5_b_set& v, bool b)
+int uk5_b_river::re_init(uk5_b_set& v, const int b)
 {
 	const auto type = v.get_type();
 	const auto c = (type == 2) ? 1 : type;
 	std::string def;
 	
-	if (!b)
+	if (b == 1)
 	{
 		def = v.get_value(c+4);
 	}
@@ -174,6 +174,7 @@ int uk5_b_river::re_init(uk5_b_set& v, bool b)
 		const auto o = uk5_b_var(name,m_type[type]);
 		def = o.get_value(c);
 	}
+	v.state = b;
 	v.set_value(def,c);
 
 	return c;

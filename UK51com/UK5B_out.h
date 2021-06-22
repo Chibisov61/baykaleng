@@ -5,7 +5,7 @@ class uk5_b_out
 {
 public:
 //				UK5B_out();
-	explicit	uk5_b_out(const std::string&);
+	explicit	uk5_b_out(const std::string&,bool);
 //				~UK5B_out() = default;
 //				UK5B_out(const UK5B_out&) = delete;
 //				UK5B_out(UK5B_out&&) = default;
@@ -21,4 +21,5 @@ protected:
 				std::vector<std::string>	right_	= { "vst","dt","dzz","bl","b","br","w","h","l","ll","hog","dx","dy","dz","pd","pc"};
 
 				std::ofstream				f_out_;
+				bool						check_;
 };	

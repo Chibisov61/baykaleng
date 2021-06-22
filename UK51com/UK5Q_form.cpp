@@ -134,7 +134,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 		p[2] += {0, box_second->height()+2};
 		map_box.insert(name+"_eval",box_second);
 		box_second->uk5_q_set_mode(false);
-		box_second->uk5_q_set_label(label+QStringLiteral(" (расч.)"));
+		box_second->uk5_q_set_label(label+" (расч.)");
 		box_second->uk5_q_set_value(QString::fromStdString(u.get_value(c+4)));
 		box_second->uk5_q_set_state(0);
 	}  
@@ -146,7 +146,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 		p[2] += {0, box_geometry->height()+2};
 		map_box.insert(name+"_geometry",box_geometry);
 		box_geometry->uk5_q_set_mode(false);
-		box_geometry->uk5_q_set_label(label+QStringLiteral(" (в ячейках)"));
+		box_geometry->uk5_q_set_label(label+" (в ячейках)");
 		box_geometry->uk5_q_set_value(QString::fromStdString(u.get_value(c-1)));
 		box_geometry->uk5_q_set_state(0);
 	}  
@@ -165,7 +165,6 @@ void uk5_q_form::read(const QString& s)
 		map_box[s+"_eval"]->uk5_q_set_value(QString::fromStdString(r.river.at(num).get_value(c+4)));
 	if (type > 1) 
 		map_box[s+"_geometry"]->uk5_q_set_value(QString::fromStdString(r.river.at(num).get_value(c-1)));
-	
 	rewrite(s);
 }
 
@@ -174,23 +173,23 @@ void uk5_q_form::rewrite(const QString& s)
 	const auto n = r.search(s.toStdString());
 	int begin, end;
 
-	if (const auto cut = r.search("cut"); n != cut)
-	{
-		begin = n + 1;
-		end   = cut;
-	}
-	else
+	if (const auto cut = r.search("cut"); n == cut)
 	{
 		begin = cut + 1;
 		end   = cut + 3;
 	}
+	else
+	{
+		begin = n + 1;
+		end   = cut;
+	}
 
 	for (int i = begin; i < end; i++)
 	{
-		const int		c		= r.recount(r.river.at(i));
 		const QString	name	= QString::fromStdString(r.river.at(i).get_name());
 		const int		place	= r.river.at(i).get_place();
 		const int		type	= r.river.at(i).get_type();
+		const int		c		= r.recount(r.river.at(i));
 		auto ss = QString::fromStdString(r.river.at(i).get_value(c));
 		map_box[name]->uk5_q_set_value(ss);
 		if 	(place == 1)
@@ -198,12 +197,12 @@ void uk5_q_form::rewrite(const QString& s)
 		if (type > 1)
 			map_box[name+"_geometry"]->uk5_q_set_value(QString::fromStdString(r.river.at(i).get_value(c-1)));
 	}
-			
 }
 
 void uk5_q_form::edit_slot(QString s)
 {
-	read(s.remove(0,9));
+	const QString ss = s.remove(0, 9);
+	read(ss);
 }
 
 // ReSharper disable once CppParameterMayBeConst
@@ -215,12 +214,11 @@ void uk5_q_form::check_slot(QString s)  // NOLINT(performance-unnecessary-value-
 
 	if (!r.river.at(num).is_init()) return;
 	const auto state = box->uk5_q_get_state();
-	const auto с = r.re_init(r.river.at(num),state);
+	const int st = (!state) ? 1 : 2;
+	const auto с = r.re_init(r.river.at(num),st);
 	const auto def = QString::fromStdString(r.river.at(num).get_value(с));
 	box->uk5_q_set_value(def);
-
 	r.recount(r.river.at(num));
-	
 	rewrite(ss);
 }
 
@@ -262,12 +260,10 @@ void uk5_q_form::exit()
 void uk5_q_form::eval_cut()
 {
 // вывод заголовка и нулевого среза	
-	if (xls_check) {
 		const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
-		uk5_b_out print(f.toStdString());
+		uk5_b_out print(f.toStdString(),xls_check);
 		print.uk5_b_header_print(r);
 		print.uk5_b_body_print(0, r);
-	}
 
 // обнуление рабочего поля перед расчетом
 
@@ -281,7 +277,7 @@ void uk5_q_form::eval_cut()
 		r.cut = r.karaushev(r.cut);
 		const auto l_s = r.river.at(r.search("l")).get_value(2);
 		if (const auto l_d = disassemble_int(QString::fromStdString(l_s)); (std::binary_search(l_d.begin(), l_d.end(), i)) || (i == lll))
-			if (xls_check) print.uk5_b_body_print(i,r);
+			print.uk5_b_body_print(i,r);
 		const auto ii = static_cast<double>(i) * 100. / (static_cast<double>(lll) - 1.);
 		ui_->UK5Q_progressBar->setValue(static_cast<int>(ii));
 	}
