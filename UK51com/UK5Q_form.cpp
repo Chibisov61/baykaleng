@@ -135,7 +135,7 @@ void uk5_q_form::init(const uk5_b_set& u)
 		map_box.insert(name+"_eval",box_second);
 		box_second->uk5_q_set_mode(false);
 		box_second->uk5_q_set_label(label+" (расч.)");
-		box_second->uk5_q_set_value(QString::fromStdString(u.get_value(c+4)));
+		box_second->uk5_q_set_value(QString::fromStdString(u.get_value(c+4)));	//-V112
 		box_second->uk5_q_set_state(0);
 	}  
 	if 	(type > 1)
@@ -162,7 +162,7 @@ void uk5_q_form::read(const QString& s)
 	const auto c		= (type == 2) ? 1 : type;
 	r.river.at(num).set_value(val.toStdString(), c);
 	if 	(place == 1)
-		map_box[s+"_eval"]->uk5_q_set_value(QString::fromStdString(r.river.at(num).get_value(c+4)));
+		map_box[s+"_eval"]->uk5_q_set_value(QString::fromStdString(r.river.at(num).get_value(c+4)));	//-V112
 	if (type > 1) 
 		map_box[s+"_geometry"]->uk5_q_set_value(QString::fromStdString(r.river.at(num).get_value(c-1)));
 	rewrite(s);
@@ -193,7 +193,7 @@ void uk5_q_form::rewrite(const QString& s)
 		auto ss = QString::fromStdString(r.river.at(i).get_value(c));
 		map_box[name]->uk5_q_set_value(ss);
 		if 	(place == 1)
-			map_box[name+"_eval"]->uk5_q_set_value(QString::fromStdString(r.river.at(i).get_value(c+4)));
+			map_box[name+"_eval"]->uk5_q_set_value(QString::fromStdString(r.river.at(i).get_value(c+4)));	//-V112
 		if (type > 1)
 			map_box[name+"_geometry"]->uk5_q_set_value(QString::fromStdString(r.river.at(i).get_value(c-1)));
 	}
@@ -259,16 +259,15 @@ void uk5_q_form::exit()
 
 void uk5_q_form::eval_cut()
 {
+// обнуление рабочего поля перед расчетом
+	r.recount(r.river.at(r.search("cut")));
+	
 // вывод заголовка и нулевого среза	
 		const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
 		uk5_b_out print(f.toStdString(),xls_check);
 		print.uk5_b_header_print(r);
 		print.uk5_b_body_print(0, r);
-
-// обнуление рабочего поля перед расчетом
-
-	r.recount(r.river.at(r.search("cut")));
-		
+//v	
 // расчет по караушеву с выводом промежуточных и конечного срезов
 	ui_->UK5Q_progressBar->setValue(0);
 	const int lll = std::stoi(r.river.at(r.search("ll")).get_value(0));

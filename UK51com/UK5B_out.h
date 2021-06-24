@@ -17,8 +17,8 @@ public:
 
 protected:
 				const std::string			t_		= ";;;;;;;;;;;;;;";
-				std::vector<std::string>	left_	= { "vr","qst","dog","bl","b","br","w","h","l","ll","hog","nn","xn","cct","n","nog"};
-				std::vector<std::string>	right_	= { "vst","dt","dzz","bl","b","br","w","h","l","ll","hog","dx","dy","dz","pd","pc"};
+				std::vector<std::string>	left_	= { "vr","qst","dog","bl", "b","br", "w", "h", "l","ll","hog","nn","xn","cct", "n","nog"};
+				std::vector<std::string>	right_	= { "vst","dt","dzz","--","--","--","--","--","--","--", "--","dx","dy","dz", "pd", "pc"};
 
 				std::ofstream				f_out_;
 				bool						check_;

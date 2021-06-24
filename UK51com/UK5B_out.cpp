@@ -28,29 +28,32 @@ void uk5_b_out::uk5_b_header_print(uk5_b_river& r)
 		{
 			const uk5_b_set rsl = r.river.at(r.search(left_[j]));
 			std::string desc = rsl.desc;
-			if (const auto type = rsl.get_type(); type < 2)
+			const auto type = rsl.get_type();
+			const int c = (type == 2) ? 1 : type;
+			auto val = rsl.get_value(c);
+			
+			std::string desc_right;
+			std::string val_right;
+			if (type < 2)
 			{
-				auto val = rsl.get_value(type);
-				std::replace(val.begin(), val.end(), ';', ',');
 				const uk5_b_set rsr = r.river.at(r.search(right_[j]));
-				std::string desc_right = rsr.desc;
-				const auto type_right = rsr.get_type();
-				auto val_right = rsr.get_value(type_right);
-				std::replace(val_right.begin(), val_right.end(), ';', ',');
+				desc_right = rsr.desc;
+				const int type_right = rsr.get_type();
+				const int c_right = ( type_right == 2) ? 1 : type_right;
+				val_right = rsr.get_value(c_right);
 
-				f_out_ << desc << ":" << val << t_ << desc_right << ":" << val_right << tt << std::endl;
 			}
 			else
 			{
-				const auto type_right = (type == 2) ? 0 : 2;
-				auto val = rsl.get_value(type);
-				std::replace(val.begin(), val.end(), ';', ',');
-				std::string desc_right = desc + " (в ячейках)";
-				auto val_right = rsl.get_value(type_right);
-				std::replace(val_right.begin(), val_right.end(), ';', ',');
-
-				f_out_ << desc << ":" << val << t_ << desc_right << ":" << val_right << tt << std::endl;
+				desc_right = desc + " (в ячейках)";
+				val_right = rsl.get_value(c - 1);
+				if (type == 3)
+				{
+					std::replace(val.begin(), val.end(), ';', ',');
+					std::replace(val_right.begin(), val_right.end(), ';', ',');
+				}
 			}
+			f_out_ << desc << ":" << val << t_ << desc_right << ":" << val_right << tt << std::endl;
 
 		}
 
