@@ -12,8 +12,8 @@ public:
 //				UK5B_out& operator = (const UK5B_out&) = delete;
 //				UK5B_out& operator = (UK5B_out&&) = default;
 
-				void uk5_b_header_print(uk5_b_river&);
-				void uk5_b_body_print(int,uk5_b_river&);
+				void header_print(uk5_b_river&);
+				void body_print(int,uk5_b_river&);
 
 protected:
 				const std::string			t_		= ";;;;;;;;;;;;;;";

@@ -16,7 +16,7 @@ uk5_b_out::uk5_b_out(const std::string& f, const bool ch)
 	if(check_) f_out_.open(f, std::ios::out);
 }
 
-void uk5_b_out::uk5_b_header_print(uk5_b_river& r)
+void uk5_b_out::header_print(uk5_b_river& r)
 {
 	if (check_)
 	{
@@ -59,7 +59,7 @@ void uk5_b_out::uk5_b_header_print(uk5_b_river& r)
 
 	}
 }
-void uk5_b_out::uk5_b_body_print(const int lvl, uk5_b_river& r)
+void uk5_b_out::body_print(const int lvl, uk5_b_river& r)
 {
 	if (check_)
 	{

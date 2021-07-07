@@ -20,7 +20,7 @@ public:
 	QMap<int, QVBoxLayout*>		map;
 	bool						xls_check = false;
 	
-	void						view_charts(QChartView*, std::vector<double>, double, double, int, int);
+	void						view_charts(QChartView*, const std::vector<double>&, double, double, int, int);
 	void						init(const uk5_b_set& );
 	void						read(const QString&);
 	void						rewrite(const QString&);

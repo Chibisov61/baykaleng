@@ -9,17 +9,16 @@ class uk5_q_box final : public QWidget
 public:
 				explicit				uk5_q_box(QWidget* parent);
 	
-					void				uk5_q_set_label(const QString&) const;
-					void				uk5_q_set_mode(bool) const;
-	[[nodiscard]]	int					uk5_q_get_state() const;
-	             	void				uk5_q_set_state(int) const;
-					void				uk5_q_set_value(const QString&) const;
-	[[nodiscard]]	QString				uk5_q_get_value() const;
-	[[nodiscard]]	QVBoxLayout*		uk5_q_get_place() const;
+					void				set_label(const QString&) const;
+					void				set_mode(bool) const;
+	[[nodiscard]]	int					get_state() const;
+	             	void				set_state(int) const;
+					void				set_value(const QString&) const;
+	[[nodiscard]]	QString				get_value() const;
 
 public slots:	
-					void				uk5_q_state(int);
-					void				uk5_q_slot();
+					void				box_state(int);
+					void				box_slot();
 
 private:
 			Ui::UK5Q_box				*ui_;
