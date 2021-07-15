@@ -162,6 +162,7 @@ void uk5_q_form::read(const QString& s)
 	const auto type	= rr.get_type();
 	const auto c		= (type == 2) ? 1 : type;
 	r.river.at(num).set_value(val.toStdString(), c);
+	r.river.at(num).set_value(val.toStdString(), c+4);
 	rr = r.river.at(num);
 	if 	(place == 1)
 		map_box[s+"_eval"]->set_value(QString::fromStdString(rr.get_value(c+4)));	//-V112
@@ -267,8 +268,7 @@ void uk5_q_form::eval_cut()
 	r.recount(r.river.at(r.search("cut")));
 	
 // вывод заголовка и нулевого среза	
-		const QString f = "UK5." + QDateTime::currentDateTime().toString("yyyyMMddTHHmmss") + ".csv";
-		uk5_b_out print(f.toStdString(),xls_check);
+		uk5_b_out print("xlsx",xls_check);
 		print.header_print(r);
 		print.body_print(0, r);
 //v	

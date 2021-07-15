@@ -32,7 +32,7 @@ private:
 	Ui::MainWindow* ui_;
 	static std::vector<double>	disassemble(QString);
 	static std::vector<int>	disassemble_int(QString);
-	QStringList xls_list_ = { "Без вывода","С выводом в csv"};
+	QStringList xls_list_ = { "Без вывода","С выводом в xlsx"};
 private slots:
 	static void exit();
 	void eval_cut();

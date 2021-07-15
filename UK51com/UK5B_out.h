@@ -1,5 +1,6 @@
 #pragma once
 #include "UK5B_river.h"
+#include <xlnt/xlnt.hpp>
 
 class uk5_b_out
 {
@@ -16,10 +17,12 @@ public:
 				void body_print(int,uk5_b_river&);
 
 protected:
-				const std::string			t_		= ";;;;;;;;;;;;;;";
-				std::vector<std::string>	left_	= { "vr","qst","dog","bl", "b","br", "w", "h", "l","ll","hog","nn","xn","cct", "n","nog"};
-				std::vector<std::string>	right_	= { "vst","dt","dzz","--","--","--","--","--","--","--", "--","dx","dy","dz", "pd", "pc"};
+				std::vector<std::string>				left_	= { "vr","qst","dog","bl", "b","br", "w", "h", "l","ll","hog","nn","xn","cct", "n","nog"};
+				std::vector<std::string>				right_	= { "vst","dt","dzz","--","--","--","--","--","--","--", "--","dx","dy","dz", "pd", "pc"};
 
-				std::ofstream				f_out_;
-				bool						check_;
+				xlnt::workbook							wb_;
+				xlnt::worksheet							ws_;
+				std::string								filename_;
+				int										count_;
+				bool									check_;
 };	
